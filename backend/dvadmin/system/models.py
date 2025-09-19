@@ -63,6 +63,8 @@ class Users(CoreModel, AbstractUser):
                                   help_text="关联岗位")
     role = models.ManyToManyField(to="Role", blank=True, verbose_name="关联角色", db_constraint=False,
                                   help_text="关联角色")
+    current_role = models.ForeignKey(to=Role, null=True, blank=True, db_constraint=False, on_delete=models.SET_NULL,
+                                     verbose_name="当前登录角色", help_text="当前登录角色", related_name='current_role_set')
     dept = models.ForeignKey(
         to="Dept",
         verbose_name="所属部门",
@@ -71,6 +73,14 @@ class Users(CoreModel, AbstractUser):
         null=True,
         blank=True,
         help_text="关联部门",
+    )
+    manage_dept = models.ManyToManyField(
+        to="Dept",
+        verbose_name="管理部门",
+        db_constraint=False,
+        blank=True,
+        help_text="管理部门",
+        related_name='manage_dept_set'
     )
     login_error_count = models.IntegerField(default=0, verbose_name="登录错误次数", help_text="登录错误次数")
     pwd_change_count = models.IntegerField(default=0,blank=True, verbose_name="密码修改次数", help_text="密码修改次数")

@@ -16,7 +16,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
 from rest_framework.viewsets import ModelViewSet
 
-from dvadmin.utils.filters import DataLevelPermissionsFilter, CoreModelFilterBankend
+from dvadmin.utils.filters import CoreModelFilterBankend, DataLevelPermissionMargeFilter
 from dvadmin.utils.import_export_mixin import ExportSerializerMixin, ImportSerializerMixin
 from dvadmin.utils.json_response import SuccessResponse, ErrorResponse, DetailResponse
 from dvadmin.utils.permission import CustomPermission
@@ -41,7 +41,7 @@ class CustomModelViewSet(ModelViewSet, ImportSerializerMixin, ExportSerializerMi
     update_serializer_class = None
     filter_fields = '__all__'
     search_fields = ()
-    extra_filter_class = [CoreModelFilterBankend,DataLevelPermissionsFilter]
+    extra_filter_class = [CoreModelFilterBankend,DataLevelPermissionMargeFilter]
     permission_classes = [CustomPermission]
     import_field_dict = {}
     export_field_label = {}
@@ -152,3 +152,13 @@ class CustomModelViewSet(ModelViewSet, ImportSerializerMixin, ExportSerializerMi
             return SuccessResponse(data=[], msg="删除成功")
         else:
             return ErrorResponse(msg="未获取到keys字段")
+
+    @action(methods=['post'], detail=False)
+    def get_by_ids(self, request):
+        """通过IDS列表获取数据"""
+        ids = request.data.get('ids', [])
+        if ids and ids != ['']:
+            queryset = self.get_queryset().filter(id__in=ids)
+            serializer = self.get_serializer(queryset, many=True)
+            return DetailResponse(data=serializer.data)
+        return DetailResponse(data=None)

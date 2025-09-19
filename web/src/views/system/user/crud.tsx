@@ -19,7 +19,7 @@ import { computed } from "vue";
 import { Md5 } from 'ts-md5';
 import { commonCrudConfig } from "/@/utils/commonCrud";
 import { ElMessageBox } from 'element-plus';
-import {exportData} from "./api";
+import { exportData } from "./api";
 export const createCrudOptions = function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOptionsRet {
     const pageRequest = async (query: UserPageQuery) => {
         return await api.GetList(query);
@@ -91,7 +91,7 @@ export const createCrudOptions = function ({ crudExpose }: CreateCrudOptionsProp
             rowHandle: {
                 //固定右侧
                 fixed: 'right',
-                width: 200,
+                width: 220,
                 buttons: {
                     view: {
                         show: false,
@@ -106,19 +106,15 @@ export const createCrudOptions = function ({ crudExpose }: CreateCrudOptionsProp
                         type: 'text',
                         show: auth('user:Delete'),
                     },
-                    custom: {
-                        text: '重设密码',
+                    resetDefaultPwd: {
+                        text: '重置密码',
                         type: 'text',
-                        show: auth('user:ResetPassword'),
-                        tooltip: {
-                            placement: 'top',
-                            content: '重设密码',
-                        },
-                        //@ts-ignore
-                        click: (ctx: any) => {
-                            const { row } = ctx;
-                            resetToDefaultPasswordRequest(row)
-                        },
+                        iconRight: 'Setting',
+                        show: auth('user:ResetDefaultPassword'),
+                        click: (ctx: any) => ElMessageBox.confirm(
+                            '确定重置为系统默认密码吗？', '提示',
+                            { confirmButtonText: '确定', cancelButtonText: '取消', type: 'warning' }
+                        ).then(() => resetToDefaultPasswordRequest(ctx.row))
                     },
                 },
             },
@@ -209,10 +205,7 @@ export const createCrudOptions = function ({ crudExpose }: CreateCrudOptionsProp
                     },
                 },
                 dept: {
-                    title: '部门',
-                    search: {
-                        disabled: true,
-                    },
+                    title: '所属部门',
                     type: 'dict-tree',
                     dict: dict({
                         isTree: true,
@@ -221,7 +214,7 @@ export const createCrudOptions = function ({ crudExpose }: CreateCrudOptionsProp
                         label: 'name'
                     }),
                     column: {
-                        minWidth: 200, //最小列宽
+                        minWidth: 300, //最小列宽
                         formatter({ value, row, index }) {
                             return row.dept_name_all
                         }
@@ -245,6 +238,39 @@ export const createCrudOptions = function ({ crudExpose }: CreateCrudOptionsProp
                                 },
                             },
                         },
+                    },
+                },
+                manage_dept: {
+                    title: '管理部门',
+                    type: 'dict-tree',
+                    dict: dict({
+                        isTree: true,
+                        url: '/api/system/dept/all_dept/',
+                        value: 'id',
+                        label: 'name'
+                    }),
+                    column: {
+                        minWidth: 300
+                    },
+                    form: {
+                        value: [],
+                        component: {
+                            filterable: true,
+                            multiple: true,
+                            placeholder: '请选择',
+                            clearable: true,
+                            collapseTags: true,
+                            maxCollapseTags: 2,
+                            collapseTagsTooltip: true,
+                            props: {
+                                checkStrictly: true,
+                                props: {
+                                    value: 'id',
+                                    label: 'name',
+                                },
+                            },
+                        },
+                        helper: '不选则默认为所属部门',
                     },
                 },
                 role: {
@@ -382,6 +408,9 @@ export const createCrudOptions = function ({ crudExpose }: CreateCrudOptionsProp
                     dict: dict({
                         data: dictionary('button_status_bool'),
                     }),
+                    form: {
+                        value: true
+                    }
                 },
                 avatar: {
                     title: '头像',
@@ -396,8 +425,8 @@ export const createCrudOptions = function ({ crudExpose }: CreateCrudOptionsProp
                 },
                 ...commonCrudConfig({
                     dept_belong_id: {
-                        form: true,
-                        table: true
+                        form: false,
+                        table: false
                     }
                 })
             },
