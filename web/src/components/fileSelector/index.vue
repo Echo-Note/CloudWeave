@@ -116,7 +116,7 @@
         <el-row justify="space-between" class="headerBar">
           <el-col :span="12">
             <slot name="actionbar-left">
-              <el-input v-model="filterForm.name" :placeholder="`请输入${TypeLabel[tabsActived % 4]}名`"
+              <el-input class="filterInput" v-model="filterForm.name" :placeholder="`请输入${TypeLabel[tabsActived % 4]}名`"
                 prefix-icon="search" clearable @change="listRequest" />
               <div>
                 <el-tag v-if="props.multiple" type="primary" effect="light">
@@ -517,5 +517,11 @@ onMounted(() => {
 .itemList {
   border: 1px solid #dcdfe6;
   border-radius: 8px;
+}
+
+@media (max-width: 1000px) {
+    .filterInput {
+        display: none;
+    }
 }
 </style>
