@@ -55,16 +55,23 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 				}),
 				buttons: {
 					view: {
+						iconRight: 'View',
+						type: 'text',
 						show: true,
 					},
 					edit: {
+						iconRight: 'Edit',
+						type: 'text',
 						show: auth('role:Update'),
 					},
 					remove: {
+						iconRight: 'Delete',
+						type: 'text',
 						show: auth('role:Delete'),
 					},
 					assignment: {
-						type: 'primary',
+						iconRight: 'setting',
+						type: 'text',
 						text: '授权用户',
 						show: auth('role:AllAuthorizedUser'),
 						click: (ctx: any) => {
@@ -77,7 +84,8 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 						},
 					},
 					permission: {
-						type: 'primary',
+						iconRight:'setting',
+						type: 'text',
 						text: '权限配置',
 						show: auth('role:SetMenu'),
 						click: (clickContext: any): void => {

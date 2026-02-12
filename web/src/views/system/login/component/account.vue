@@ -264,7 +264,7 @@ export default defineComponent({
 			animation-name: error-num;
 			animation-duration: 0.5s;
 			animation-fill-mode: forwards;
-			animation-delay: #{$i/10}s;
+			animation-delay: #{ $i/10 }s;
 		}
 	}
 

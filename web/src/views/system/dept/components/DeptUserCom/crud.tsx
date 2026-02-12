@@ -81,20 +81,25 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 			rowHandle: {
 				//固定右侧
 				fixed: 'right',
-				width: 250,
+				width: 260,
 				buttons: {
 					view: {
 						show: false,
 					},
 					edit: {
+						iconRight: 'edit',
+                        type: 'text',
 						show: auth('user:Update'),
 					},
 					remove: {
+						iconRight: 'Delete',
+                        type: 'text',
 						show: auth('user:Delete'),
 					},
 					custom: {
+						iconRight:'Setting',
 						text: '重设密码',
-						type: 'primary',
+						type: 'text',
 						show: auth('user:ResetPassword'),
 						tooltip: {
 							placement: 'top',

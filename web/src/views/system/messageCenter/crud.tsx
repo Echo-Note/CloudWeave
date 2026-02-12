@@ -53,7 +53,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 			},
 			rowHandle: {
 				fixed: 'right',
-				width: 150,
+				width: 180,
 				buttons: {
 					edit: {
 						show: false,

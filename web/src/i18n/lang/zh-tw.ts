@@ -7,7 +7,9 @@ export default {
 		systemRole: '角色管理',
 		systemUser: '用戶管理',
 		systemDept: '部門管理',
-		systemDic: '字典管理',
+		systemNotice: '通知中心',
+		systemDict: '字典管理',
+		configArea: '地区管理',
 		limits: '許可權管理',
 		limitsFrontEnd: '前端控制',
 		limitsFrontEndPage: '頁面許可權',
@@ -189,4 +191,10 @@ export default {
 		btnTwo: '馬上更新',
 		btnTwoLoading: '更新中',
 	},
+	home:{
+		more:'更多',
+        welcomeInfo:'歡迎回來，',
+		welcomeInfo1:'這裡是您的工作台，請愉快地工作吧！',
+		quickNavigationTool:'快捷導航工具',
+    }
 };

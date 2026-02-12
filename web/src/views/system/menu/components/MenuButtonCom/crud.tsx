@@ -106,11 +106,13 @@ export const createCrudOptions = function ({crudExpose, context}: CreateCrudOpti
                         show: false,
                     },
                     edit: {
-                        icon: '',
-                        type: 'primary',
+                        iconRight: 'Edit',
+                        type: 'text',
                         show: auth('menu:UpdateButton')
                     },
                     remove: {
+                        iconRight: 'Delete',
+                        type: 'text',
                         show: auth('menu:DeleteButton')
                     },
                 },
@@ -192,12 +194,6 @@ export const createCrudOptions = function ({crudExpose, context}: CreateCrudOpti
                                 filterable: true,
                             },
                         },
-                        helper: {
-                            render() {
-                                return <el-alert title="手动输入" type="warning"
-                                                 description="页面中按钮的名称或者自定义一个名称"/>;
-                            },
-                        },
                     },
                 },
                 value: {
@@ -211,12 +207,6 @@ export const createCrudOptions = function ({crudExpose, context}: CreateCrudOpti
                     form: {
                         rules: [{required: true, message: '权限标识必填'}],
                         placeholder: '输入权限标识',
-                        helper: {
-                            render() {
-                                return <el-alert title="唯一值" type="warning"
-                                                 description="用于判断前端按钮权限或接口权限"/>;
-                            },
-                        },
                     },
                 },
                 method: {
@@ -269,12 +259,6 @@ export const createCrudOptions = function ({crudExpose, context}: CreateCrudOpti
                                 allowCreate: true,
                                 filterable: true,
                                 clearable: true,
-                            },
-                        },
-                        helper: {
-                            render() {
-                                return <el-alert title="请正确填写，以免请求时被拦截。匹配单例使用正则,例如:/api/xx/.*?/"
-                                                 type="warning"/>;
                             },
                         },
                     },

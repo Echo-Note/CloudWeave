@@ -4,10 +4,14 @@ export default {
         home: 'home',
         system: 'system',
         systemMenu: 'systemMenu',
-        systemRole: 'systemRole',
+        systemRole: 'RoleMGT',
         systemUser: 'systemUser',
-        systemDept: 'systemDept',
-        systemDic: 'systemDic',
+        systemDept: 'DeptMGT',
+        systemNotice: 'Notice Center',
+        systemNotice1: 'MSG-MGT',
+        configArea: 'AreaMGT',
+        configDict: 'DictMGT',
+        configSystem:'SystemMGT',
         limits: 'limits',
         limitsFrontEnd: 'FrontEnd',
         limitsFrontEndPage: 'FrontEndPage',
@@ -128,4 +132,10 @@ export default {
         btnTwo: 'Update now',
         btnTwoLoading: 'updating',
     },
+    home:{
+        more:'More',
+        welcomeInfo:'You\'re back!',
+        welcomeInfo1:'This is your workstation. Please enjoy your work!',
+        quickNavigationTool:'Quick Navigation Tool',
+    }
 };

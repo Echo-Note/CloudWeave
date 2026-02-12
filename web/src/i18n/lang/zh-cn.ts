@@ -15,6 +15,8 @@ export default {
         systemRole: '角色管理',
         systemUser: '用户管理',
         systemDept: '部门管理',
+        systemNotice: '通知中心',
+        systemNotice1: '通知中心',
         /* 日志管理 */
         loginLog: '登录日志',
         operationLog: '操作日志',
@@ -143,4 +145,10 @@ export default {
         btnTwo: '马上更新',
         btnTwoLoading: '更新中',
     },
+    home:{
+        more:'更多',
+        welcomeInfo:'欢迎回来，',
+        welcomeInfo1:'这里是您的工作台，请愉快的工作吧！',
+        quickNavigationTool:'快捷导航工具',
+    }
 };

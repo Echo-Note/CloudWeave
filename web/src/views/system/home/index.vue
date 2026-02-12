@@ -1,8 +1,8 @@
 <template>
   <div class="home-container">
     <div style="margin: 15px; font-size: 16px; font-weight: 700">
-      欢迎回来，{{ userInfo.userInfos.name }}
-      <span style="font-size: 12px; color: grey"> 这里是您的工作台，请愉快的工作吧！</span>
+      {{$t('message.home.welcomeInfo')}}{{ userInfo.userInfos.name }}
+      <span style="font-size: 12px; color: grey">{{$t('message.home.welcomeInfo1')}}</span>
     </div>
     <el-row>
       <el-col :span="16">
@@ -58,9 +58,9 @@
         <el-row :gutter="100" class="home-card-one mb15">
           <el-col :span="24" >
             <div class="home-card-item" style=" width:350px; height: 100%; max-height: 320px">
-              <div class="home-card-item-title">消息通知
+              <div class="home-card-item-title">{{$t('message.router.systemNotice')}}
                 <button   type="button" class="el-button" style=" float: right; border-color: transparent; margin-top: -2px;" @click="msgMore">
-                  <span>更多
+                  <span>{{$t('message.home.more')}}
               <i class="el-icon fs-icon fs-button-icon-right"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" d="M512 160c320 0 512 352 512 352S832 864 512 864 0 512 0 512s192-352 512-352m0 64c-225.28 0-384.128 208.064-436.8 288 52.608 79.872 211.456 288 436.8 288 225.28 0 384.128-208.064 436.8-288-52.608-79.872-211.456-288-436.8-288m0 64a224 224 0 1 1 0 448 224 224 0 0 1 0-448m0 64a160.19 160.19 0 0 0-160 160c0 88.192 71.744 160 160 160s160-71.808 160-160-71.744-160-160-160"></path></svg></i>
               </span>
                 </button>
@@ -72,7 +72,7 @@
               <div class="flex-auto" style="margin-top: 10px">
 							  <span class="font14">[{{ v.creator_name }}]</span>
 							  <span style=" color: grey; float: right; font-style:italic;">&nbsp;{{ v.create_datetime }}&nbsp;&nbsp;</span>
-							  <div class="text-container"> {{ v.title }}</div>
+							  <div class="text-container" style="font-size: 12px; margin-top: 5px"> {{ v.title }}</div>
 						  </div>
 						</div>
             </div>
@@ -81,7 +81,7 @@
         <el-row :gutter="100" class="home-card-one mb15">
       			<el-col :span="24">
 				<div class="home-card-item" style=" width:350px; height: 100%">
-					<div class="home-card-item-title">快捷导航工具</div>
+					<div class="home-card-item-title">{{$t('message.home.quickNavigationTool')}}</div>
 					<div class="home-monitor">
 						<div class="flex-warp">
 							<div class="flex-warp-item" v-for="(v, k) in homeThree" :key="k">
@@ -90,7 +90,7 @@
                     <div class="home-card-item-icon flex" style="margin: 20px;" :style="{ background: '#f8f8f8' }">
                       <i class="flex-margin font24" :class="v.icon" :style="{ color: v.iconColor}"></i>
 						        </div>
-										<span class="pl20" :style="{ fontSize: 'clamp(0.875rem, 2vw, 1rem)' }">{{ v.label }}</span>
+                    <span class="pl20" :style="{ fontSize: 'clamp(0.875rem, 2vw, 1rem)' }"><a :href="v.url">{{ $t(v.label) }}</a></span>
 									</div>
 								</div>
 							</div>
@@ -178,49 +178,40 @@ export default defineComponent({
 			],
 			homeThree: [
 				{
-					icon: 'iconfont icon-yangan',
-					label: '用户管理',
+					icon: 'fa fa-user-o',
+					label: 'message.router.systemRole',
 					iconColor: 'gray',
+          url:'#/role',
 				},
 				{
-					icon: 'iconfont icon-wendu',
-					label: '部门管理',
+					icon: 'fa fa-sitemap',
+					label: 'message.router.systemDept',
 					iconColor: 'gray',
+          url:'#/dept',
 				},
 				{
-					icon: 'iconfont icon-shidu',
-					label: '权限管理',
+					icon: 'iconfont icon-system',
+					label: 'message.router.configSystem',
 					iconColor: 'gray',
+          url:'#/config',
 				},
 				{
-					icon: 'iconfont icon-shidu',
-					label: '日志管理',
+					icon: 'iconfont icon-xiaoxizhongxin',
+					label: 'message.router.systemNotice1',
 					iconColor: 'gray',
+          url:'#/messageCenter',
 				},
 				{
-					icon: 'iconfont icon-zaosheng',
-					label: '菜单管理',
+					icon: 'iconfont icon-dict',
+					label: 'message.router.configDict',
 					iconColor: 'gray',
+          url:'#/dictionary',
 				},
 				{
-					icon: 'iconfont icon-zaosheng',
-					label: '消息中心',
+					icon: 'iconfont icon-Area',
+					label: 'message.router.configArea',
 					iconColor: 'gray',
-				},
-				{
-					icon: 'iconfont icon-zaosheng',
-					label: '接口管理',
-					iconColor: 'gray',
-				},
-				{
-					icon: 'iconfont icon-zaosheng',
-					label: '下载中心',
-					iconColor: 'gray',
-				},
-				{
-					icon: 'iconfont icon-zaosheng',
-					label: '系统管理',
-					iconColor: 'gray',
+          url:'#/areas',
 				},
 			],
 			myCharts: [],
