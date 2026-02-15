@@ -67,6 +67,7 @@
           </el-col>
           <el-col  :span="12">
             <div class="home-card-item-title">{{$t('message.personal.UpdateInfo')}}</div>
+            <el-form :model="state.personalForm" :rules="rules" ref="userInfoFormRef" label-width="80px">
           <el-row :gutter="35">
 							<el-col >
 								<el-form-item label="昵称" prop="name">
@@ -104,6 +105,7 @@
 								</el-form-item>
 							</el-col>
 						</el-row>
+            </el-form>
           </el-col>
           </el-row>
         </div>
