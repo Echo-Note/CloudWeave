@@ -1,87 +1,89 @@
 <template>
-	<div class="personal layout-pd">
+	<div class="home-container">
+    <div style="margin: 15px; font-size: 16px; font-weight: 700">
+    <span :style="{ color: headerTextColor }">{{ currentTime }}，{{ state.personalForm.username }}</span>
+      <span style="font-size: 12px; color: grey">{{$t('message.personal.PersonalInfo1')}}</span>
+    </div>
 		<el-row>
+
 			<!-- 个人信息 -->
-			<el-col :xs="24" :sm="16">
-				<el-card shadow="hover" header="个人信息">
-					<div class="personal-user">
-						<div class="personal-user-left">
+			<el-col :span="16"  class="home-card-two mb15">
+        <el-row>
+          <div class="home-card-item" style="height: 380px">
+            <el-row>
+            <el-col  :span="12">
+              <div class="home-card-item-title">{{$t('message.personal.MyInfo')}}</div>
+						<div>
 							<avatarSelector v-model="selectImgVisible" @uploadImg="uploadImg" ref="avatarSelectorRef"></avatarSelector>
 						</div>
-						<div class="personal-user-right">
+						<div>
 							<el-row>
-								<el-col :span="24" class="personal-title mb18"
-									>{{ currentTime }}，{{ state.personalForm.username }}，生活变的再糟糕，也不妨碍我变得更好！
-								</el-col>
 								<el-col :span="24">
 									<el-row>
-										<el-col :xs="24" :sm="8" class="personal-item mb6">
-											<div class="personal-item-label">昵称：</div>
-											<div class="personal-item-value">{{ state.personalForm.name }}</div>
+										<el-col class="personal-item mb6">
+                      <div style="display: flex;">
+                        <div style="flex: 1;">昵称：</div>
+                        <div style="flex: 1;">{{ state.personalForm.name }}</div>
+                      </div>
 										</el-col>
-										<el-col :xs="24" :sm="16" class="personal-item mb6">
-											<div class="personal-item-label">部门：</div>
-											<div class="personal-item-value">
-												<el-tag>{{ state.personalForm.dept_info.dept_name }}</el-tag>
-											</div>
+										<el-col class="personal-item mb6">
+                      <div style="display: flex;">
+                        <div style="flex: 1;">部门：</div>
+                        <div style="flex: 1;"><el-tag>{{ state.personalForm.dept_info.dept_name }}</el-tag></div>
+                      </div>
 										</el-col>
-									</el-row>
-								</el-col>
-								<el-col :span="24">
-									<el-row>
-										<el-col :xs="24" :sm="24" class="personal-item mb6">
-											<div class="personal-item-label">角色：</div>
-											<div class="personal-item-value">
-												<el-tag v-for="(item, index) in state.personalForm.role_info" :key="index" style="margin-right: 5px">{{ item.name }}</el-tag>
-											</div>
+                    <el-col class="personal-item mb6">
+                      <div style="display: flex;">
+                        <div style="flex: 1;">角色：</div>
+                        <div style="flex: 1;"><el-tag v-for="(item, index) in state.personalForm.role_info" :key="index" style="margin-right: 5px">{{ item.name }}</el-tag></div>
+                      </div>
 										</el-col>
 									</el-row>
 								</el-col>
 							</el-row>
 						</div>
-					</div>
-				</el-card>
-			</el-col>
+            <div class="home-card-item-title">{{$t('message.personal.AccountSecurity')}}</div>
+            <el-col class="personal-item mb6">
+                      <div style="display: flex;">
+                        <div style="flex: 1;">当前密码强度：强</div>
+                        <div style="flex: 1;"><el-button text type="primary" @click="passwordFormShow = true">立即修改
+                                        <el-icon class="el-icon--right"><Edit /></el-icon>
+                        </el-button></div>
 
-			<!-- 消息通知 -->
-			<el-col :xs="24" :sm="8" class="pl15 personal-info">
-				<el-card shadow="hover">
-					<template #header>
-						<span>消息通知</span>
-						<span class="personal-info-more" @click="msgMore">更多</span>
-					</template>
-					<div class="personal-info-box">
-						<ul class="personal-info-ul">
-							<li v-for="(v, k) in state.newsInfoList" :key="k" class="personal-info-li">
-								<div class="personal-info-li-title">[{{ v.creator_name }},{{ v.create_datetime }}] {{ v.title }}</div>
-							</li>
-						</ul>
-					</div>
-				</el-card>
-			</el-col>
-
-			<!-- 更新信息 -->
-			<el-col :span="24">
-				<el-card shadow="hover" class="mt15 personal-edit" header="更新信息">
-					<div class="personal-edit-title">基本信息</div>
-					<el-form :model="state.personalForm" ref="userInfoFormRef" :rules="rules" size="default" label-width="50px" class="mt35 mb35">
-						<el-row :gutter="35">
-							<el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb20">
+                      </div>
+            </el-col>
+            <el-col class="personal-item mb6">
+                      <div style="display: flex;">
+                        <div style="flex: 1;">已绑定手机：</div>
+                        <div style="flex: 1;">{{ state.personalForm.mobile }}</div>
+                      </div>
+            </el-col>
+            <el-col class="personal-item mb6">
+                      <div style="display: flex;">
+                        <div style="flex: 1;">已绑定邮箱：</div>
+                        <div style="flex: 1;">{{ state.personalForm.email }}</div>
+                      </div>
+            </el-col>
+          </el-col>
+          <el-col  :span="12">
+            <div class="home-card-item-title">{{$t('message.personal.UpdateInfo')}}</div>
+          <el-row :gutter="35">
+							<el-col >
 								<el-form-item label="昵称" prop="name">
 									<el-input v-model="state.personalForm.name" placeholder="请输入昵称" clearable></el-input>
 								</el-form-item>
 							</el-col>
-							<el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb20">
+							<el-col>
 								<el-form-item label="邮箱">
 									<el-input v-model="state.personalForm.email" placeholder="请输入邮箱" clearable></el-input>
 								</el-form-item>
 							</el-col>
-							<el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb20">
+							<el-col>
 								<el-form-item label="手机" prop="mobile">
 									<el-input v-model="state.personalForm.mobile" placeholder="请输入手机" clearable></el-input>
 								</el-form-item>
 							</el-col>
-							<el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" class="mb20">
+							<el-col>
 								<el-form-item label="性别">
 									<el-select v-model="state.personalForm.gender" placeholder="请选择性别" clearable class="w100">
 										<!--										<el-option label="男" :value="1"></el-option>-->
@@ -94,52 +96,58 @@
 							<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 								<el-form-item>
 									<el-button type="primary" @click="submitForm">
-										<el-icon>
+										{{$t('message.personal.UpdateInfo')}}
+                    <el-icon>
 											<ele-Position />
 										</el-icon>
-										更新个人信息
 									</el-button>
 								</el-form-item>
 							</el-col>
 						</el-row>
-					</el-form>
-					<div class="personal-edit-title mb15">账号安全</div>
-					<div class="personal-edit-safe-box">
-						<div class="personal-edit-safe-item">
-							<div class="personal-edit-safe-item-left">
-								<div class="personal-edit-safe-item-left-label">账户密码</div>
-								<div class="personal-edit-safe-item-left-value">当前密码强度：强</div>
-							</div>
-							<div class="personal-edit-safe-item-right">
-								<el-button text type="primary" @click="passwordFormShow = true">立即修改</el-button>
-							</div>
-						</div>
-					</div>
-					<div class="personal-edit-safe-box">
-						<div class="personal-edit-safe-item">
-							<div class="personal-edit-safe-item-left">
-								<div class="personal-edit-safe-item-left-label">密保手机</div>
-								<div class="personal-edit-safe-item-left-value">已绑定手机：{{ state.personalForm.mobile }}</div>
-							</div>
-							<div class="personal-edit-safe-item-right">
-								<!--                <el-button text type="primary">立即修改</el-button>-->
-							</div>
-						</div>
-					</div>
-
-					<div class="personal-edit-safe-box">
-						<div class="personal-edit-safe-item">
-							<div class="personal-edit-safe-item-left">
-								<div class="personal-edit-safe-item-left-label">绑定邮箱</div>
-								<div class="personal-edit-safe-item-left-value">已绑定邮箱：{{ state.personalForm.email }}</div>
-							</div>
-							<div class="personal-edit-safe-item-right">
-								<!--                <el-button text type="primary">立即设置</el-button>-->
-							</div>
-						</div>
-					</div>
-				</el-card>
+          </el-col>
+          </el-row>
+        </div>
+        </el-row>
+        <el-row>
+          <div style="margin-top: 15px">
+            <div class="home-card-item" :style="{ height: '185px', background: smokeTextBgColor, display: 'flex', alignItems: 'center', padding: '20px'}">
+            <div class="smoke-text-container">
+              <p class="smoke-text" ref="smokeTextRef" :style="{ color: smokeTextColor }">
+                {{$t('message.personal.PersonalInfo2')}}
+              </p>
+            </div>
+          </div>
+          </div>
+        </el-row>
 			</el-col>
+
+			<!-- 消息通知 -->
+      <el-col :span="8"   class="home-card-one mb15" >
+        <div style="margin-left: 30px">
+          <div class="home-card-item" style=" width:350px; height: 100%; max-height: 580px;" >
+              <div class="home-card-item-title">{{$t('message.router.systemNotice')}}
+                <button   type="button" class="el-button" style=" float: right; border-color: transparent; margin-top: -2px;" @click="msgMore">
+                  <span>{{$t('message.home.more')}}
+              <i class="el-icon fs-icon fs-button-icon-right"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024"><path fill="currentColor" d="M512 160c320 0 512 352 512 352S832 864 512 864 0 512 0 512s192-352 512-352m0 64c-225.28 0-384.128 208.064-436.8 288 52.608 79.872 211.456 288 436.8 288 225.28 0 384.128-208.064 436.8-288-52.608-79.872-211.456-288-436.8-288m0 64a224 224 0 1 1 0 448 224 224 0 0 1 0-448m0 64a160.19 160.19 0 0 0-160 160c0 88.192 71.744 160 160 160s160-71.808 160-160-71.744-160-160-160"></path></svg></i>
+              </span>
+                </button>
+              </div>
+						<div v-for="(item, index) in state.newsInfoList" :key="index" class="personal-info-li flex-margin flex w100" >
+              <div class="home-card-item-icon flex" style="margin: 5px;" :style="{ background: `#f8f8f8` }">
+                <i class="flex-margin font24" :class="`fa fa-commenting-o`" :style="{ color: `#5d8b22` }"></i>
+						</div>
+              <div class="flex-auto" style="margin-top: 10px">
+							  <span class="font14">[{{ item.creator_name }}]</span>
+							  <span style=" color: grey; float: right; font-style:italic;">&nbsp;{{ item.create_datetime }}&nbsp;&nbsp;</span>
+							  <div class="text-container" style="font-size: 12px; margin-top: 5px"> {{ item.title }}</div>
+						  </div>
+						</div>
+            </div>
+        </div>
+		</el-col>
+    </el-row>
+    <el-row>
+
 		</el-row>
 		<!--    密码修改-->
 		<el-dialog v-model="passwordFormShow" title="密码修改">
@@ -172,7 +180,7 @@
 </template>
 
 <script setup lang="ts" name="personal">
-import { reactive, computed, onMounted, ref, defineAsyncComponent } from 'vue';
+import { reactive, computed, onMounted, ref, defineAsyncComponent, nextTick, watch } from 'vue';
 import { formatAxis } from '/@/utils/formatTime';
 import * as api from './api';
 import { ElMessage } from 'element-plus';
@@ -180,17 +188,62 @@ import { getBaseURL } from '/@/utils/baseUrl';
 import { Session } from '/@/utils/storage';
 import { useRouter } from 'vue-router';
 import { useUserInfo } from '/@/stores/userInfo';
+import { useThemeConfig } from '/@/stores/themeConfig';
 import { successMessage } from '/@/utils/message';
 import { dictionary } from '/@/utils/dictionary';
 import { Md5 } from 'ts-md5';
-const router = useRouter();
+import { Edit } from '@element-plus/icons-vue';
 
-// 头像裁剪组件
+interface NewsItem {
+	creator_name: string;
+	create_datetime: string;
+	title: string;
+}
+
+interface PersonalState {
+	newsInfoList: NewsItem[];
+	personalForm: {
+		avatar: string;
+		username: string;
+		name: string;
+		email: string;
+		mobile: string;
+		gender: string | number;
+		dept_info: {
+			dept_id: number;
+			dept_name: string;
+		};
+		role_info: Array<{
+			id: number;
+			name: string;
+		}>;
+	};
+}
+
+const router = useRouter();
+const themeConfigStore = useThemeConfig();
+
 const avatarSelector = defineAsyncComponent(() => import('/@/components/avatarSelector/index.vue'));
-const avatarSelectorRef = ref(null);
-// 当前时间提示语
+const avatarSelectorRef = ref<any>(null);
+const smokeTextRef = ref<HTMLElement | null>(null);
 const currentTime = computed(() => {
 	return formatAxis(new Date());
+});
+
+const isDark = computed(() => {
+	return themeConfigStore.themeConfig.isIsDark;
+});
+
+const smokeTextBgColor = computed(() => {
+	return isDark.value ? '#191919' : '#fff';
+});
+
+const smokeTextColor = computed(() => {
+	return isDark.value ? '#fff' : '#000';
+});
+
+const headerTextColor = computed(() => {
+	return isDark.value ? '#e6e6e6' : '#000000';
 });
 const userInfoFormRef = ref();
 const rules = reactive({
@@ -221,6 +274,7 @@ const state = reactive<PersonalState>({
 		],
 	},
 });
+
 
 /**
  * 跳转消息中心
@@ -255,7 +309,7 @@ const getUserInfo = function () {
  */
 const submitForm = async () => {
 	if (!userInfoFormRef.value) return;
-	await userInfoFormRef.value.validate((valid, fields) => {
+	await userInfoFormRef.value.validate((valid: boolean, fields: any) => {
 		if (valid) {
 			api.updateUserInfo(state.personalForm).then((res: any) => {
 				ElMessage.success('更新成功');
@@ -270,16 +324,51 @@ const submitForm = async () => {
 /**
  * 获取消息通知
  */
-const getMsg = () => {
-	api.GetSelfReceive({}).then((res: any) => {
-		const { data } = res;
-		state.newsInfoList = data || [];
-	});
+const getMsg = async () => {
+	try {
+		const res = await api.GetSelfReceive({});
+		const { data } = res || {};
+		
+		if (data && Array.isArray(data) && data.length > 0) {
+			state.newsInfoList = data.map((item: any) => ({
+				creator_name: String(item.creator_name || '未知用户'),
+				create_datetime: String(item.create_datetime || ''),
+				title: String(item.title || ''),
+			}));
+		} else {
+			state.newsInfoList = [];
+		}
+	} catch (error) {
+		console.error('Failed to fetch messages:', error);
+		state.newsInfoList = [];
+	}
 };
 onMounted(() => {
 	getUserInfo();
 	getMsg();
+	nextTick(() => {
+		initSmokeText();
+	});
 });
+
+watch(() => themeConfigStore.themeConfig.globalI18n, () => {
+	nextTick(() => {
+		initSmokeText();
+	});
+});
+
+const initSmokeText = () => {
+	if (smokeTextRef.value) {
+		const text = smokeTextRef.value;
+		text.innerHTML = text.textContent.replace(/\S/g, "<span>$&</span>");
+		const spans = text.querySelectorAll('span');
+		for (let i = 0; i < spans.length; i++) {
+			spans[i].addEventListener("mouseover", () => {
+				spans[i].classList.add('action');
+			});
+		}
+	}
+};
 
 /**************************密码修改部分************************/
 const passwordFormShow = ref(false);
@@ -290,7 +379,7 @@ const userPasswordInfo = reactive({
 	newPassword2: '',
 });
 
-const validatePass = (rule, value, callback) => {
+const validatePass = (rule: any, value: any, callback: any) => {
 	const pwdRegex = new RegExp('(?=.*[0-9])(?=.*[a-zA-Z]).{8,30}');
 	if (value === '') {
 		callback(new Error('请输入密码'));
@@ -305,7 +394,7 @@ const validatePass = (rule, value, callback) => {
 		callback();
 	}
 };
-const validatePass2 = (rule, value, callback) => {
+const validatePass2 = (rule: any, value: any, callback: any) => {
 	if (value === '') {
 		callback(new Error('请再次输入密码'));
 	} else if (value !== userPasswordInfo.newPassword) {
@@ -331,7 +420,7 @@ const passwordRules = reactive({
  * 重新设置密码
  */
 const settingPassword = () => {
-	userPasswordFormRef.value.validate((valid) => {
+	userPasswordFormRef.value.validate((valid: boolean) => {
 		if (valid) {
 			api.UpdatePassword(userPasswordInfo).then((res: any) => {
 				ElMessage.success('密码修改成功');
@@ -356,12 +445,13 @@ const uploadImg = (data: any) => {
 			selectImgVisible.value = false;
 			// state.personalForm.avatar = getBaseURL() + res.data.url;
 			state.personalForm.avatar = res.data.url;
-			api.updateUserInfo(state.personalForm).then((res: any) => {
+			api.updateUserInfo(state.personalForm).then((_res: any) => {
 				successMessage('更新成功');
 				getUserInfo();
 				useUserInfo().updateUserInfos();
-				// @ts-ignore
-				avatarSelectorRef.value.updateAvatar(state.personalForm.avatar);
+				if (avatarSelectorRef.value && typeof avatarSelectorRef.value.updateAvatar === 'function') {
+					avatarSelectorRef.value.updateAvatar(state.personalForm.avatar);
+				}
 			});
 		}
 	});
@@ -369,165 +459,167 @@ const uploadImg = (data: any) => {
 </script>
 
 <style scoped lang="scss">
-@use '/@/theme/mixins/index.scss' as mixins;
-.personal {
-	.personal-user {
-		height: 130px;
-		display: flex;
-		align-items: center;
-		.personal-user-left {
-			width: 100px;
-			height: 130px;
-			border-radius: 3px;
-			:deep(.el-upload) {
-				height: 100%;
-			}
-			.personal-user-left-upload {
-				img {
-					width: 100%;
-					height: 100%;
-					border-radius: 3px;
-				}
-				&:hover {
-					img {
-						animation: logoAnimation 0.3s ease-in-out;
-					}
-				}
-			}
-		}
-		.personal-user-right {
-			flex: 1;
-			padding: 0 15px;
-			.personal-title {
-				font-size: 18px;
-				@include mixins.text-ellipsis(1);
-			}
-			.personal-item {
-				display: flex;
-				align-items: center;
-				font-size: 13px;
-				.personal-item-label {
-					color: var(--el-text-color-secondary);
-					@include mixins.text-ellipsis(1);
-				}
-				.personal-item-value {
-					@include mixins.text-ellipsis(1);
-				}
-			}
-		}
+$homeNavLengh: 8;
+
+.smoke-text-container {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.smoke-text {
+	font-size: 16px;
+	line-height: 24px;
+	text-align: left;
+	width: 100%;
+}
+
+.smoke-text :deep(span) {
+	position: relative;
+	display: inline-block;
+	cursor: pointer;
+}
+
+.smoke-text :deep(span.action) {
+	animation: smoke 2s linear forwards;
+	transform-origin: bottom;
+}
+
+@keyframes smoke {
+	0% {
+		opacity: 1;
+		filter: blur(0);
+		transform: translateX(0) translateY(0) rotate(0deg) scale(1);
 	}
-	.personal-info {
-		.personal-info-more {
-			float: right;
-			color: var(--el-text-color-secondary);
-			font-size: 13px;
-			&:hover {
-				color: var(--el-color-primary);
-				cursor: pointer;
-			}
-		}
-		.personal-info-box {
-			height: 130px;
-			overflow: hidden;
-			.personal-info-ul {
-				list-style: none;
-				.personal-info-li {
-					font-size: 13px;
-					padding-bottom: 10px;
-					.personal-info-li-title {
-						display: inline-block;
-						@include mixins.text-ellipsis(1);
-						color: var(--el-text-color-secondary);
-						text-decoration: none;
-					}
-					& a:hover {
-						color: var(--el-color-primary);
-						cursor: pointer;
-					}
-				}
-			}
-		}
+	50% {
+		opacity: 1;
+		pointer-events: none;
 	}
-	.personal-recommend-row {
-		.personal-recommend-col {
-			.personal-recommend {
-				position: relative;
-				height: 100px;
-				border-radius: 3px;
-				overflow: hidden;
-				cursor: pointer;
-				&:hover {
-					i {
-						right: 0px !important;
-						bottom: 0px !important;
-						transition: all ease 0.3s;
-					}
-				}
-				i {
-					position: absolute;
-					right: -10px;
-					bottom: -10px;
-					font-size: 70px;
-					transform: rotate(-30deg);
-					transition: all ease 0.3s;
-				}
-				.personal-recommend-auto {
-					padding: 15px;
-					position: absolute;
-					left: 0;
-					top: 5%;
-					color: var(--next-color-white);
-					.personal-recommend-msg {
-						font-size: 12px;
-						margin-top: 10px;
-					}
-				}
-			}
-		}
+	100% {
+		opacity: 0;
+		filter: blur(20px);
+		transform: translateX(300px) translateY(-300px) rotate(720deg) scale(4);
 	}
-	.personal-edit {
-		.personal-edit-title {
-			position: relative;
-			padding-left: 10px;
-			color: var(--el-text-color-regular);
-			&::after {
-				content: '';
-				width: 2px;
-				height: 10px;
-				position: absolute;
-				left: 0;
-				top: 50%;
-				transform: translateY(-50%);
-				background: var(--el-color-primary);
-			}
-		}
-		.personal-edit-safe-box {
-			border-bottom: 1px solid var(--el-border-color-light, #ebeef5);
-			padding: 15px 0;
-			.personal-edit-safe-item {
-				width: 100%;
-				display: flex;
-				align-items: center;
-				justify-content: space-between;
-				.personal-edit-safe-item-left {
-					flex: 1;
-					overflow: hidden;
-					.personal-edit-safe-item-left-label {
-						color: var(--el-text-color-regular);
-						margin-bottom: 5px;
-					}
-					.personal-edit-safe-item-left-value {
-						color: var(--el-text-color-secondary);
-						@include mixins.text-ellipsis(1);
-						margin-right: 15px;
-					}
-				}
-			}
-			&:last-of-type {
-				padding-bottom: 0;
-				border-bottom: none;
-			}
-		}
-	}
+}
+
+.text-container {
+width: 420px;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.text-container:hover {
+animation: scrollText 5s linear infinite;
+}
+@keyframes scrollText {
+0% { transform: translateX(0); }
+100% { transform: translateX(-100%); }
+}
+
+.home-container {
+  overflow: hidden;
+
+  // 基础卡片样式
+  .home-card-item {
+    width: 100%;
+    transition: all ease 0.3s;
+    padding: 20px;
+    overflow: hidden;
+    background: var(--el-color-white);
+    color: var(--el-text-color-primary);
+    border: 1px solid var(--next-border-color-light);
+    border-radius: 24px;
+
+    &:hover {
+      box-shadow: 0 2px 12px var(--next-color-dark-hover);
+    }
+
+    &-icon {
+      width: 55px;
+      height: 55px;
+      border-radius: 100%;
+      flex-shrink: 1;
+
+      i {
+        color: var(--el-text-color-placeholder);
+      }
+    }
+
+    &-title {
+      font-size: 16px;
+      font-weight: bold;
+      height: 30px;
+    }
+  }
+
+  // 卡片组一（小卡片）
+  .home-card-one {
+    left:15px;
+    right: 15px;
+
+    .home-card-item {
+      height: 120px;  // 小卡片高度
+    }
+
+    @for $i from 0 through 3 {
+      .home-one-animation#{$i} {
+        opacity: 0;
+        animation-name: error-num;
+        animation-duration: 0.5s;
+        animation-fill-mode: forwards;
+        animation-delay: calc($i/10) + s;
+      }
+    }
+  }
+
+  // 卡片组二和三（大卡片）
+  .home-card-two, .home-card-three {
+    position: relative;
+    left: 15px;
+    right: 15px;
+
+    .home-card-item {
+      height: 400px;  // 大卡片高度
+      width: 100%;
+      overflow: hidden;
+
+      .home-monitor {
+        height: 100%;
+
+        .flex-warp-item {
+          width: 25%;
+          height: 111px;
+          display: flex;
+
+          .flex-warp-item-box {
+            margin: auto;
+            text-align: center;
+            color: var(--el-text-color-primary);
+            display: flex;
+            border-radius: 5px;
+            background: var(--next-bg-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:hover {
+              background: var(--el-color-primary-light-9);
+            }
+          }
+
+          @for $i from 0 through 3 {
+            .home-animation#{$i} {
+              opacity: 0;
+              animation-name: error-num;
+              animation-duration: 0.5s;
+              animation-fill-mode: forwards;
+              animation-delay: calc($i/10) + s;
+            }
+          }
+        }
+      }
+    }
+  }
 }
 </style>
