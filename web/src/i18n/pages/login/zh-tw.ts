@@ -3,6 +3,7 @@ export default {
 	label: {
 		one1: '用戶名登入',
 		two2: '手機號登入',
+		two3: '掃碼登錄',
 		changePwd: '密码修改',
 	},
 	link: {

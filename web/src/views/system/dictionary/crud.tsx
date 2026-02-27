@@ -4,6 +4,7 @@ import { dictionary } from '/@/utils/dictionary';
 import { inject, nextTick, ref } from 'vue';
 import { successMessage } from '/@/utils/message';
 import {auth} from '/@/utils/authFunction';
+import React from 'react';
 export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
 	const pageRequest = async (query: UserPageQuery) => {
 		return await api.GetList(query);
@@ -159,9 +160,7 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 							placeholder: '请输入字典编号',
 						},
 						helper: {
-							render(h) {
-								return <el-alert title="使用方法：dictionary('字典编号')" type="warning" />;
-							},
+							text: '使用方法：dictionary(\'字典编号\')'
 						},
 					},
 				},

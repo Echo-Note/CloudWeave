@@ -96,9 +96,13 @@ const toggleRowSelection = () => {
 						show: false,
 					},
 					edit: {
+						iconRight: 'Edit',
+                        type: 'text',
 						show: auth('column:Update')
 					},
 					remove: {
+						iconRight: 'Delete',
+                        type: 'text',
 						show: auth('column:Delete')
 					},
 				},
