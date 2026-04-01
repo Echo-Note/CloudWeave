@@ -5,11 +5,11 @@
 			<el-icon size="16" color="#606266" class="mtc-head-icon">
 				<Menu />
 			</el-icon>
-			菜单列表
+			{{$t('message.systemMenu.MenuList')}}
 			<el-tooltip
 				effect="dark"
 				placement="right"
-				content="1.红色菜单代表状态禁用; 2.添加菜单，如果是目录，组件地址为空即可; 3.添加根节点菜单，父级ID为空即可; 4.支持拖拽菜单;"
+        :content="$t('message.systemMenu.MenuListNote')"
 			>
 				<el-icon size="16" color="var(--el-color-primary)" class="mtc-tooltip">
 					<QuestionFilled />

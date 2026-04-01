@@ -22,19 +22,19 @@
 									<el-row>
 										<el-col class="personal-item mb6">
                       <div style="display: flex;">
-                        <div style="flex: 1;">昵称：</div>
+                        <div style="flex: 1;">{{$t('message.personal.Name')}}</div>
                         <div style="flex: 1;">{{ state.personalForm.name }}</div>
                       </div>
 										</el-col>
 										<el-col class="personal-item mb6">
                       <div style="display: flex;">
-                        <div style="flex: 1;">部门：</div>
+                        <div style="flex: 1;">{{$t('message.personal.Dept')}}</div>
                         <div style="flex: 1;"><el-tag>{{ state.personalForm.dept_info.dept_name }}</el-tag></div>
                       </div>
 										</el-col>
                     <el-col class="personal-item mb6">
                       <div style="display: flex;">
-                        <div style="flex: 1;">角色：</div>
+                        <div style="flex: 1;">{{$t('message.personal.Role')}}</div>
                         <div style="flex: 1;"><el-tag v-for="(item, index) in state.personalForm.role_info" :key="index" style="margin-right: 5px">{{ item.name }}</el-tag></div>
                       </div>
 										</el-col>
@@ -45,8 +45,8 @@
             <div class="home-card-item-title">{{$t('message.personal.AccountSecurity')}}</div>
             <el-col class="personal-item mb6">
                       <div style="display: flex;">
-                        <div style="flex: 1;">当前密码强度：强</div>
-                        <div style="flex: 1;"><el-button text type="primary" @click="passwordFormShow = true">立即修改
+                        <div style="flex: 1;">{{$t('message.personal.PswdInfo')}}</div>
+                        <div style="flex: 1;"><el-button text type="primary" @click="passwordFormShow = true">{{$t('message.personal.ChangePassword')}}
                                         <el-icon class="el-icon--right"><Edit /></el-icon>
                         </el-button></div>
 
@@ -54,13 +54,13 @@
             </el-col>
             <el-col class="personal-item mb6">
                       <div style="display: flex;">
-                        <div style="flex: 1;">已绑定手机：</div>
+                        <div style="flex: 1;">{{$t('message.personal.PhoneInfo')}}</div>
                         <div style="flex: 1;">{{ state.personalForm.mobile }}</div>
                       </div>
             </el-col>
             <el-col class="personal-item mb6">
                       <div style="display: flex;">
-                        <div style="flex: 1;">已绑定邮箱：</div>
+                        <div style="flex: 1;">{{$t('message.personal.MailInfo')}}</div>
                         <div style="flex: 1;">{{ state.personalForm.email }}</div>
                       </div>
             </el-col>
@@ -70,22 +70,22 @@
             <el-form :model="state.personalForm" :rules="rules" ref="userInfoFormRef" label-width="80px">
           <el-row :gutter="35">
 							<el-col >
-								<el-form-item label="昵称" prop="name">
-									<el-input v-model="state.personalForm.name" placeholder="请输入昵称" clearable></el-input>
+								<el-form-item :label="$t('message.personal.Name')" prop="name">
+									<el-input v-model="state.personalForm.name" :placeholder="$t('message.personal.NamePlaceholder')" clearable></el-input>
 								</el-form-item>
 							</el-col>
 							<el-col>
-								<el-form-item label="邮箱">
-									<el-input v-model="state.personalForm.email" placeholder="请输入邮箱" clearable></el-input>
+								<el-form-item :label="$t('message.personal.Mail')">
+									<el-input v-model="state.personalForm.email" :placeholder="$t('message.personal.MailPlaceholder')" clearable></el-input>
 								</el-form-item>
 							</el-col>
 							<el-col>
-								<el-form-item label="手机" prop="mobile">
-									<el-input v-model="state.personalForm.mobile" placeholder="请输入手机" clearable></el-input>
+								<el-form-item :label="$t('message.personal.Phone')" prop="mobile">
+									<el-input v-model="state.personalForm.mobile" :placeholder="$t('message.personal.PhonePlaceholder')" clearable></el-input>
 								</el-form-item>
 							</el-col>
 							<el-col>
-								<el-form-item label="性别">
+								<el-form-item :label="$t('message.personal.Sex')">
 									<el-select v-model="state.personalForm.gender" placeholder="请选择性别" clearable class="w100">
 										<!--										<el-option label="男" :value="1"></el-option>-->
 										<!--										<el-option label="女" :value="0"></el-option>-->
