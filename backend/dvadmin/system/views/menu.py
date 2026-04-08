@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.utils.translation import gettext_lazy as _
 
 """
 @author: 猿小天
@@ -24,7 +25,7 @@ class MenuSerializer(CustomModelSerializer):
     hasChild = serializers.SerializerMethodField()
 
     def get_menuPermission(self, instance):
-        queryset = instance.menuPermission.order_by('-name').values('id', 'name', 'value')
+        queryset = instance.menuPermission.order_by('-name').values('id', 'name', 'name_en', 'name_zh_tw', 'value')
         # MenuButtonSerializer(instance.menuPermission.all(), many=True)
         if queryset:
             return queryset
@@ -66,13 +67,36 @@ class WebRouterSerializer(CustomModelSerializer):
     前端菜单路由的简单序列化器
     """
     path = serializers.CharField(source="web_path")
-    title = serializers.CharField(source="name")
+    title = serializers.SerializerMethodField()
+
+    def get_title(self, obj):
+        lang = None
+        req = getattr(self, 'request', None)
+        if req:
+            user = getattr(req, 'user', None)
+            if user and getattr(user, 'is_authenticated', False):
+                lang = getattr(user, 'language', None)
+            # query_params.get() 返回列表（DRF），取第一个元素
+            _qp_lang = req.query_params.get('language', None)
+            if _qp_lang:
+                lang = _qp_lang[0] if isinstance(_qp_lang, list) else _qp_lang
+            if not lang:
+                meta_lang = req.META.get('HTTP_ACCEPT_LANGUAGE', '')
+                if meta_lang.startswith('en'):
+                    lang = 'en'
+                elif 'zh-tw' in meta_lang or 'zh-hant' in meta_lang:
+                    lang = 'zh-tw'
+        if lang == 'en':
+            return obj.name_en or obj.name
+        elif lang == 'zh-tw':
+            return obj.name_zh_tw or obj.name
+        return obj.name
 
     class Meta:
         model = Menu
         fields = (
             'id', 'parent', 'icon', 'sort', 'path', 'name', 'title', 'is_link','link_url', 'is_catalog', 'web_path', 'component',
-            'component_name', 'cache', 'visible','is_iframe','is_affix', 'status')
+            'component_name', 'cache', 'visible','is_iframe','is_affix', 'status', 'name_en', 'name_zh_tw')
         read_only_fields = ["id"]
 
 
@@ -121,26 +145,30 @@ class MenuViewSet(CustomModelViewSet):
         user = request.user
         if user.is_superuser:
             queryset = self.queryset.filter(status=1).order_by("sort")
-        else:
+        elif user.is_authenticated:
             role_list = user.role.values_list('id', flat=True)
             menu_list = RoleMenuPermission.objects.filter(role__in=role_list).values_list('menu_id', flat=True)
             queryset = Menu.objects.filter(id__in=menu_list).order_by("sort")
+        else:
+            queryset = self.queryset.none()
         serializer = WebRouterSerializer(queryset, many=True, request=request)
         data = serializer.data
-        return SuccessResponse(data=data, total=len(data), msg="获取成功")
+        return SuccessResponse(data=data, total=len(data), msg=_("Query successful"))
 
     @action(methods=['GET'], detail=False, permission_classes=[])
     def get_all_menu(self, request):
         """用于菜单管理获取所有的菜单"""
         user = request.user
         queryset = self.queryset.all()
-        if not user.is_superuser:
+        if not user.is_authenticated:
+            queryset = self.queryset.none()
+        elif not user.is_superuser:
             role_list = user.role.values_list('id', flat=True)
             menu_list = RoleMenuPermission.objects.filter(role__in=role_list).values_list('menu_id')
             queryset = Menu.objects.filter(id__in=menu_list)
         serializer = WebRouterSerializer(queryset, many=True, request=request)
         data = serializer.data
-        return SuccessResponse(data=data, total=len(data), msg="获取成功")
+        return SuccessResponse(data=data, total=len(data), msg=_("Query successful"))
 
     @action(methods=['POST'], detail=False, permission_classes=[])
     def move_up(self, request):
@@ -149,13 +177,13 @@ class MenuViewSet(CustomModelViewSet):
         try:
             menu = Menu.objects.get(id=menu_id)
         except Menu.DoesNotExist:
-            return ErrorResponse(msg="菜单不存在")
+            return ErrorResponse(msg=_("Menu does not exist"))
         previous_menu = Menu.objects.filter(sort__lt=menu.sort, parent=menu.parent).order_by('-sort').first()
         if previous_menu:
             previous_menu.sort, menu.sort = menu.sort, previous_menu.sort
             previous_menu.save()
             menu.save()
-        return SuccessResponse(data=[], msg="上移成功")
+        return SuccessResponse(data=[], msg=_("Move up successful"))
 
     @action(methods=['POST'], detail=False, permission_classes=[])
     def move_down(self, request):
@@ -164,10 +192,10 @@ class MenuViewSet(CustomModelViewSet):
         try:
             menu = Menu.objects.get(id=menu_id)
         except Menu.DoesNotExist:
-            return ErrorResponse(msg="菜单不存在")
+            return ErrorResponse(msg=_("Menu does not exist"))
         next_menu = Menu.objects.filter(sort__gt=menu.sort, parent=menu.parent).order_by('sort').first()
         if next_menu:
             next_menu.sort, menu.sort = menu.sort, next_menu.sort
             next_menu.save()
             menu.save()
-        return SuccessResponse(data=[], msg="下移成功")
+        return SuccessResponse(data=[], msg=_("Move down successful"))

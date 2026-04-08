@@ -1,33 +1,42 @@
 import { ElMessage, ElNotification, MessageOptions } from 'element-plus';
+import { i18n } from '/@/i18n/index';
 
-export function message(message: string, option?: MessageOptions) {
-	ElMessage({ message, ...option });
-}
-export function successMessage(message: string, option?: MessageOptions) {
-	ElMessage({ message, type: 'success' });
-}
-export function warningMessage(message: string, option?: MessageOptions) {
-	ElMessage({ message, ...option, type: 'warning' });
-}
-export function errorMessage(message: string, option?: MessageOptions) {
-	ElMessage({ message, ...option, type: 'error' });
-}
-export function infoMessage(message: string, option?: MessageOptions) {
-	ElMessage({ message, ...option, type: 'info' });
+function resolveMessage(key: string, params?: Record<string, unknown>): string {
+	if (!key) return '';
+	// If the key contains Chinese characters, treat as raw string (backward compatibility)
+	// Otherwise treat as translation key
+	if (/[\u4e00-\u9fff]/.test(key)) return key;
+	return params ? (i18n.global.t(key, params) as string) : (i18n.global.t(key) as string);
 }
 
-export function notification(message: string) {
-	ElNotification({ message });
+export function message(key: string, params?: Record<string, unknown>, option?: MessageOptions) {
+	ElMessage({ message: resolveMessage(key, params), ...option });
 }
-export function successNotification(message: string) {
-	ElNotification({ message, type: 'success' });
+export function successMessage(key: string, params?: Record<string, unknown>, option?: MessageOptions) {
+	ElMessage({ message: resolveMessage(key, params), type: 'success', ...option });
 }
-export function warningNotification(message: string) {
-	ElNotification({ message, type: 'warning' });
+export function warningMessage(key: string, params?: Record<string, unknown>, option?: MessageOptions) {
+	ElMessage({ message: resolveMessage(key, params), type: 'warning', ...option });
 }
-export function errorNotification(message: string) {
-	ElNotification({ message, type: 'error' });
+export function errorMessage(key: string, params?: Record<string, unknown>, option?: MessageOptions) {
+	ElMessage({ message: resolveMessage(key, params), type: 'error', ...option });
 }
-export function infoNotification(message: string) {
-	ElNotification({ message, type: 'info' });
+export function infoMessage(key: string, params?: Record<string, unknown>, option?: MessageOptions) {
+	ElMessage({ message: resolveMessage(key, params), type: 'info', ...option });
+}
+
+export function notification(key: string, params?: Record<string, unknown>) {
+	ElNotification({ message: resolveMessage(key, params) });
+}
+export function successNotification(key: string, params?: Record<string, unknown>) {
+	ElNotification({ message: resolveMessage(key, params), type: 'success' });
+}
+export function warningNotification(key: string, params?: Record<string, unknown>) {
+	ElNotification({ message: resolveMessage(key, params), type: 'warning' });
+}
+export function errorNotification(key: string, params?: Record<string, unknown>) {
+	ElNotification({ message: resolveMessage(key, params), type: 'error' });
+}
+export function infoNotification(key: string, params?: Record<string, unknown>) {
+	ElNotification({ message: resolveMessage(key, params), type: 'info' });
 }

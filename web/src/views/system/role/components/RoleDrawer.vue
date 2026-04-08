@@ -1,7 +1,7 @@
 <template>
 	<el-drawer
 		v-model="RoleDrawer.drawerVisible"
-		title="权限配置"
+		:title="$t('message.pages.role.dialog.assignPermissions')"
 		direction="rtl"
 		size="80%"
 		:close-on-click-modal="false"
@@ -10,9 +10,9 @@
 	>
 		<template #header>
 			<div>
-				当前授权角色：
+				{{ $t('message.pages.role.dialog.currentRole') }}
 				<el-tag style="margin-right: 20px">{{ RoleDrawer.roleName }}</el-tag>
-				授权人员：
+				{{ $t('message.pages.role.dialog.authorizedUsers') }}
 				<el-button size="small" :icon="UserFilled" @click="handleUsers">{{ RoleDrawer.users.length }}</el-button>
 			</div>
 		</template>
@@ -25,15 +25,15 @@
 			<pane min-size="20">
 				<div class="pane-box">
 					<el-tabs v-model="activeName" class="demo-tabs">
-						<el-tab-pane label="接口权限" name="first"><MenuBtnCom /></el-tab-pane>
-						<el-tab-pane label="列字段权限" name="second"><MenuFieldCom /></el-tab-pane>
+						<el-tab-pane :label="$t('message.pages.role.dialog.interfacePermission')" name="first"><MenuBtnCom /></el-tab-pane>
+						<el-tab-pane :label="$t('message.pages.role.dialog.columnPermission')" name="second"><MenuFieldCom /></el-tab-pane>
 					</el-tabs>
 				</div>
 			</pane>
 		</splitpanes>
 	</el-drawer>
 
-	<el-dialog v-model="dialogVisible" title="授权用户" width="700px" :close-on-click-modal="false">
+	<el-dialog v-model="dialogVisible" :title="$t('message.pages.role.dialog.assignUsers')" width="700px" :close-on-click-modal="false">
 		<RoleUsersCom />
 	</el-dialog>
 </template>

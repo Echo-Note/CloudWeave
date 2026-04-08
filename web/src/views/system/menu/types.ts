@@ -33,6 +33,8 @@ export interface MenuTreeItemType {
   dept_belong_id: string;
   icon: string;
   name: string;
+  name_en?: string;
+  name_zh_tw?: string;
   sort: number;
   is_link: boolean;
   is_catalog: boolean;
@@ -53,6 +55,8 @@ export interface MenuFormDataType {
   id?: number | string;
   parent: number | string;
   name: string;
+  name_en?: string;
+  name_zh_tw?: string;
   component: string;
   web_path: string;
   icon: string;

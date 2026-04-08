@@ -1,12 +1,14 @@
 <template>
 	<div class="layout-footer pb5 pt2">
 		<div class="layout-footer-warp">
-			<div>❤️ Powered by tiantianxiangshang Copyright © 巨梦·DVAmin团队 ❤️</div>
+			<div>{{ $t('message.footer.copyright') }}</div>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts" name="layoutFooter">
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 // 此处需有内容（注释也得），否则缓存将失败
 </script>
 

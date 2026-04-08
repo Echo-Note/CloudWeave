@@ -6,4 +6,7 @@
 .vscode/
 web/package-lock.json
 
-*.bat
+.playwright-mcp/
+/backend/db.sqlite3-wal
+/backend/db.sqlite3-shm
+web/test-results/

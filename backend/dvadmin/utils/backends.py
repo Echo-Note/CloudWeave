@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.contrib.auth.hashers import check_password
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from dvadmin.utils.validator import CustomValidationError
 
@@ -36,4 +37,4 @@ class CustomBackend(ModelBackend):
                     user.last_login = timezone.now()
                     user.save()
                     return user
-                raise CustomValidationError("当前用户已被禁用，请联系管理员!")
+                raise CustomValidationError(_("This account has been disabled. Contact an administrator to unlock it."))

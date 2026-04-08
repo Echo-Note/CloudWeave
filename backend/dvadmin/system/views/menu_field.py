@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.utils.translation import gettext_lazy as _
 from django.apps import apps
 from rest_framework import serializers
 from rest_framework.decorators import action
@@ -35,7 +36,7 @@ class MenuFieldViewSet(CustomModelViewSet):
             return SuccessResponse([])
         queryset = self.filter_queryset(self.get_queryset().filter(menu=menu))
         serializer = self.get_serializer(queryset, many=True, request=request)
-        return SuccessResponse(data=serializer.data, msg="获取成功")
+        return SuccessResponse(data=serializer.data, msg=_("Query successful"))
 
     def create(self, request, *args, **kwargs):
         payload = request.data
@@ -43,10 +44,10 @@ class MenuFieldViewSet(CustomModelViewSet):
             if payload.get('model') == model.__name__:
                 break
         else:
-            return ErrorResponse(msg='模型表不存在')
+            return ErrorResponse(msg=_('Model table does not exist'))
 
         if MenuField.objects.filter(menu=payload.get('menu'),model=model.__name__, field_name=payload.get('field_name')).exists():
-            return ErrorResponse(msg='‘%s’ 字段权限已有，不可重复创建' % payload.get('title'))
+            return ErrorResponse(msg=_('Field permission for \'%s\' already exists and cannot be duplicated') % payload.get('title'))
 
         return super().create(request, *args, **kwargs)
 
@@ -68,7 +69,7 @@ class MenuFieldViewSet(CustomModelViewSet):
         menu_id = request.data.get('menu')
         model_name = request.data.get('model')
         if not menu_id or not model_name:
-            return ErrorResponse( msg='参数错误')
+            return ErrorResponse(msg=_('Parameter error'))
         for model in get_custom_app_models():
             if model['model'] != model_name:
                 continue
@@ -86,4 +87,4 @@ class MenuFieldViewSet(CustomModelViewSet):
                 serializer = self.get_serializer(data=data, request=request)
                 serializer.is_valid(raise_exception=True)
                 serializer.save()
-        return SuccessResponse(msg='匹配成功')
+        return SuccessResponse(msg=_('Match successful'))

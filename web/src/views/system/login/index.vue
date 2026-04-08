@@ -16,24 +16,24 @@
 					<div class="login-right-warp-main-title">
             <span>{{getSystemConfig['login.site_name'] || getThemeConfig.globalViceTitleMsg }}</span>
             <br>
-            <span>{{userInfos.pwd_change_count===0?'初次登录请修改密码':'欢迎登录'}}</span>
+            <span>{{userInfos.pwd_change_count===0 ? $t('message.pages.login.validation.firstLoginChangePwd') : $t('message.pages.login.signInText')}}</span>
           </div>
 					<div class="login-right-warp-main-form">
 						<div v-if="!state.isScan">
 							<el-tabs v-model="state.tabsActiveName">
-                <el-tab-pane :label="$t('message.label.changePwd')" name="changePwd"  v-if="userInfos.pwd_change_count===0">
+                <el-tab-pane :label="$t('message.pages.login.label.changePwd')" name="changePwd"  v-if="userInfos.pwd_change_count===0">
                   <ChangePwd />
                 </el-tab-pane>
-								<el-tab-pane :label="$t('message.label.one1')" name="account" v-else>
+								<el-tab-pane :label="$t('message.pages.login.label.one1')" name="account" v-else>
 									<Account />
 								</el-tab-pane>
 
 								<!-- TODO 手机号码登录未接入，展示隐藏 -->
-								<el-tab-pane :label="$t('message.label.two2')" name="mobile">
+								<el-tab-pane :label="$t('message.pages.login.label.two2')" name="mobile">
 									<Mobile />
 								</el-tab-pane>
 
-                <el-tab-pane :label="$t('message.label.two3')" name="scan">
+                <el-tab-pane :label="$t('message.pages.login.label.two3')" name="scan">
 									<scan />
 								</el-tab-pane>
 
@@ -59,13 +59,13 @@
 					'晋ICP备18005113号-3' }}</a>
 				|
 				<a :href="getSystemConfig['login.help_url'] ? getSystemConfig['login.help_url'] : '#'"
-					target="_blank">帮助</a>
+					target="_blank">{{ $t('message.pages.login.footer.help') }}</a>
 				|
 				<a
-					:href="getSystemConfig['login.privacy_url'] ? getBaseURL(getSystemConfig['login.privacy_url']) : '#'">隐私</a>
+					:href="getSystemConfig['login.privacy_url'] ? getBaseURL(getSystemConfig['login.privacy_url']) : '#'">{{ $t('message.pages.login.footer.privacy') }}</a>
 				|
 				<a
-					:href="getSystemConfig['login.clause_url'] ? getBaseURL(getSystemConfig['login.clause_url']) : '#'">条款</a>
+					:href="getSystemConfig['login.clause_url'] ? getBaseURL(getSystemConfig['login.clause_url']) : '#'">{{ $t('message.pages.login.footer.clause') }}</a>
 			</p>
 		</div>
 	</div>

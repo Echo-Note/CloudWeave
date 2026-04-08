@@ -5,6 +5,8 @@ import {request} from '../utils/service';
 import XEUtils from "xe-utils";
 import {RouteRecordRaw} from "vue-router";
 import {useKeepALiveNames} from "/@/stores/keepAliveNames";
+import {useThemeConfig} from "/@/stores/themeConfig";
+import {storeToRefs} from "pinia";
 import pinia from "/@/stores/index";
 
 
@@ -141,10 +143,11 @@ export const useFrontendMenuStore = defineStore('frontendMenu',{
     }),
     actions:{
         async requestMenu(){
+           const { themeConfig } = storeToRefs(useThemeConfig(pinia))
            return  request({
                 url: '/api/system/menu/web_router/',
                 method: 'get',
-                params:{},
+                params:{ language: themeConfig.value.globalI18n },
             }).then((res:any)=>{
                 return res.data
            });

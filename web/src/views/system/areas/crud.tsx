@@ -1,12 +1,24 @@
 import * as api from './api';
-import { dict, UserPageQuery, AddReq, DelReq, EditReq, compute, CreateCrudOptionsProps, CreateCrudOptionsRet } from '@fast-crud/fast-crud';
+import {
+    dict,
+    UserPageQuery,
+    AddReq,
+    DelReq,
+    EditReq,
+    compute,
+    CreateCrudOptionsProps,
+    CreateCrudOptionsRet
+} from '@fast-crud/fast-crud';
+import { request } from '/@/utils/service';
 import { dictionary } from '/@/utils/dictionary';
 import { successMessage } from '/@/utils/message';
 import { auth } from '/@/utils/authFunction';
-import tableSelector from '/@/components/tableSelector/index.vue';
 import { shallowRef } from 'vue';
+import { useI18n } from 'vue-i18n';
+import tableSelector from '/@/components/tableSelector/index.vue';
 
 export const createCrudOptions = function ({ crudExpose }: CreateCrudOptionsProps): CreateCrudOptionsRet {
+    const { t } = useI18n();
 	const pageRequest = async (query: UserPageQuery) => {
 		return await api.GetList(query);
 	};
@@ -43,12 +55,12 @@ export const createCrudOptions = function ({ crudExpose }: CreateCrudOptionsProp
 			actionbar: {
 				buttons: {
 					add: {
+						text: t('message.pages.areas.buttons.add'),
 						show: auth('area:Create'),
 					},
 				},
 			},
 			rowHandle: {
-				//固定右侧
 				fixed: 'right',
 				width: 200,
 				buttons: {
@@ -56,11 +68,13 @@ export const createCrudOptions = function ({ crudExpose }: CreateCrudOptionsProp
 						show: false,
 					},
 					edit: {
+						text: t('message.pages.areas.buttons.edit'),
 						iconRight: 'Edit',
 						type: 'text',
 						show: auth('area:Update'),
 					},
 					remove: {
+						text: t('message.pages.areas.buttons.delete'),
 						iconRight: 'Delete',
 						type: 'text',
 						show: auth('area:Delete'),
@@ -78,17 +92,17 @@ export const createCrudOptions = function ({ crudExpose }: CreateCrudOptionsProp
 			},
 			columns: {
 				_index: {
-					title: '序号',
+					title: t('message.pages.areas.table.columns.index'),
 					form: { show: false },
 					column: {
 						type: 'index',
 						align: 'center',
 						width: '70px',
-						columnSetDisabled: true, //禁止在列设置中选择
+						columnSetDisabled: true,
 					},
 				},
 				name: {
-					title: '名称',
+					title: t('message.pages.areas.table.columns.areaName'),
 					search: {
 						show: true,
 					},
@@ -99,16 +113,15 @@ export const createCrudOptions = function ({ crudExpose }: CreateCrudOptionsProp
 					},
 					form: {
 						rules: [
-							// 表单校验规则
-							{ required: true, message: '名称必填项' },
+							{ required: true, message: t('message.pages.areas.validation.areaNameRequired') },
 						],
 						component: {
-							placeholder: '请输入名称',
+							placeholder: t('message.pages.areas.form.areaNamePlaceholder'),
 						},
 					},
 				},
 				pcode: {
-					title: '父级地区',
+					title: t('message.pages.areas.table.columns.parentArea'),
 					search: {
 						disabled: true,
 					},
@@ -136,12 +149,12 @@ export const createCrudOptions = function ({ crudExpose }: CreateCrudOptionsProp
 								columns: [
 									{
 										prop: 'name',
-										label: '地区',
+										label: t('message.pages.areas.table.columns.areaName'),
 										width: 150,
 									},
 									{
 										prop: 'code',
-										label: '地区编码',
+										label: t('message.pages.areas.table.columns.areaCode'),
 									},
 								],
 							},
@@ -152,7 +165,7 @@ export const createCrudOptions = function ({ crudExpose }: CreateCrudOptionsProp
 					},
 				},
 				code: {
-					title: '地区编码',
+					title: t('message.pages.areas.table.columns.areaCode'),
 					search: {
 						show: true,
 					},
@@ -162,16 +175,15 @@ export const createCrudOptions = function ({ crudExpose }: CreateCrudOptionsProp
 					},
 					form: {
 						rules: [
-							// 表单校验规则
-							{ required: true, message: '地区编码必填项' },
+							{ required: true, message: t('message.pages.areas.validation.areaCodeRequired') },
 						],
 						component: {
-							placeholder: '请输入地区编码',
+							placeholder: t('message.pages.areas.form.areaCodePlaceholder'),
 						},
 					},
 				},
 				enable: {
-					title: '是否启用',
+					title: t('message.pages.areas.table.columns.status'),
 					search: {
 						show: true,
 					},

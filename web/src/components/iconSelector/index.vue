@@ -31,16 +31,16 @@
 		>
 			<template #default>
 				<div class="icon-selector-warp">
-					<div class="icon-selector-warp-title">{{ title }}</div>
+					<div class="icon-selector-warp-title">{{ resolvedTitle }}</div>
 					<el-tabs v-model="state.fontIconTabActive" @tab-click="onIconClick">
 						<el-tab-pane lazy label="ali" name="ali">
-							<IconList :list="fontIconSheetsFilterList" :empty="emptyDescription" :prefix="state.fontIconPrefix" @get-icon="onColClick" />
+							<IconList :list="fontIconSheetsFilterList" :empty="resolvedEmptyDescription" :prefix="state.fontIconPrefix" @get-icon="onColClick" />
 						</el-tab-pane>
 						<el-tab-pane lazy label="ele" name="ele">
-							<IconList :list="fontIconSheetsFilterList" :empty="emptyDescription" :prefix="state.fontIconPrefix" @get-icon="onColClick" />
+							<IconList :list="fontIconSheetsFilterList" :empty="resolvedEmptyDescription" :prefix="state.fontIconPrefix" @get-icon="onColClick" />
 						</el-tab-pane>
 						<el-tab-pane lazy label="awe" name="awe">
-							<IconList :list="fontIconSheetsFilterList" :empty="emptyDescription" :prefix="state.fontIconPrefix" @get-icon="onColClick" />
+							<IconList :list="fontIconSheetsFilterList" :empty="resolvedEmptyDescription" :prefix="state.fontIconPrefix" @get-icon="onColClick" />
 						</el-tab-pane>
 					</el-tabs>
 				</div>
@@ -53,7 +53,10 @@
 import { defineAsyncComponent, ref, reactive, onMounted, nextTick, computed, watch } from 'vue';
 import type { TabsPaneContext } from 'element-plus';
 import initIconfont from '/@/utils/getStyleSheets';
+import { useI18n } from 'vue-i18n';
 import '/@/theme/iconSelector.scss';
+
+const { t } = useI18n();
 
 // 定义父组件传过来的值
 const props = defineProps({
@@ -65,7 +68,7 @@ const props = defineProps({
 	// 输入框占位文本
 	placeholder: {
 		type: String,
-		default: () => '请输入内容搜索图标或者选择图标',
+		default: () => 'message.components.iconSelector.searchPlaceholder',
 	},
 	// 输入框占位文本
 	size: {
@@ -75,7 +78,7 @@ const props = defineProps({
 	// 弹窗标题
 	title: {
 		type: String,
-		default: () => '请选择图标',
+		default: () => 'message.components.iconSelector.title',
 	},
 	// 禁用
 	disabled: {
@@ -90,7 +93,7 @@ const props = defineProps({
 	// 自定义空状态描述文字
 	emptyDescription: {
 		type: String,
-		default: () => '无相关图标',
+		default: () => 'message.components.iconSelector.noIcon',
 	},
 	// 双向绑定值，默认为 modelValue，
 	// 参考：https://v3.cn.vuejs.org/guide/migration/v-model.html#%E8%BF%81%E7%A7%BB%E7%AD%96%E7%95%A5
@@ -100,6 +103,10 @@ const props = defineProps({
 
 // 定义子组件向父组件传值/事件
 const emit = defineEmits(['update:modelValue', 'get', 'clear']);
+
+// Computed resolved i18n values for props that may contain message keys
+const resolvedTitle = computed(() => props.title.startsWith('message.') ? t(props.title) : props.title);
+const resolvedEmptyDescription = computed(() => props.emptyDescription.startsWith('message.') ? t(props.emptyDescription) : props.emptyDescription);
 
 // 引入组件
 const IconList = defineAsyncComponent(() => import('/@/components/iconSelector/list.vue'));
@@ -152,7 +159,7 @@ const fontIconTabNameList = () => {
 };
 // 处理 icon 双向绑定数值回显
 const initModeValueEcho = () => {
-	if (props.modelValue === '') return ((<string | undefined>state.fontIconPlaceholder) = props.placeholder);
+	if (props.modelValue === '') return (<string | undefined>state.fontIconPlaceholder) = props.placeholder.startsWith('message.') ? t(props.placeholder) : props.placeholder;
 	(<string | undefined>state.fontIconPlaceholder) = props.modelValue;
 	(<string | undefined>state.fontIconPrefix) = props.modelValue;
 };
@@ -189,7 +196,7 @@ const initFontIconData = async (name: string) => {
 	}
 	// 初始化 input 的 placeholder
 	// 参考（单项数据流）：https://cn.vuejs.org/v2/guide/components-props.html?#%E5%8D%95%E5%90%91%E6%95%B0%E6%8D%AE%E6%B5%81
-	state.fontIconPlaceholder = props.placeholder;
+	state.fontIconPlaceholder = props.placeholder.startsWith('message.') ? t(props.placeholder) : props.placeholder;
 	// 初始化双向绑定回显
 	initModeValueEcho();
 };

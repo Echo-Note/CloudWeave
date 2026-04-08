@@ -84,6 +84,14 @@ class Users(CoreModel, AbstractUser):
     )
     login_error_count = models.IntegerField(default=0, verbose_name="登录错误次数", help_text="登录错误次数")
     pwd_change_count = models.IntegerField(default=0,blank=True, verbose_name="密码修改次数", help_text="密码修改次数")
+    language = models.CharField(
+        max_length=10,
+        default='zh-cn',
+        blank=True,
+        null=True,
+        verbose_name="界面语言",
+        help_text="用户界面语言偏好: zh-cn, en, zh-tw",
+    )
     objects = CustomUserManager()
 
     def set_password(self, raw_password):
@@ -213,7 +221,9 @@ class Menu(CoreModel):
         help_text="上级菜单",
     )
     icon = models.CharField(max_length=64, verbose_name="菜单图标", null=True, blank=True, help_text="菜单图标")
-    name = models.CharField(max_length=64, verbose_name="菜单名称", help_text="菜单名称")
+    name = models.CharField(max_length=64, verbose_name="菜单名称(默认)", help_text="菜单名称(默认语言)")
+    name_en = models.CharField(max_length=64, verbose_name="菜单名称(English)", blank=True, null=True, help_text="菜单名称(English)")
+    name_zh_tw = models.CharField(max_length=64, verbose_name="菜单名称(繁體中文)", blank=True, null=True, help_text="菜单名称(繁體中文)")
     sort = models.IntegerField(default=1, verbose_name="显示排序", null=True, blank=True, help_text="显示排序")
     ISLINK_CHOICES = (
         (0, "否"),
@@ -294,6 +304,8 @@ class MenuButton(CoreModel):
         help_text="关联菜单",
     )
     name = models.CharField(max_length=64, verbose_name="名称", help_text="名称")
+    name_en = models.CharField(max_length=64, verbose_name="名称(English)", help_text="名称(English)", blank=True, null=True)
+    name_zh_tw = models.CharField(max_length=64, verbose_name="名称(繁體中文)", help_text="名称(繁體中文)", blank=True, null=True)
     value = models.CharField(unique=True, max_length=64, verbose_name="权限值", help_text="权限值")
     api = models.CharField(max_length=200, verbose_name="接口地址", help_text="接口地址")
     METHOD_CHOICES = (
@@ -555,6 +567,8 @@ class SystemConfig(CoreModel):
         help_text="父级",
     )
     title = models.CharField(max_length=50, verbose_name="标题", help_text="标题")
+    title_en = models.CharField(max_length=50, verbose_name="标题(English)", blank=True, null=True, help_text="标题(English)")
+    title_zh_tw = models.CharField(max_length=50, verbose_name="标题(繁體中文)", blank=True, null=True, help_text="标题(繁體中文)")
     key = models.CharField(max_length=100, verbose_name="键", help_text="键", db_index=True)
     value = models.JSONField(max_length=100, verbose_name="值", help_text="值", null=True, blank=True)
     sort = models.IntegerField(default=0, verbose_name="排序", help_text="排序", blank=True)

@@ -21,7 +21,7 @@
 				</div>
 				<div class="layout-lock-screen-date-top">
 					<SvgIcon name="ele-Top" />
-					<div class="layout-lock-screen-date-top-text">上滑解锁</div>
+					<div class="layout-lock-screen-date-top-text">{{ $t('message.user.lockScreen.swipeUnlock') }}</div>
 				</div>
 			</div>
 			<transition name="el-zoom-in-center">
@@ -33,7 +33,7 @@
 						<div class="layout-lock-screen-login-box-name">Administrator</div>
 						<div class="layout-lock-screen-login-box-value">
 							<el-input
-								placeholder="请输入密码"
+								:placeholder="$t('message.user.lockScreen.enterPassword')"
 								ref="layoutLockScreenInputRef"
 								v-model="state.lockScreenPassword"
 								@keyup.enter.native.stop="onLockScreenSubmit()"
@@ -61,6 +61,7 @@
 
 <script setup lang="ts" name="layoutLockScreen">
 import { nextTick, onMounted, reactive, ref, onUnmounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { formatDate } from '/@/utils/formatTime';
 import { Local } from '/@/utils/storage';
 import { storeToRefs } from 'pinia';

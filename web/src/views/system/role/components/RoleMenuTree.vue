@@ -27,6 +27,11 @@ import { getRoleMenu, getRoleMenuBtnField, setRoleMenu } from './api';
 import { ElMessage } from 'element-plus';
 import XEUtils from 'xe-utils';
 import { RoleMenuTreeType } from '../types';
+import { useThemeConfig } from '/@/stores/themeConfig';
+import pinia from '/@/stores/index';
+import { storeToRefs } from 'pinia';
+
+const { themeConfig } = storeToRefs(useThemeConfig(pinia));
 
 const RoleDrawer = RoleDrawerStores(); // 角色-抽屉
 const RoleMenuTree = RoleMenuTreeStores(); // 角色-菜单
@@ -63,7 +68,13 @@ const handleMenuClick = async (selectNode: RoleMenuTreeType) => {
 			roleId: RoleDrawer.roleId,
 			menuId: selectNode.id,
 		});
-		RoleMenuBtn.setState(data.menu_btn); // 更新按钮列表
+		// 为按钮数据填充当前语言的名称
+		const lang = themeConfig.value.globalI18n;
+		const btnList = (data.menu_btn || []).map((btn: any) => {
+			const i18nName = lang === 'en' ? btn.name_en : lang === 'zh-tw' ? btn.name_zh_tw : btn.name;
+			return { ...btn, name: i18nName || btn.name };
+		});
+		RoleMenuBtn.setState(btnList); // 更新按钮列表
 		RoleMenuField.setState(data.menu_field); // 更新列字段列表
 	} else {
 		RoleMenuBtn.setState([]); // 更新按钮列表

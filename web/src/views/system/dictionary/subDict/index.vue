@@ -6,21 +6,28 @@
 
 <script lang="ts" setup>
 import { ref, onMounted, defineAsyncComponent } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useFs } from '@fast-crud/fast-crud';
 import { createCrudOptions } from './crud';
 import { useExpose, useCrud } from '@fast-crud/fast-crud';
 import { ElMessageBox } from 'element-plus';
+
+const { t } = useI18n();
 
 //抽屉是否显示
 const drawer = ref(false);
 
 //抽屉关闭确认
 const handleClose = (done: () => void) => {
-	ElMessageBox.confirm('您确定要关闭?', {
-		confirmButtonText: '确定',
-		cancelButtonText: '取消',
-		type: 'warning',
-	})
+	ElMessageBox.confirm(
+		t('message.pages.dept.dialog.closeConfirm'),
+		t('message.pages.config.dialog.addGroup'),
+		{
+			confirmButtonText: t('message.pages.dept.buttons.confirm'),
+			cancelButtonText: t('message.pages.dept.buttons.cancel'),
+			type: 'warning',
+		}
+	)
 		.then(() => {
 			done();
 		})

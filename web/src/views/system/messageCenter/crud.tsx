@@ -4,9 +4,11 @@ import tableSelector from '/@/components/tableSelector/index.vue';
 import { shallowRef, computed } from 'vue';
 import manyToMany from '/@/components/manyToMany/index.vue';
 import { auth } from '/@/utils/authFunction';
+import { useI18n } from 'vue-i18n';
 const { compute } = useCompute();
 
 export default function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
+	const { t } = useI18n();
 	const { tabActivted } = context; //从context中获取tabActivted
 
 	const pageRequest = async (query: PageQuery) => {
@@ -45,6 +47,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 			actionbar: {
 				buttons: {
 					add: {
+						text: t('message.pages.messageCenter.buttons.add'),
 						show: computed(() => {
 							return tabActivted.value !== 'receive' && auth('messageCenter:Create');
 						}),
@@ -59,7 +62,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 						show: false,
 					},
 					view: {
-						text: '查看',
+						text: t('message.pages.messageCenter.buttons.view'),
 						type: 'text',
 						iconRight: 'View',
 						show: auth('messageCenter:Search'),
@@ -72,6 +75,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 						},
 					},
 					remove: {
+						text: t('message.pages.messageCenter.buttons.delete'),
 						iconRight: 'Delete',
 						type: 'text',
 						show: auth('messageCenter:Delete'),
@@ -86,7 +90,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 					},
 				},
 				title: {
-					title: '标题',
+					title: t('message.pages.messageCenter.table.columns.title'),
 					search: {
 						show: true,
 					},
@@ -99,22 +103,22 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 							// 表单校验规则
 							{
 								required: true,
-								message: '必填项',
+								message: t('message.pages.messageCenter.validation.titleRequired'),
 							},
 						],
-						component: { span: 24, placeholder: '请输入标题' },
+						component: { span: 24, placeholder: t('message.pages.messageCenter.form.titlePlaceholder') },
 					},
 				},
 				is_read: {
-					title: '是否已读',
+					title: t('message.pages.messageCenter.table.columns.isRead'),
 					type: 'dict-select',
 					column: {
 						show: IsReadFunc.value,
 					},
 					dict: dict({
 						data: [
-							{ label: '已读', value: true, color: 'success' },
-							{ label: '未读', value: false, color: 'danger' },
+							{ label: t('message.pages.messageCenter.status.yes'), value: true, color: 'success' },
+							{ label: t('message.pages.messageCenter.status.no'), value: false, color: 'danger' },
 						],
 					}),
 					form: {
@@ -122,28 +126,28 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 					},
 				},
 				target_type: {
-					title: '目标类型',
+					title: t('message.pages.messageCenter.table.columns.targetType'),
 					type: ['dict-radio', 'colspan'],
 					column: {
 						minWidth: 120,
 					},
 					dict: dict({
 						data: [
-							{ value: 0, label: '按用户' },
-							{ value: 1, label: '按角色' },
-							{ value: 2, label: '按部门' },
-							{ value: 3, label: '通知公告' },
+							{ value: 0, label: t('message.pages.messageCenter.targetType.byUser') },
+							{ value: 1, label: t('message.pages.messageCenter.targetType.byRole') },
+							{ value: 2, label: t('message.pages.messageCenter.targetType.byDept') },
+							{ value: 3, label: t('message.pages.messageCenter.targetType.notice') },
 						],
 					}),
 					form: {
 						component: {
 							optionName: 'el-radio-button',
 						},
-						rules: [{ required: true, message: '必选项', trigger: ['blur', 'change'] }],
+						rules: [{ required: true, message: t('message.pages.messageCenter.validation.targetTypeRequired'), trigger: ['blur', 'change'] }],
 					},
 				},
 				target_user: {
-					title: '目标用户',
+					title: t('message.pages.messageCenter.table.columns.targetUser'),
 					search: {
 						disabled: true,
 					},
@@ -151,7 +155,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 						component: {
 							name: shallowRef(tableSelector),
 							vModel: 'modelValue',
-							displayLabel: compute(({ row }) => {
+							displayLabel: compute(({ row }: any) => {
 								if (row) {
 									return row.user_info;
 								}
@@ -165,23 +169,23 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 								columns: [
 									{
 										prop: 'name',
-										label: '用户名称',
+										label: t('message.pages.messageCenter.table.columns.targetUser'),
 										width: 120,
 									},
 									{
 										prop: 'phone',
-										label: '用户电话',
+										label: t('message.pages.messageCenter.form.phone'),
 										width: 120,
 									},
 								],
 							},
 						},
-						show: compute(({ form }) => {
+						show: compute(({ form }: any) => {
 							return form.target_type === 0;
 						}),
 						rules: [
 							// 表单校验规则
-							{ required: true, message: '必填项' },
+							{ required: true, message: t('message.pages.messageCenter.validation.required') },
 						],
 					},
 					column: {
@@ -189,7 +193,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 						component: {
 							name: shallowRef(manyToMany),
 							vModel: 'modelValue',
-							bindValue: compute(({ row }) => {
+							bindValue: compute(({ row }: any) => {
 								return row.user_info;
 							}),
 							displayLabel: 'name',
@@ -197,7 +201,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 					},
 				},
 				target_role: {
-					title: '目标角色',
+					title: t('message.pages.messageCenter.table.columns.targetRole'),
 					search: {
 						disabled: true,
 					},
@@ -206,7 +210,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 						component: {
 							name: shallowRef(tableSelector),
 							vModel: 'modelValue',
-							displayLabel: compute(({ row }) => {
+							displayLabel: compute(({ row }: any) => {
 								if (row) {
 									return row.role_info;
 								}
@@ -220,23 +224,23 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 								columns: [
 									{
 										prop: 'name',
-										label: '角色名称',
+										label: t('message.pages.messageCenter.form.roleName'),
 									},
 									{
 										prop: 'key',
-										label: '权限标识',
+										label: t('message.pages.messageCenter.form.roleKey'),
 									},
 								],
 							},
 						},
-						show: compute(({ form }) => {
+						show: compute(({ form }: any) => {
 							return form.target_type === 1;
 						}),
 						rules: [
 							// 表单校验规则
 							{
 								required: true,
-								message: '必填项',
+								message: t('message.pages.messageCenter.validation.required'),
 							},
 						],
 					},
@@ -245,7 +249,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 						component: {
 							name: shallowRef(manyToMany),
 							vModel: 'modelValue',
-							bindValue: compute(({ row }) => {
+							bindValue: compute(({ row }: any) => {
 								return row.role_info;
 							}),
 							displayLabel: 'name',
@@ -253,7 +257,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 					},
 				},
 				target_dept: {
-					title: '目标部门',
+					title: t('message.pages.messageCenter.table.columns.targetDept'),
 					search: {
 						disabled: true,
 					},
@@ -263,7 +267,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 						component: {
 							name: shallowRef(tableSelector),
 							vModel: 'modelValue',
-							displayLabel: compute(({ form }) => {
+							displayLabel: compute(({ form }: any) => {
 								return form.dept_info;
 							}),
 							tableConfig: {
@@ -275,28 +279,28 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 								columns: [
 									{
 										prop: 'name',
-										label: '部门名称',
+										label: t('message.pages.messageCenter.form.deptName'),
 										width: 150,
 									},
 									{
 										prop: 'status_label',
-										label: '状态',
+										label: t('message.pages.messageCenter.form.status'),
 									},
 									{
 										prop: 'parent_name',
-										label: '父级部门',
+										label: t('message.pages.messageCenter.form.parentDept'),
 									},
 								],
 							},
 						},
-						show: compute(({ form }) => {
+						show: compute(({ form }: any) => {
 							return form.target_type === 2;
 						}),
 						rules: [
 							// 表单校验规则
 							{
 								required: true,
-								message: '必填项',
+								message: t('message.pages.messageCenter.validation.required'),
 							},
 						],
 					},
@@ -305,7 +309,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 						component: {
 							name: shallowRef(manyToMany),
 							vModel: 'modelValue',
-							bindValue: compute(({ row }) => {
+							bindValue: compute(({ row }: any) => {
 								return row.dept_info;
 							}),
 							displayLabel: 'name',
@@ -313,7 +317,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 					},
 				},
 				content: {
-					title: '内容',
+					title: t('message.pages.messageCenter.table.columns.content'),
 					column: {
 						width: 300,
 						show: false,
@@ -324,7 +328,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 							// 表单校验规则
 							{
 								required: true,
-								message: '必填项',
+								message: t('message.pages.messageCenter.validation.required'),
 							},
 						],
 						component: {

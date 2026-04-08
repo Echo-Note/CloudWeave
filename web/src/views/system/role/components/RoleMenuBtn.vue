@@ -2,14 +2,14 @@
 	<div class="pccm-item" v-if="RoleMenuBtn.$state.length > 0">
 		<div class="menu-form-alert">
 			<div style="display:flex;  align-items: center; white-space: nowrap; margin-bottom: 10px;">
-				<span>默认接口权限:</span>
-				<el-select 
-					v-model="default_selectBtn.data_range" 
-					@change="defaulthandlePermissionRangeChange" 
-					placeholder="请选择"
+				<span>{{ $t('message.pages.role.dialog.defaultInterfacePermission') }}</span>
+				<el-select
+					v-model="default_selectBtn.data_range"
+					@change="defaulthandlePermissionRangeChange"
+					:placeholder="$t('message.pages.role.dialog.selectDataPermission')"
 					style="margin-left: 5px; width: 250px; min-width: 250px;"
 				>
-					<el-option v-for="item in dataPermissionRange" :key="item.value" :label="item.label" :value="item.value" />
+					<el-option v-for="item in dataPermissionRange" :key="item.value" :label="$t('message.pages.role.dataPermission.' + item.key)" :value="item.value" />
 				</el-select>
 				<el-tree-select
 					v-show="default_selectBtn.data_range === 4"
@@ -17,8 +17,8 @@
 					v-model="default_selectBtn.dept"
 					:props="defaultTreeProps"
 					:data="deptData"
-					@change="customhandlePermissionRangeChange(default_selectBtn.dept)" 
-					placeholder="请选择自定义部门"
+					@change="customhandlePermissionRangeChange(default_selectBtn.dept)"
+					:placeholder="$t('message.pages.role.dialog.customDeptPlaceholder')"
 					multiple
 					check-strictly
 					:render-after-expand="false"
@@ -28,7 +28,7 @@
 				/>
 
 			</div>
-			<span>配置操作功能接口权限，配置数据权限点击小齿轮</span>
+			<span>{{ $t('message.pages.role.dialog.configureOperationPermission') }}</span>
 		</div>
 
 		<el-checkbox v-for="btn in RoleMenuBtn.$state" :key="btn.id" v-model="btn.isCheck" @change="handleCheckChange(btn)">
@@ -42,10 +42,10 @@
 			</div>
 		</el-checkbox>
 	</div>
-	<el-dialog v-model="dialogVisible" title="数据权限配置" width="400px" :close-on-click-modal="false" :before-close="handleDialogClose">
+	<el-dialog v-model="dialogVisible" :title="$t('message.pages.role.dialog.dataPermissionConfig')" width="400px" :close-on-click-modal="false" :before-close="handleDialogClose">
 		<div class="pc-dialog">
-			<el-select v-model="selectBtn.data_range" @change="handlePermissionRangeChange" placeholder="请选择">
-				<el-option v-for="item in dataPermissionRange" :key="item.value" :label="item.label" :value="item.value" />
+			<el-select v-model="selectBtn.data_range" @change="handlePermissionRangeChange" :placeholder="$t('message.pages.role.dialog.selectDataPermission')">
+				<el-option v-for="item in dataPermissionRange" :key="item.value" :label="$t('message.pages.role.dataPermission.' + item.key)" :value="item.value" />
 			</el-select>
 			<el-tree-select
 				v-show="selectBtn.data_range === 4"
@@ -62,8 +62,8 @@
 		</div>
 		<template #footer>
 			<div>
-				<el-button type="primary" @click="handleDialogConfirm"> 确定</el-button>
-				<el-button @click="handleDialogClose"> 取消</el-button>
+				<el-button type="primary" @click="handleDialogConfirm"> {{ $t('message.pages.role.buttons.confirm') }}</el-button>
+				<el-button @click="handleDialogClose"> {{ $t('message.pages.role.buttons.cancel') }}</el-button>
 			</div>
 		</template>
 	</el-dialog>
@@ -79,6 +79,7 @@ import { getRoleToDeptAll, setRoleMenuBtn, setRoleMenuBtnDataRange } from './api
 import XEUtils from 'xe-utils';
 import { ElMessage } from 'element-plus';
 import { Local } from '/@/utils/storage';
+import { i18n } from '/@/i18n/index';
 
 const RoleDrawer = RoleDrawerStores(); // 角色-菜单
 const RoleMenuTree = RoleMenuTreeStores(); // 角色-菜单
@@ -110,15 +111,16 @@ const selectBtn = ref<RoleMenuBtnType>({
 	data_range: 0,
 	dept: [],
 });
+const t = (key: string) => i18n.global.t(key);
 /**
  * 数据权限范围
  */
 const dataPermissionRange = ref([
-	{ label: '仅本人数据权限', value: 0 },
-	{ label: '本部门及以下数据权限', value: 1 },
-	{ label: '本部门数据权限', value: 2 },
-	{ label: '全部数据权限', value: 3 },
-	{ label: '自定数据权限', value: 4 },
+	{ key: 'ownDataOnly', label: t('message.pages.role.dataPermission.ownDataOnly'), value: 0 },
+	{ key: 'deptAndBelow', label: t('message.pages.role.dataPermission.deptAndBelow'), value: 1 },
+	{ key: 'deptOnly', label: t('message.pages.role.dataPermission.deptOnly'), value: 2 },
+	{ key: 'allData', label: t('message.pages.role.dataPermission.allData'), value: 3 },
+	{ key: 'customData', label: t('message.pages.role.dataPermission.customData'), value: 4 },
 ]);
 /**
  * 自定义数据权限的部门树配置
@@ -167,19 +169,19 @@ const formatDataRange = computed(() => {
 	return function (datarange: number, dept: Array<number>) {
 		const datarangeitem = XEUtils.find(dataPermissionRange.value, (item: any) => {
 			if (item.value === datarange) {
-				return item.label;
+				return item;
 			}
 		});
 		// 数据权限与默认数据权限一致
 		if (datarange === default_selectBtn.value.data_range) {
 			// 判断选择的部门是否一致
 			if (datarange !== 4 || JSON.stringify(dept) === JSON.stringify(default_selectBtn.value.dept)) {
-				
-				return "默认接口权限"
+
+				return i18n.global.t('message.pages.role.dialog.defaultInterfacePermission')
 			}
 		}
-		// datarange === 4 选择的部门不一致返回datarangeitem.label
-		return datarangeitem.label;
+		// datarange === 4 选择的部门不一致返回翻译后的label
+		return datarangeitem ? i18n.global.t('message.pages.role.dataPermission.' + datarangeitem.key) : '';
 	};
 });
 /**

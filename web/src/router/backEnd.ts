@@ -9,8 +9,10 @@ import { dynamicRoutes, notFoundAndNoPower } from '/@/router/route';
 import { formatTwoStageRoutes, formatFlatteningRoutes, router } from '/@/router/index';
 import { useRoutesList } from '/@/stores/routesList';
 import { useTagsViewRoutes } from '/@/stores/tagsViewRoutes';
-import { useMenuApi } from '/@/api/menu/index';
+import {useThemeConfig} from "/@/stores/themeConfig";
+import {useMenuApi} from "/@/api/menu/index";
 import { handleMenu } from '../utils/menu';
+import mittBus from '/@/utils/mitt';
 import { BtnPermissionStore } from '/@/plugin/permission/store.permission';
 import {SystemConfigStore} from "/@/stores/systemConfig";
 import {useDeptInfoStore} from "/@/stores/modules/dept";
@@ -79,6 +81,20 @@ export async function setRouters(){
 }
 
 /**
+ * 语言切换时刷新路由菜单（重新获取菜单数据，更新 dynamicRoutes）
+ */
+export async function refreshRoutesForI18n() {
+	const { themeConfig } = storeToRefs(useThemeConfig(pinia));
+	const res = await menuApi.getSystemMenu({ language: themeConfig.value.globalI18n });
+	const { frameIn, frameOut } = handleMenu(res.data);
+	dynamicRoutes[0].children = await backEndComponent(frameIn);
+	const storesRoutesList = useRoutesList(pinia);
+	storesRoutesList.setRoutesList([...(dynamicRoutes[0].children || []), ...frameOut]);
+	// 通知侧边栏刷新菜单
+	mittBus.emit('getBreadcrumbIndexSetFilterRoutes');
+}
+
+/**
  * 设置路由到 vuex routesList 中（已处理成多级嵌套路由）及缓存多级嵌套数组处理后的一维数组
  * @description 用于左侧菜单、横向菜单的显示
  * @description 用于 tagsView、菜单搜索中：未过滤隐藏的(isHide)
@@ -137,7 +153,8 @@ export function getBackEndControlRoutes() {
 	useDeptInfoStore().requestDeptInfo()
 	// 获取字典信息
 	DictionaryStore().getSystemDictionarys()
-	return menuApi.getSystemMenu();
+	const { themeConfig } = storeToRefs(useThemeConfig(pinia))
+	return menuApi.getSystemMenu({ language: themeConfig.value.globalI18n });
 }
 
 /**

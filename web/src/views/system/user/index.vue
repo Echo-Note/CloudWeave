@@ -4,14 +4,14 @@
       <el-col xs="24" :sm="8" :md="6" :lg="4" :xl="4" class="p-1">
         <el-card :body-style="{ height: '100%' }">
           <p class="font-mono font-black text-center text-xl pb-5">
-            部门列表
+            {{ $t('message.pages.user.tree.deptList') }}
             <el-tooltip effect="dark" :content="content" placement="right">
               <el-icon>
                 <QuestionFilled/>
               </el-icon>
             </el-tooltip>
           </p>
-          <el-input v-model="filterText" :placeholder="placeholder"/>
+          <el-input v-model="filterText" :placeholder="$t('message.pages.user.tree.deptPlaceholder')"/>
           <el-tree ref="treeRef" class="font-mono font-bold leading-6 text-7xl" :data="data" :props="treeProps"
                    :filter-node-method="filterNode" icon="ArrowRightBold" :indent="38" highlight-current @node-click="onTreeNodeClick">
             <template #default="{ node, data }">
@@ -31,7 +31,7 @@
         <el-card :body-style="{ height: '100%' }">
           <fs-crud ref="crudRef" v-bind="crudBinding">
             <template #actionbar-right>
-              <importExcel api="api/system/user/" v-auth="'user:Import'">导入</importExcel>
+              <importExcel api="api/system/user/" v-auth="'user:Import'">{{ $t('message.pages.user.buttons.import') }}</importExcel>
             </template>
             <template #cell_avatar="scope">
               <div v-if="scope.row.avatar" style="display: flex; justify-content: center; align-items: center;">
@@ -60,6 +60,11 @@ import XEUtils from 'xe-utils';
 import {getElementLabelLine} from 'element-tree-line';
 import importExcel from '/@/components/importExcel/index.vue'
 import {getBaseURL} from '/@/utils/baseUrl';
+import { i18n } from '/@/i18n/index';
+import { useThemeConfig } from '/@/stores/themeConfig';
+import { storeToRefs } from 'pinia';
+
+const { themeConfig } = storeToRefs(useThemeConfig());
 
 
 const ElementTreeLine = getElementLabelLine(h);
@@ -78,7 +83,6 @@ interface APIResponseData {
 }
 
 // 引入组件
-const placeholder = ref('请输入部门名称');
 const filterText = ref('');
 const treeRef = ref<InstanceType<typeof ElTree>>();
 
@@ -99,9 +103,7 @@ const filterNode = (value: string, data: Tree) => {
 
 let data = ref([]);
 
-const content = `
-1.部门信息;
-`;
+const content = i18n.global.t('message.pages.user.tree.deptInfo');
 
 const getData = () => {
   api.GetDept({}).then((ret: APIResponseData) => {
@@ -136,6 +138,14 @@ const {crudExpose} = useExpose({crudRef, crudBinding});
 const {crudOptions} = createCrudOptions({crudExpose});
 // 初始化crud配置
 const {resetCrudOptions} = useCrud({crudExpose, crudOptions});
+
+// 语言切换时重新构建 crud options
+watch(
+	() => themeConfig.value.globalI18n,
+	() => {
+		resetCrudOptions();
+	}
+);
 
 // 页面打开后获取列表数据
 onMounted(() => {

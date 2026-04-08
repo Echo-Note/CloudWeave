@@ -64,7 +64,7 @@ class MenuButtonInitSerializer(CustomModelSerializer):
 
     class Meta:
         model = MenuButton
-        fields = ['id', 'name', 'value', 'api', 'method', 'menu']
+        fields = ['id', 'name', 'name_en', 'name_zh_tw', 'value', 'api', 'method', 'menu']
         read_only_fields = ["id"]
 
 
@@ -84,6 +84,8 @@ class MenuInitSerializer(CustomModelSerializer):
     递归深度获取数信息(用于生成初始化json文件)
     """
     name = serializers.CharField(required=False)
+    name_en = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    name_zh_tw = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     children = serializers.SerializerMethodField()
     menu_button = serializers.SerializerMethodField()
     menu_field = serializers.SerializerMethodField()
@@ -100,7 +102,7 @@ class MenuInitSerializer(CustomModelSerializer):
         data = []
         instance = obj.menuPermission.order_by('method')
         if instance:
-            data = list(instance.values('name', 'value', 'api', 'method'))
+            data = list(instance.values('name', 'name_en', 'name_zh_tw', 'value', 'api', 'method'))
         return data
 
     def get_menu_field(self, obj: Menu):
@@ -160,7 +162,7 @@ class MenuInitSerializer(CustomModelSerializer):
 
     class Meta:
         model = Menu
-        fields = ['name', 'icon', 'sort', 'is_link', 'is_catalog', 'web_path', 'component', 'component_name', 'status',
+        fields = ['name', 'name_en', 'name_zh_tw', 'icon', 'sort', 'is_link', 'is_catalog', 'web_path', 'component', 'component_name', 'status',
                   'cache', 'visible', 'parent', 'children', 'menu_button', 'menu_field', 'creator', 'dept_belong_id']
         extra_kwargs = {
             'creator': {'write_only': True},

@@ -9,12 +9,24 @@
 </template>
 
 <script lang="ts" setup name="loginLog">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useFs } from '@fast-crud/fast-crud';
 import { createCrudOptions } from './crud';
 import * as echarts from "echarts";
+import { useThemeConfig } from '/@/stores/themeConfig';
+import { storeToRefs } from 'pinia';
+
+const { themeConfig } = storeToRefs(useThemeConfig());
 const isEcharts = ref(true)
-const { crudBinding, crudRef, crudExpose } = useFs({ createCrudOptions,isEcharts,initChart });
+const { crudBinding, crudRef, crudExpose, resetCrudOptions } = useFs({ createCrudOptions,isEcharts,initChart });
+
+// 语言切换时重新构建 crud options
+watch(
+	() => themeConfig.value.globalI18n,
+	() => {
+		resetCrudOptions();
+	}
+);
 const myEcharts = echarts
 
 function initChart() {
