@@ -4,6 +4,7 @@ import { dictionary } from '/@/utils/dictionary';
 import { successMessage } from '../../../utils/message';
 import { auth } from '/@/utils/authFunction';
 import { nextTick, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 /**
  *
@@ -12,6 +13,7 @@ import { nextTick, computed } from 'vue';
  * @returns
  */
 export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
+	const { t } = useI18n();
 	const pageRequest = async (query: any) => {
 		return await api.GetList(query);
 	};
@@ -40,6 +42,7 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 			actionbar: {
 				buttons: {
 					add: {
+						text: t('message.pages.role.buttons.add'),
 						show: auth('role:Create'),
 					},
 				},
@@ -55,16 +58,19 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 				}),
 				buttons: {
 					view: {
+						text: t('message.pages.role.buttons.view'),
 						iconRight: 'View',
 						type: 'text',
 						show: true,
 					},
 					edit: {
+						text: t('message.pages.role.buttons.edit'),
 						iconRight: 'Edit',
 						type: 'text',
 						show: auth('role:Update'),
 					},
 					remove: {
+						text: t('message.pages.role.buttons.delete'),
 						iconRight: 'Delete',
 						type: 'text',
 						show: auth('role:Delete'),
@@ -72,7 +78,7 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 					assignment: {
 						iconRight: 'setting',
 						type: 'text',
-						text: '授权用户',
+						text: t('message.pages.role.dialog.assignUsers'),
 						show: auth('role:AllAuthorizedUser'),
 						click: (ctx: any) => {
 							const { row } = ctx;
@@ -86,7 +92,7 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 					permission: {
 						iconRight:'setting',
 						type: 'text',
-						text: '权限配置',
+						text: t('message.pages.role.dialog.assignPermissions'),
 						show: auth('role:SetMenu'),
 						click: (clickContext: any): void => {
 							const { row } = clickContext;
@@ -107,7 +113,7 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 			},
 			columns: {
 				_index: {
-					title: '序号',
+					title: t('message.pages.role.table.columns.index'),
 					form: { show: false },
 					column: {
 						type: 'index',
@@ -123,21 +129,21 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 					form: { show: false },
 				},
 				name: {
-					title: '角色名称',
+					title: t('message.pages.role.table.columns.name'),
 					search: { show: true },
 					column: {
 						minWidth: 120,
 						sortable: 'custom',
 					},
 					form: {
-						rules: [{ required: true, message: '角色名称必填' }],
+						rules: [{ required: true, message: t('message.pages.role.validation.nameRequired') }],
 						component: {
-							placeholder: '请输入角色名称',
+							placeholder: t('message.pages.role.form.namePlaceholder'),
 						},
 					},
 				},
 				key: {
-					title: '权限标识',
+					title: t('message.pages.role.table.columns.key'),
 					search: { show: false },
 					column: {
 						minWidth: 120,
@@ -145,9 +151,9 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 						columnSetDisabled: true,
 					},
 					form: {
-						rules: [{ required: true, message: '权限标识必填' }],
+						rules: [{ required: true, message: t('message.pages.role.validation.keyRequired') }],
 						component: {
-							placeholder: '输入权限标识',
+							placeholder: t('message.pages.role.form.keyPlaceholder'),
 						},
 					},
 					valueBuilder(context) {
@@ -156,7 +162,7 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 					},
 				},
 				sort: {
-					title: '排序',
+					title: t('message.pages.role.table.columns.sort'),
 					search: { show: false },
 					type: 'number',
 					column: {
@@ -164,12 +170,12 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 						sortable: 'custom',
 					},
 					form: {
-						rules: [{ required: true, message: '排序必填' }],
+						rules: [{ required: true, message: t('message.pages.role.validation.sortRequired') }],
 						value: 1,
 					},
 				},
 				status: {
-					title: '状态',
+					title: t('message.pages.role.table.columns.status'),
 					search: { show: true },
 					type: 'dict-radio',
 					column: {

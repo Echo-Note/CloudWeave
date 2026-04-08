@@ -1,96 +1,104 @@
 <template>
 	<div class="menu-form-com">
 		<div class="menu-form-alert">
-			1.红色星号表示必填;<br />
-			2.添加菜单，如果是目录，组件地址为空即可;<br />
-			3.添加根节点菜单，父级菜单为空即可;
+			{{ $t('message.pages.menu.tree.menuAlert') }}
 		</div>
 		<el-form ref="formRef" :rules="rules" :model="menuFormData" label-width="80px" label-position="right">
-			<el-form-item label="菜单名称" prop="name">
-				<el-input v-model="menuFormData.name" placeholder="请输入菜单名称" />
+			<el-form-item :label="$t('message.pages.menu.form.menuName')" prop="name">
+				<el-tabs v-model="activeMenuNameTab" class="menu-name-tabs">
+					<el-tab-pane :label="$t('message.pages.menu.form.menuNameZhCn')" name="zhCn">
+						<el-input v-model="menuFormData.name" :placeholder="$t('message.pages.menu.form.menuNameZhCnPlaceholder')" clearable />
+					</el-tab-pane>
+					<el-tab-pane :label="$t('message.pages.menu.form.menuNameEn')" name="en">
+						<el-input v-model="menuFormData.name_en" :placeholder="$t('message.pages.menu.form.menuNameEnPlaceholder')" clearable />
+					</el-tab-pane>
+					<el-tab-pane :label="$t('message.pages.menu.form.menuNameZhTw')" name="zhTw">
+						<el-input v-model="menuFormData.name_zh_tw" :placeholder="$t('message.pages.menu.form.menuNameZhTwPlaceholder')" clearable />
+					</el-tab-pane>
+				</el-tabs>
 			</el-form-item>
-			<el-form-item label="父级菜单" prop="parent">
+			<el-form-item :label="$t('message.pages.menu.form.parentMenu')" prop="parent">
 				<el-tree-select v-model="menuFormData.parent" :props="defaultTreeProps" :data="deptDefaultList"
 					:cache-data="props.cacheData" lazy check-strictly clearable :load="handleTreeLoad"
-					placeholder="请选择父级菜单" style="width: 100%" />
+					:placeholder="$t('message.pages.menu.form.parentMenuPlaceholder')" style="width: 100%" />
 			</el-form-item>
 
-			<el-form-item label="路由地址" prop="web_path">
-				<el-input v-model="menuFormData.web_path" placeholder="请输入路由地址，请以/开头" />
+			<el-form-item :label="$t('message.pages.menu.form.path')" prop="web_path">
+				<el-input v-model="menuFormData.web_path" :placeholder="$t('message.pages.menu.form.pathPlaceholder')" />
 			</el-form-item>
 
-			<el-form-item label="图标" prop="icon">
+			<el-form-item :label="$t('message.pages.menu.form.icon')" prop="icon">
 				<IconSelector clearable v-model="menuFormData.icon" />
 			</el-form-item>
 
 			<el-row>
 				<el-col :span="12">
-					<el-form-item required label="状态">
-						<el-switch v-model="menuFormData.status" width="60" inline-prompt active-text="启用"
-							inactive-text="禁用" />
+					<el-form-item required :label="$t('message.pages.menu.form.status')">
+						<el-switch v-model="menuFormData.status" width="60" inline-prompt :active-text="$t('message.pages.menu.form.enabled')"
+							:inactive-text="$t('message.pages.menu.form.disabled')" />
 					</el-form-item>
 				</el-col>
 				<el-col :span="12">
-					<el-form-item v-if="menuFormData.status" required label="侧边显示">
-						<el-switch v-model="menuFormData.visible" width="60" inline-prompt active-text="显示"
-							inactive-text="隐藏" />
+					<el-form-item v-if="menuFormData.status" required :label="$t('message.pages.menu.form.visible')">
+						<el-switch v-model="menuFormData.visible" width="60" inline-prompt :active-text="$t('message.pages.menu.form.show')"
+							:inactive-text="$t('message.pages.menu.form.hide')" />
 					</el-form-item>
 				</el-col>
 			</el-row>
 
 			<el-row>
 				<el-col :span="12">
-					<el-form-item required label="是否目录">
-						<el-switch v-model="menuFormData.is_catalog" width="60" inline-prompt active-text="是"
-							inactive-text="否" />
+					<el-form-item required :label="$t('message.pages.menu.form.isCatalog')">
+						<el-switch v-model="menuFormData.is_catalog" width="60" inline-prompt :active-text="$t('message.pages.menu.form.yes')"
+							:inactive-text="$t('message.pages.menu.form.no')" />
 					</el-form-item>
 				</el-col>
 				<el-col :span="12">
-					<el-form-item v-if="!menuFormData.is_catalog" required label="外链接">
-						<el-switch v-model="menuFormData.is_link" width="60" inline-prompt active-text="是"
-							inactive-text="否" />
+					<el-form-item v-if="!menuFormData.is_catalog" required :label="$t('message.pages.menu.form.isLink')">
+						<el-switch v-model="menuFormData.is_link" width="60" inline-prompt :active-text="$t('message.pages.menu.form.yes')"
+							:inactive-text="$t('message.pages.menu.form.no')" />
 					</el-form-item>
 				</el-col>
 				<el-col :span="12">
-					<el-form-item required v-if="!menuFormData.is_catalog" label="是否固定">
-						<el-switch v-model="menuFormData.is_affix" width="60" inline-prompt active-text="是"
-							inactive-text="否" />
+					<el-form-item required v-if="!menuFormData.is_catalog" :label="$t('message.pages.menu.form.isAffix')">
+						<el-switch v-model="menuFormData.is_affix" width="60" inline-prompt :active-text="$t('message.pages.menu.form.yes')"
+							:inactive-text="$t('message.pages.menu.form.no')" />
 					</el-form-item>
 				</el-col>
 				<el-col :span="12">
-					<el-form-item v-if="!menuFormData.is_catalog && menuFormData.is_link" required label="是否内嵌">
-						<el-switch v-model="menuFormData.is_iframe" width="60" inline-prompt active-text="是"
-							inactive-text="否" />
+					<el-form-item v-if="!menuFormData.is_catalog && menuFormData.is_link" required :label="$t('message.pages.menu.form.isIframe')">
+						<el-switch v-model="menuFormData.is_iframe" width="60" inline-prompt :active-text="$t('message.pages.menu.form.yes')"
+							:inactive-text="$t('message.pages.menu.form.no')" />
 					</el-form-item>
 				</el-col>
 			</el-row>
 
-			<el-form-item label="备注">
+			<el-form-item :label="$t('message.pages.menu.form.remark')">
 				<el-input v-model="menuFormData.description" maxlength="200" show-word-limit type="textarea"
-					placeholder="请输入备注" />
+					:placeholder="$t('message.pages.menu.form.remarkPlaceholder')" />
 			</el-form-item>
 
 			<el-divider></el-divider>
 
 			<div style="min-height: 184px">
-				<el-form-item v-if="!menuFormData.is_catalog && !menuFormData.is_link" label="组件地址" prop="component">
+				<el-form-item v-if="!menuFormData.is_catalog && !menuFormData.is_link" :label="$t('message.pages.menu.form.component')" prop="component">
 					<el-autocomplete class="w-full" v-model="menuFormData.component" :fetch-suggestions="querySearch"
-						:trigger-on-focus="false" clearable :debounce="100" placeholder="输入组件地址" />
+						:trigger-on-focus="false" clearable :debounce="100" :placeholder="$t('message.pages.menu.form.componentPlaceholder')" />
 				</el-form-item>
 
-				<el-form-item v-if="!menuFormData.is_catalog && !menuFormData.is_link" label="组件名称"
+				<el-form-item v-if="!menuFormData.is_catalog && !menuFormData.is_link" :label="$t('message.pages.menu.form.componentName')"
 					prop="component_name">
-					<el-input v-model="menuFormData.component_name" placeholder="请输入组件名称" />
+					<el-input v-model="menuFormData.component_name" :placeholder="$t('message.pages.menu.form.componentNamePlaceholder')" />
 				</el-form-item>
 
-				<el-form-item v-if="!menuFormData.is_catalog && menuFormData.is_link" label="外链接" prop="link_url">
-					<el-input v-model="menuFormData.link_url" placeholder="请输入外链接地址" />
-          <el-alert :title="`输入{{token}}可自动替换系统 token `" type="info" />
+				<el-form-item v-if="!menuFormData.is_catalog && menuFormData.is_link" :label="$t('message.pages.menu.form.linkUrl')" prop="link_url">
+					<el-input v-model="menuFormData.link_url" :placeholder="$t('message.pages.menu.form.linkUrlPlaceholder')" />
+          <el-alert :title="$t('message.pages.menu.form.tokenTip')" type="info" />
 				</el-form-item>
 
-				<el-form-item v-if="!menuFormData.is_catalog" label="缓存">
-					<el-switch v-model="menuFormData.cache" width="60" inline-prompt active-text="启用"
-						inactive-text="禁用" />
+				<el-form-item v-if="!menuFormData.is_catalog" :label="$t('message.pages.menu.form.cache')">
+					<el-switch v-model="menuFormData.cache" width="60" inline-prompt :active-text="$t('message.pages.menu.form.enabled')"
+						:inactive-text="$t('message.pages.menu.form.disabled')" />
 				</el-form-item>
 			</div>
 
@@ -98,8 +106,8 @@
 		</el-form>
 
 		<div class="menu-form-btns">
-			<el-button @click="handleSubmit" type="primary" :loading="menuBtnLoading">保存</el-button>
-			<el-button @click="handleCancel">取消</el-button>
+			<el-button @click="handleSubmit" type="primary" :loading="menuBtnLoading">{{ $t('message.pages.menu.buttons.save') }}</el-button>
+			<el-button @click="handleCancel">{{ $t('message.pages.menu.buttons.cancel') }}</el-button>
 		</div>
 	</div>
 </template>
@@ -108,11 +116,15 @@
 import XEUtils from 'xe-utils';
 import { ref, onMounted, reactive } from 'vue';
 import { ElForm, FormRules } from 'element-plus';
+import { useI18n } from 'vue-i18n';
 import IconSelector from '/@/components/iconSelector/index.vue';
 import { lazyLoadMenu, AddObj, UpdateObj } from '../../api';
 import { successNotification } from '/@/utils/message';
 import { MenuFormDataType, MenuTreeItemType, ComponentFileItem, APIResponseData } from '../../types';
 import type Node from 'element-plus/es/components/tree/src/model/node';
+
+const { t } = useI18n();
+const activeMenuNameTab = ref('zhCn');
 
 interface IProps {
 	initFormData: Partial<MenuTreeItemType> | null;
@@ -138,7 +150,7 @@ const validateWebPath = (rule: any, value: string, callback: Function) => {
 	if (reg) {
 		callback();
 	} else {
-		callback(new Error('请输入正确的地址'));
+		callback(new Error(t('message.pages.menu.validation.pathRequired')));
 	}
 };
 
@@ -149,7 +161,7 @@ const validateLinkUrl = (rule: any, value: string, callback: Function) => {
 	if (reg) {
 		callback();
 	} else {
-		callback(new Error('请输入正确的地址'));
+		callback(new Error(t('message.pages.menu.validation.linkUrlRequired')));
 	}
 };
 
@@ -163,17 +175,19 @@ const emit = defineEmits(['drawerClose']);
 const formRef = ref<InstanceType<typeof ElForm>>();
 
 const rules = reactive<FormRules>({
-	web_path: [{ required: true, message: '请输入正确的地址', validator: validateWebPath, trigger: 'blur' }],
-	name: [{ required: true, message: '菜单名称必填', trigger: 'blur' }],
-	component: [{ required: true, message: '请输入组件地址', trigger: 'blur' }],
-	component_name: [{ required: true, message: '请输入组件名称', trigger: 'blur' }],
-	link_url: [{ required: true, message: '请输入外链接地址', validator: validateLinkUrl, trigger: 'blur' }],
+	web_path: [{ required: true, message: t('message.pages.menu.validation.pathRequired'), validator: validateWebPath, trigger: 'blur' }],
+	name: [{ required: true, message: t('message.pages.menu.form.menuName') + t('message.pages.menu.validation.fieldNameRequired'), trigger: 'blur' }],
+	component: [{ required: true, message: t('message.pages.menu.validation.componentRequired'), trigger: 'blur' }],
+	component_name: [{ required: true, message: t('message.pages.menu.validation.componentNameRequired'), trigger: 'blur' }],
+	link_url: [{ required: true, message: t('message.pages.menu.validation.linkUrlRequired'), validator: validateLinkUrl, trigger: 'blur' }],
 });
 
 let deptDefaultList = ref<MenuTreeItemType[]>([]);
 let menuFormData = reactive<MenuFormDataType>({
 	parent: '',
 	name: '',
+	name_en: '',
+	name_zh_tw: '',
 	component: '',
 	web_path: '',
 	icon: '',
@@ -194,6 +208,8 @@ const setMenuFormData = () => {
 	if (props.initFormData?.id) {
 		menuFormData.id = props.initFormData?.id || '';
 		menuFormData.name = props.initFormData?.name || '';
+		menuFormData.name_en = props.initFormData?.name_en || '';
+		menuFormData.name_zh_tw = props.initFormData?.name_zh_tw || '';
 		menuFormData.parent = props.initFormData?.parent || '';
 		menuFormData.component = props.initFormData?.component || '';
 		menuFormData.web_path = props.initFormData?.web_path || '';
@@ -272,6 +288,7 @@ const handleSubmit = () => {
 };
 
 const handleCancel = (type: string = '') => {
+	activeMenuNameTab.value = 'zhCn';
 	emit('drawerClose', type);
 	formRef.value?.resetFields();
 };
@@ -306,6 +323,16 @@ onMounted(async () => {
 	.menu-form-btns {
 		padding-bottom: 10px;
 		box-sizing: border-box;
+	}
+
+	.menu-name-tabs {
+		width: 100%;
+	}
+	:deep(.menu-name-tabs .el-tabs__header) {
+		margin-bottom: 0;
+	}
+	:deep(.menu-name-tabs .el-tabs__nav-wrap::after) {
+		display: none;
 	}
 }
 </style>

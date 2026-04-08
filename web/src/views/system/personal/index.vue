@@ -2,7 +2,7 @@
 	<div class="home-container">
     <div style="margin: 15px; font-size: 16px; font-weight: 700">
     <span :style="{ color: headerTextColor }">{{ currentTime }}，{{ state.personalForm.username }}</span>
-      <span style="font-size: 12px; color: grey">{{$t('message.personal.PersonalInfo1')}}</span>
+      <span style="font-size: 12px; color: grey">{{$t('message.pages.personal.PersonalInfo1')}}</span>
     </div>
 		<el-row>
 
@@ -12,7 +12,7 @@
           <div class="home-card-item" style="height: 380px">
             <el-row>
             <el-col  :span="12">
-              <div class="home-card-item-title">{{$t('message.personal.MyInfo')}}</div>
+              <div class="home-card-item-title">{{ $t('message.pages.personal.info.myInfoTitle') }}</div>
 						<div>
 							<avatarSelector v-model="selectImgVisible" @uploadImg="uploadImg" ref="avatarSelectorRef"></avatarSelector>
 						</div>
@@ -22,19 +22,19 @@
 									<el-row>
 										<el-col class="personal-item mb6">
                       <div style="display: flex;">
-                        <div style="flex: 1;">昵称：</div>
+                        <div style="flex: 1;">{{ $t('message.pages.personal.info.nickname') }}</div>
                         <div style="flex: 1;">{{ state.personalForm.name }}</div>
                       </div>
 										</el-col>
 										<el-col class="personal-item mb6">
                       <div style="display: flex;">
-                        <div style="flex: 1;">部门：</div>
+                        <div style="flex: 1;">{{ $t('message.pages.personal.info.department') }}</div>
                         <div style="flex: 1;"><el-tag>{{ state.personalForm.dept_info.dept_name }}</el-tag></div>
                       </div>
 										</el-col>
                     <el-col class="personal-item mb6">
                       <div style="display: flex;">
-                        <div style="flex: 1;">角色：</div>
+                        <div style="flex: 1;">{{ $t('message.pages.personal.info.roles') }}</div>
                         <div style="flex: 1;"><el-tag v-for="(item, index) in state.personalForm.role_info" :key="index" style="margin-right: 5px">{{ item.name }}</el-tag></div>
                       </div>
 										</el-col>
@@ -42,11 +42,11 @@
 								</el-col>
 							</el-row>
 						</div>
-            <div class="home-card-item-title">{{$t('message.personal.AccountSecurity')}}</div>
+            <div class="home-card-item-title">{{ $t('message.pages.personal.info.accountSecurity') }}</div>
             <el-col class="personal-item mb6">
                       <div style="display: flex;">
-                        <div style="flex: 1;">当前密码强度：强</div>
-                        <div style="flex: 1;"><el-button text type="primary" @click="passwordFormShow = true">立即修改
+                        <div style="flex: 1;">{{ $t('message.pages.personal.info.currentPasswordStrength') }}</div>
+                        <div style="flex: 1;"><el-button text type="primary" @click="passwordFormShow = true">{{ $t('message.pages.personal.info.changePasswordNow') }}
                                         <el-icon class="el-icon--right"><Edit /></el-icon>
                         </el-button></div>
 
@@ -54,50 +54,50 @@
             </el-col>
             <el-col class="personal-item mb6">
                       <div style="display: flex;">
-                        <div style="flex: 1;">已绑定手机：</div>
+                        <div style="flex: 1;">{{ $t('message.pages.personal.info.boundMobile') }}</div>
                         <div style="flex: 1;">{{ state.personalForm.mobile }}</div>
                       </div>
             </el-col>
             <el-col class="personal-item mb6">
                       <div style="display: flex;">
-                        <div style="flex: 1;">已绑定邮箱：</div>
+                        <div style="flex: 1;">{{ $t('message.pages.personal.info.boundEmail') }}</div>
                         <div style="flex: 1;">{{ state.personalForm.email }}</div>
                       </div>
             </el-col>
           </el-col>
           <el-col  :span="12">
-            <div class="home-card-item-title">{{$t('message.personal.UpdateInfo')}}</div>
+            <div class="home-card-item-title">{{ $t('message.pages.personal.info.updateInfoTitle') }}</div>
             <el-form :model="state.personalForm" :rules="rules" ref="userInfoFormRef" label-width="80px">
           <el-row :gutter="35">
 							<el-col >
-								<el-form-item label="昵称" prop="name">
-									<el-input v-model="state.personalForm.name" placeholder="请输入昵称" clearable></el-input>
+								<el-form-item :label="$t('message.pages.personal.form.nickname')" prop="name">
+									<el-input v-model="state.personalForm.name" :placeholder="$t('message.pages.personal.form.nicknamePlaceholder')" clearable></el-input>
 								</el-form-item>
 							</el-col>
 							<el-col>
-								<el-form-item label="邮箱">
-									<el-input v-model="state.personalForm.email" placeholder="请输入邮箱" clearable></el-input>
+								<el-form-item :label="$t('message.pages.personal.form.email')">
+									<el-input v-model="state.personalForm.email" :placeholder="$t('message.pages.personal.form.emailPlaceholder')" clearable></el-input>
 								</el-form-item>
 							</el-col>
 							<el-col>
-								<el-form-item label="手机" prop="mobile">
-									<el-input v-model="state.personalForm.mobile" placeholder="请输入手机" clearable></el-input>
+								<el-form-item :label="$t('message.pages.personal.form.mobile')" prop="mobile">
+									<el-input v-model="state.personalForm.mobile" :placeholder="$t('message.pages.personal.form.mobilePlaceholder')" clearable></el-input>
 								</el-form-item>
 							</el-col>
 							<el-col>
-								<el-form-item label="性别">
-									<el-select v-model="state.personalForm.gender" placeholder="请选择性别" clearable class="w100">
+								<el-form-item :label="$t('message.pages.personal.form.gender')">
+									<el-select v-model="state.personalForm.gender" :placeholder="$t('message.pages.personal.form.genderPlaceholder')" clearable class="w100">
 										<!--										<el-option label="男" :value="1"></el-option>-->
 										<!--										<el-option label="女" :value="0"></el-option>-->
 										<!--										<el-option label="保密" :value="2"></el-option>-->
-										<el-option v-for="(item, index) in genderList" :key="index" :label="item.label" :value="item.value"></el-option>
+										<el-option v-for="(item, index) in translatedGenderList" :key="index" :label="item.label" :value="item.value"></el-option>
 									</el-select>
 								</el-form-item>
 							</el-col>
 							<el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
 								<el-form-item>
 									<el-button type="primary" @click="submitForm">
-										{{$t('message.personal.UpdateInfo')}}
+										{{ $t('message.pages.personal.info.updateInfoTitle') }}
                     <el-icon>
 											<ele-Position />
 										</el-icon>
@@ -115,7 +115,7 @@
             <div class="home-card-item" :style="{ height: '185px', background: smokeTextBgColor, display: 'flex', alignItems: 'center', padding: '20px'}">
             <div class="smoke-text-container">
               <p class="smoke-text" ref="smokeTextRef" :style="{ color: smokeTextColor }">
-                {{$t('message.personal.PersonalInfo2')}}
+                {{$t('message.pages.personal.PersonalInfo2')}}
               </p>
             </div>
           </div>
@@ -152,7 +152,7 @@
 
 		</el-row>
 		<!--    密码修改-->
-		<el-dialog v-model="passwordFormShow" title="密码修改">
+		<el-dialog v-model="passwordFormShow" :title="$t('message.pages.personal.dialog.passwordChange')">
 			<el-form
 				ref="userPasswordFormRef"
 				:model="userPasswordInfo"
@@ -162,19 +162,19 @@
 				:rules="passwordRules"
 				center
 			>
-				<el-form-item label="原密码" required prop="oldPassword">
-					<el-input type="password" v-model="userPasswordInfo.oldPassword" placeholder="请输入原始密码" show-password clearable></el-input>
+				<el-form-item :label="$t('message.pages.personal.dialog.oldPassword')" required prop="oldPassword">
+					<el-input type="password" v-model="userPasswordInfo.oldPassword" :placeholder="$t('message.pages.personal.dialog.oldPasswordPlaceholder')" show-password clearable></el-input>
 				</el-form-item>
-				<el-form-item required prop="newPassword" label="新密码">
-					<el-input type="password" v-model="userPasswordInfo.newPassword" placeholder="请输入新密码" show-password clearable></el-input>
+				<el-form-item required prop="newPassword" :label="$t('message.pages.personal.dialog.newPassword')">
+					<el-input type="password" v-model="userPasswordInfo.newPassword" :placeholder="$t('message.pages.personal.dialog.newPasswordPlaceholder')" show-password clearable></el-input>
 				</el-form-item>
-				<el-form-item required prop="newPassword2" label="确认密码">
-					<el-input type="password" v-model="userPasswordInfo.newPassword2" placeholder="请再次输入新密码" show-password clearable></el-input>
+				<el-form-item required prop="newPassword2" :label="$t('message.pages.personal.dialog.confirmPassword')">
+					<el-input type="password" v-model="userPasswordInfo.newPassword2" :placeholder="$t('message.pages.personal.dialog.confirmPasswordPlaceholder')" show-password clearable></el-input>
 				</el-form-item>
 			</el-form>
 			<template #footer>
 				<span class="dialog-footer">
-					<el-button type="primary" @click="settingPassword"> <i class="fa fa-check"></i>提交 </el-button>
+					<el-button type="primary" @click="settingPassword"> <i class="fa fa-check"></i>{{ $t('message.pages.personal.button.submit') }} </el-button>
 				</span>
 			</template>
 		</el-dialog>
@@ -183,6 +183,7 @@
 
 <script setup lang="ts" name="personal">
 import { reactive, computed, onMounted, ref, defineAsyncComponent, nextTick, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { formatAxis } from '/@/utils/formatTime';
 import * as api from './api';
 import { ElMessage } from 'element-plus';
@@ -224,6 +225,7 @@ interface PersonalState {
 
 const router = useRouter();
 const themeConfigStore = useThemeConfig();
+const { t } = useI18n();
 
 const avatarSelector = defineAsyncComponent(() => import('/@/components/avatarSelector/index.vue'));
 const avatarSelectorRef = ref<any>(null);
@@ -249,8 +251,14 @@ const headerTextColor = computed(() => {
 });
 const userInfoFormRef = ref();
 const rules = reactive({
-	name: [{ required: true, message: '请输入昵称', trigger: 'blur' }],
-	mobile: [{ pattern: /^1[3-9]\d{9}$/, message: '请输入正确手机号' }],
+	name: [{ required: true, validator: (rule: any, value: any, callback: any) => {
+		if (!value) callback(new Error(t('message.pages.personal.validation.nicknameRequired')));
+		else callback();
+	}, trigger: 'blur' }],
+	mobile: [{ pattern: /^1[3-9]\d{9}$/, validator: (rule: any, value: any, callback: any) => {
+		if (value && !/^1[3-9]\d{9}$/.test(value)) callback(new Error(t('message.pages.personal.validation.mobileInvalid')));
+		else callback();
+	}, trigger: 'blur' }],
 });
 
 let selectImgVisible = ref(false);
@@ -287,6 +295,18 @@ const msgMore = () => {
 };
 
 const genderList = ref();
+const translatedGenderList = computed(() => {
+	if (!genderList.value) return [];
+	const labelMap: Record<string, string> = {
+		'男': t('message.pages.personal.form.genderMale'),
+		'女': t('message.pages.personal.form.genderFemale'),
+		'保密': t('message.pages.personal.form.genderSecret'),
+	};
+	return genderList.value.map((item: any) => ({
+		...item,
+		label: labelMap[item.label] || item.label,
+	}));
+});
 /**
  * 获取用户个人信息
  */
@@ -314,11 +334,11 @@ const submitForm = async () => {
 	await userInfoFormRef.value.validate((valid: boolean, fields: any) => {
 		if (valid) {
 			api.updateUserInfo(state.personalForm).then((res: any) => {
-				ElMessage.success('更新成功');
+				ElMessage.success(t('message.pages.personal.messages.updateSuccess'));
 				getUserInfo();
 			});
 		} else {
-			ElMessage.error('表单验证失败,请检查~');
+			ElMessage.error(t('message.pages.personal.validation.formValidationFailed'));
 		}
 	});
 };
@@ -384,11 +404,11 @@ const userPasswordInfo = reactive({
 const validatePass = (rule: any, value: any, callback: any) => {
 	const pwdRegex = new RegExp('(?=.*[0-9])(?=.*[a-zA-Z]).{8,30}');
 	if (value === '') {
-		callback(new Error('请输入密码'));
+		callback(new Error(t('message.pages.personal.validation.oldPasswordRequired')));
 	} else if (value === userPasswordInfo.oldPassword) {
-		callback(new Error('原密码与新密码一致'));
+		callback(new Error(t('message.pages.personal.validation.sameAsOldPassword')));
 	} else if (!pwdRegex.test(value)) {
-		callback(new Error('您的密码复杂度太低(密码中必须包含字母、数字)'));
+		callback(new Error(t('message.pages.personal.validation.passwordComplexity')));
 	} else {
 		if (userPasswordInfo.newPassword2 !== '') {
 			userPasswordFormRef.value.validateField('newPassword2');
@@ -398,9 +418,9 @@ const validatePass = (rule: any, value: any, callback: any) => {
 };
 const validatePass2 = (rule: any, value: any, callback: any) => {
 	if (value === '') {
-		callback(new Error('请再次输入密码'));
+		callback(new Error(t('message.pages.personal.validation.confirmPasswordRequired')));
 	} else if (value !== userPasswordInfo.newPassword) {
-		callback(new Error('两次输入密码不一致!'));
+		callback(new Error(t('message.pages.personal.validation.passwordMismatch')));
 	} else {
 		callback();
 	}
@@ -410,7 +430,7 @@ const passwordRules = reactive({
 	oldPassword: [
 		{
 			required: true,
-			message: '请输入原密码',
+			message: t('message.pages.personal.validation.oldPasswordRequired'),
 			trigger: 'blur',
 		},
 	],
@@ -425,7 +445,7 @@ const settingPassword = () => {
 	userPasswordFormRef.value.validate((valid: boolean) => {
 		if (valid) {
 			api.UpdatePassword(userPasswordInfo).then((res: any) => {
-				ElMessage.success('密码修改成功');
+				ElMessage.success(t('message.pages.personal.messages.passwordChangeSuccess'));
 				setTimeout(() => {
 					Session.remove('token');
 					router.push('/login');
@@ -434,7 +454,7 @@ const settingPassword = () => {
 		} else {
 			// 校验失败
 			// 登录表单校验失败
-			ElMessage.error('表单校验失败，请检查');
+			ElMessage.error(t('message.pages.personal.messages.formValidationFailed'));
 		}
 	});
 };
@@ -448,7 +468,7 @@ const uploadImg = (data: any) => {
 			// state.personalForm.avatar = getBaseURL() + res.data.url;
 			state.personalForm.avatar = res.data.url;
 			api.updateUserInfo(state.personalForm).then((_res: any) => {
-				successMessage('更新成功');
+				successMessage(t('message.pages.personal.messages.updateSuccess'));
 				getUserInfo();
 				useUserInfo().updateUserInfos();
 				if (avatarSelectorRef.value && typeof avatarSelectorRef.value.updateAvatar === 'function') {

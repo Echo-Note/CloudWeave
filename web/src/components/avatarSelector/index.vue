@@ -25,7 +25,7 @@
 				<el-col :lg="2" :md="2">
 					<el-upload action="#" :http-request="requestUpload" :show-file-list="false" :before-upload="beforeUpload">
 						<el-button type="success">
-							选择
+							{{ $t('message.components.avatarSelector.select') }}
 							<el-icon class="el-icon--right"><Plus /></el-icon>
 						</el-button>
 					</el-upload>
@@ -37,7 +37,7 @@
 					<el-button icon="RefreshRight" @click="rotateRight()"></el-button>
 				</el-col>
 				<el-col :lg="{ span: 2, offset: 2 }" :md="2">
-					<el-button type="primary" @click="uploadImg()">更新头像</el-button>
+					<el-button type="primary" @click="uploadImg()">{{ $t('message.components.avatarSelector.uploadAvatar') }}</el-button>
 				</el-col>
 			</el-row>
 		</el-dialog>
@@ -52,11 +52,13 @@ import { getCurrentInstance, nextTick, reactive, ref, computed, onMounted, defin
 import { base64ToFile } from '/@/utils/tools';
 import headerImage from "/@/assets/img/headerImage.png";
 import {getBaseURL} from "/@/utils/baseUrl";
+import { useI18n } from 'vue-i18n';
 const userStore = useUserInfo();
 const { proxy } = getCurrentInstance();
+const { t } = useI18n();
 
 const visible = ref(false);
-const title = ref('修改头像');
+const title = computed(() => t('message.components.avatarSelector.title'));
 const emit = defineEmits(['uploadImg']);
 const props = defineProps({
 	modelValue: {

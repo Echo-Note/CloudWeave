@@ -2,7 +2,9 @@
 	<el-transfer
 		v-model="RoleUsers.$state.right_users"
 		filterable
-		:titles="['未授权用户', '已授权用户']"
+		:filter-method="filterMethod"
+		:filter-placeholder="$t('message.pages.user.form.usernamePlaceholder')"
+		:titles="[$t('message.pages.role.transfer.unassignedUsers'), $t('message.pages.role.transfer.assignedUsers')]"
 		:data="RoleUsers.$state.all_users"
 		:props="{
 			key: 'id',
@@ -19,6 +21,10 @@ import { RoleUsersStores } from '../stores/RoleUsersStores';
 import { setRoleUsers } from './api';
 const RoleDrawer = RoleDrawerStores(); // 抽屉参数
 const RoleUsers = RoleUsersStores(); // 角色-用户
+
+const filterMethod = (query: string, item: any) => {
+	return item.name.toLowerCase().includes(query.toLowerCase());
+};
 
 /**
  *

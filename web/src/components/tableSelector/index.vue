@@ -5,12 +5,12 @@
 		multiple
     :collapseTags="props.tableConfig.collapseTags"
 		v-model="data"
-		placeholder="请选择"
+		placeholder=""
 		@visible-change="visibleChange"
 	>
 		<template #empty>
 			<div class="option">
-				<el-input style="margin-bottom: 10px" v-model="search" clearable placeholder="请输入关键词" @change="getDict" @clear="getDict">
+				<el-input style="margin-bottom: 10px" v-model="search" clearable :placeholder="$t('message.components.tableSelector.inputPlaceholder')" @change="getDict" @clear="getDict">
 					<template #append>
 						<el-button type="primary" icon="Search" />
 					</template>
@@ -59,8 +59,11 @@
 
 <script setup lang="ts">
 import { computed, defineProps, onMounted, reactive, ref, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import XEUtils from 'xe-utils';
 import { request } from '/@/utils/service';
+
+const { t } = useI18n();
 
 const props = defineProps({
 	modelValue: {

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.utils.translation import gettext_lazy as _
 
 """
 @author: H0nGzA1
@@ -38,8 +39,8 @@ class DeptSerializer(CustomModelSerializer):
 
     def get_status_label(self, obj: Dept):
         if obj.status:
-            return "启用"
-        return "禁用"
+            return _("Enabled")
+        return _("Disabled")
 
     def get_has_children(self, obj: Dept):
         return Dept.objects.filter(parent_id=obj.id).count()
@@ -129,7 +130,7 @@ class DeptViewSet(CustomModelViewSet):
     def all_dept(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         data = queryset.filter(status=True).order_by('sort').values('name', 'id', 'parent')
-        return DetailResponse(data=data, msg="获取成功")
+        return DetailResponse(data=data, msg=_("Query successful"))
 
     @action(methods=['POST'], detail=False, permission_classes=[IsAuthenticated])
     def move_up(self, request):
@@ -138,13 +139,13 @@ class DeptViewSet(CustomModelViewSet):
         try:
             dept = Dept.objects.get(id=dept_id)
         except Dept.DoesNotExist:
-            return ErrorResponse(msg="部门不存在")
+            return ErrorResponse(msg=_("Department does not exist"))
         previous_menu = Dept.objects.filter(sort__lt=dept.sort, parent=dept.parent).order_by('-sort').first()
         if previous_menu:
             previous_menu.sort, dept.sort = dept.sort, previous_menu.sort
             previous_menu.save()
             dept.save()
-        return SuccessResponse(data=[], msg="上移成功")
+        return SuccessResponse(data=[], msg=_("Move up successful"))
 
     @action(methods=['POST'], detail=False, permission_classes=[IsAuthenticated])
     def move_down(self, request):
@@ -153,13 +154,13 @@ class DeptViewSet(CustomModelViewSet):
         try:
             dept = Dept.objects.get(id=dept_id)
         except Dept.DoesNotExist:
-            return ErrorResponse(msg="部门不存在")
+            return ErrorResponse(msg=_("Department does not exist"))
         next_menu = Dept.objects.filter(sort__gt=dept.sort, parent=dept.parent).order_by('sort').first()
         if next_menu:
             next_menu.sort, dept.sort = dept.sort, next_menu.sort
             next_menu.save()
             dept.save()
-        return SuccessResponse(data=[], msg="下移成功")
+        return SuccessResponse(data=[], msg=_("Move down successful"))
 
     @action(methods=['GET'], detail=False, permission_classes=[])
     def dept_info(self, request):
@@ -175,7 +176,7 @@ class DeptViewSet(CustomModelViewSet):
         dept_id = request.query_params.get('dept_id')
         show_all = request.query_params.get('show_all')
         if dept_id is None:
-            return ErrorResponse(msg="部门不存在")
+            return ErrorResponse(msg=_("Department does not exist"))
         if not show_all:
             show_all = 0
         if int(show_all):  # 递归当前部门下的所有部门，查询用户

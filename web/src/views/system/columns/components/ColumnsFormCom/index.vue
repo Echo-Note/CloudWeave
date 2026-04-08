@@ -1,29 +1,29 @@
 <template>
 	<div class="columns-form-com">
 		<el-form ref="formRef" :model="formData" :rules="formRules" label-width="80px">
-			<el-form-item label="字段名" prop="field_name">
-				<el-input v-model="formData.field_name" placeholder="请输入字段名" />
+			<el-form-item :label="$t('message.pages.columns.form.fieldName')" prop="field_name">
+				<el-input v-model="formData.field_name" :placeholder="$t('message.pages.columns.form.fieldNamePlaceholder')" />
 			</el-form-item>
 
-			<el-form-item label="列名" prop="title">
-				<el-input v-model="formData.title" placeholder="请输入列名" />
+			<el-form-item :label="$t('message.pages.columns.form.columnName')" prop="title">
+				<el-input v-model="formData.title" :placeholder="$t('message.pages.columns.form.columnNamePlaceholder')" />
 			</el-form-item>
 
-			<el-form-item label="创建显示">
+			<el-form-item :label="$t('message.pages.columns.form.showOnCreate')">
 				<el-switch v-model="formData.is_create" />
 			</el-form-item>
 
-			<el-form-item label="编辑显示">
+			<el-form-item :label="$t('message.pages.columns.form.showOnEdit')">
 				<el-switch v-model="formData.is_update" />
 			</el-form-item>
 
-			<el-form-item label="查询显示">
+			<el-form-item :label="$t('message.pages.columns.form.showInSearch')">
 				<el-switch v-model="formData.is_query" />
 			</el-form-item>
 
 			<el-form-item>
-				<el-button type="primary" @click="handleSubmit" :loading="btnLoading"> 确定 </el-button>
-				<el-button @click="handleClose">取消</el-button>
+				<el-button type="primary" @click="handleSubmit" :loading="btnLoading"> {{ $t('message.pages.columns.form.confirm') }} </el-button>
+				<el-button @click="handleClose">{{ $t('message.pages.columns.form.cancel') }}</el-button>
 			</el-form-item>
 		</el-form>
 	</div>
@@ -31,10 +31,13 @@
 
 <script lang="ts" setup>
 import { reactive, ref, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { addColumnsData, updateColumnsData } from '../ColumnsTableCom/api';
 import { successNotification } from '/@/utils/message';
 import { CurrentInfoType, ColumnsFormDataType } from '../../types';
 import type { FormInstance } from 'element-plus';
+
+const { t } = useI18n();
 
 const props = defineProps({
 	currentInfo: {
@@ -51,8 +54,8 @@ const emit = defineEmits(['drawerClose']);
 
 const formRef = ref<FormInstance>();
 const formRules = reactive({
-	field_name: [{ required: true, message: '请输入字段名！', trigger: 'blur' }],
-	title: [{ required: true, message: '请输入列名！', trigger: 'blur' }],
+	field_name: [{ required: true, message: t('message.pages.columns.validation.fieldNameRequired'), trigger: 'blur' }],
+	title: [{ required: true, message: t('message.pages.columns.validation.columnNameRequired'), trigger: 'blur' }],
 });
 
 let formData = reactive<ColumnsFormDataType>({

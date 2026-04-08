@@ -1,11 +1,11 @@
 <template>
 	<div>
-		<el-dialog ref="modelRef" v-model="modelDialog" title="选择model">
+		<el-dialog ref="modelRef" v-model="modelDialog" :title="$t('message.pages.menu.dialog.selectModel')">
 			<div v-show="props.model">
-				<el-tag>已选择:{{ props.model }}</el-tag>
+				<el-tag>{{ $t('message.pages.menu.dialog.selected') }} {{ props.model }}</el-tag>
 			</div>
 			<!-- 搜索输入框 -->
-			<el-input v-model="searchQuery" placeholder="搜索模型..." style="margin-bottom: 10px"></el-input>
+			<el-input v-model="searchQuery" :placeholder="$t('message.pages.menu.dialog.searchPlaceholder')" style="margin-bottom: 10px"></el-input>
 			<div class="model-card">
 				<!--注释编号:django-vue3-admin-index483211: 对请求回来的allModelData进行computed计算，返加搜索框匹配到的内容-->
 				<div v-for="(item, index) in filteredModelData" :value="item.key" :key="index">
@@ -16,26 +16,26 @@
 			</div>
 			<template #footer>
 				<span class="dialog-footer">
-					<el-button @click="modelDialog = false">取消</el-button>
-					<el-button type="primary" @click="handleAutomatch"> 确定 </el-button>
+					<el-button @click="modelDialog = false">{{ $t('message.pages.menu.buttons.cancel') }}</el-button>
+					<el-button type="primary" @click="handleAutomatch"> {{ $t('message.pages.menu.buttons.confirm') }} </el-button>
 				</span>
 			</template>
 		</el-dialog>
 		<div style="height: 72vh">
 			<fs-crud ref="crudRef" v-bind="crudBinding">
 				<template #pagination-left>
-					<el-tooltip content="批量删除">
+					<el-tooltip :content="$t('message.pages.menu.buttons.batchDelete')">
 						<el-button text type="danger" :disabled="selectedRowsCount === 0" :icon="Delete" circle @click="handleBatchDelete" />
 					</el-tooltip>
 				</template>
 				<template #pagination-right>
 					<el-popover placement="top" :width="400" trigger="click">
 						<template #reference>
-							<el-button text :type="selectedRowsCount > 0 ? 'primary' : ''">已选中{{ selectedRowsCount }}条数据</el-button>
+							<el-button text :type="selectedRowsCount > 0 ? 'primary' : ''">{{ $t('message.pages.user.buttons.selectedCount', { count: selectedRowsCount }) }}</el-button>
 						</template>
 						<el-table :data="selectedRows" size="small">
 							<el-table-column width="150" property="id" label="id" />
-							<el-table-column fixed="right" label="操作" min-width="60">
+							<el-table-column fixed="right" :label="$t('message.pages.menu.table.columns.actions')" min-width="60">
 								<template #default="scope">
 									<el-button text type="info" :icon="Close" @click="removeSelectedRows(scope.row)" circle />
 								</template>
@@ -49,7 +49,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, reactive, computed } from 'vue';
+import { ref, onMounted, reactive, computed, watch } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useFs } from '@fast-crud/fast-crud';
 import { createCrudOptions } from './crud';
 import { BatchDelete, getModelList } from './api';
@@ -58,6 +59,12 @@ import { MenuTreeItemType } from '/@/views/system/menu/types';
 import { successMessage, successNotification, warningNotification } from '/@/utils/message';
 import { automatchColumnsData } from '/@/views/system/columns/components/ColumnsTableCom/api';
 import XEUtils from 'xe-utils';
+import { useThemeConfig } from '/@/stores/themeConfig';
+import { storeToRefs } from 'pinia';
+
+const { themeConfig } = storeToRefs(useThemeConfig());
+
+const { t } = useI18n();
 import { ElMessage, ElMessageBox } from 'element-plus';
 // 当前选择的菜单信息
 let selectOptions: any = ref({ name: null });
@@ -116,11 +123,11 @@ const handleAutomatch = async () => {
 	if (props.menu && props.model) {
 		const res = await automatchColumnsData(props);
 		if (res?.code === 2000) {
-			successNotification('匹配成功');
+			successNotification(t('message.pages.menu.messages.matchSuccess'));
 		}
 		crudExpose.doSearch({ form: { menu: props.menu, model: props.model } });
 	} else {
-		warningNotification('请选择角色和模型表！');
+		warningNotification(t('message.pages.menu.messages.selectRoleAndTable'));
 	}
 };
 
@@ -138,7 +145,7 @@ const handleBatchDelete = async () => {
 		closeOnClickModal: false,
 	});
 	await BatchDelete(XEUtils.pluck(selectedRows.value, 'id'));
-	ElMessage.info('删除成功');
+	ElMessage.info(t('message.pages.menu.messages.deleteSuccess'));
 	selectedRows.value = [];
 	await crudExpose.doRefresh();
 };
@@ -154,11 +161,19 @@ const removeSelectedRows = (row: any) => {
 	}
 };
 
-const { crudBinding, crudRef, crudExpose, selectedRows } = useFs({ createCrudOptions, props, modelDialog, selectOptions, allModelData });
+const { crudBinding, crudRef, crudExpose, selectedRows, resetCrudOptions } = useFs({ createCrudOptions, props, modelDialog, selectOptions, allModelData });
 onMounted(async () => {
 	const res = await getModelList();
 	allModelData.value = res.data;
 });
+
+// 语言切换时重新构建 crud options
+watch(
+	() => themeConfig.value.globalI18n,
+	() => {
+		resetCrudOptions();
+	}
+);
 
 defineExpose({ selectOptions, handleRefreshTable });
 </script>

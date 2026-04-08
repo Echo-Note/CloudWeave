@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.utils.translation import gettext_lazy as _
 
 
 from django.db.models import F
@@ -68,10 +69,10 @@ class RoleMenuPermissionViewSet(CustomModelViewSet):
         body = request.data
         role_id = body.get('role',None)
         if role_id is None:
-            return ErrorResponse(msg="未获取到角色参数")
+            return ErrorResponse(msg=_("Role parameter not provided"))
         menu_list = body.get('menu',None)
         if menu_list is None:
-            return ErrorResponse(msg="未获取到菜单参数")
+            return ErrorResponse(msg=_("Menu parameter not provided"))
         obj_list = RoleMenuPermission.objects.filter(role__id=role_id).values_list('menu__id',flat=True)
         old_set = set(obj_list)
         new_set = set(menu_list)
@@ -83,4 +84,4 @@ class RoleMenuPermissionViewSet(CustomModelViewSet):
         serializer = RoleMenuPermissionSerializer(data=data,many=True,request=request)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return DetailResponse(msg="保存成功",data=serializer.data)
+            return DetailResponse(msg=_("Save successful"), data=serializer.data)

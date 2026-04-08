@@ -162,7 +162,10 @@ onBeforeMount(() => {
 		closeLayoutAsideMobileMode();
 	});
 });
-// 监听 themeConfig 配置文件的变化，更新菜单 el-scrollbar 的高度
+// 监听 routesList 变化（语言切换时重新刷新菜单）
+watch(routesList, () => {
+	setFilterRoutes();
+});
 watch(themeConfig.value, (val) => {
 	if (val.isShowLogoChange !== val.isShowLogo) {
 		if (layoutAsideScrollbarRef.value) layoutAsideScrollbarRef.value.update();

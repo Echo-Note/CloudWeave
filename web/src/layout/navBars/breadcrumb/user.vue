@@ -27,9 +27,9 @@
 			</div>
 			<template #dropdown>
 				<el-dropdown-menu>
-					<el-dropdown-item command="zh-cn" :disabled="state.disabledI18n === 'zh-cn'">简体中文</el-dropdown-item>
-					<el-dropdown-item command="en" :disabled="state.disabledI18n === 'en'">English</el-dropdown-item>
-					<el-dropdown-item command="zh-tw" :disabled="state.disabledI18n === 'zh-tw'">繁體中文</el-dropdown-item>
+					<el-dropdown-item command="zh-cn" :disabled="state.disabledI18n === 'zh-cn'">{{ $t('message.user.langZhCn') }}</el-dropdown-item>
+					<el-dropdown-item command="en" :disabled="state.disabledI18n === 'en'">{{ $t('message.user.langEn') }}</el-dropdown-item>
+					<el-dropdown-item command="zh-tw" :disabled="state.disabledI18n === 'zh-tw'">{{ $t('message.user.langZhTw') }}</el-dropdown-item>
 				</el-dropdown-menu>
 			</template>
 		</el-dropdown>
@@ -84,7 +84,7 @@
 <!--				<el-badge is-dot class="item online-status">-->
 <!--					<img :src="userInfos.avatar || headerImage" class="layout-navbars-breadcrumb-user-link-photo mr5" />-->
 <!--				</el-badge>-->
-				{{ userInfos.username === '' ? 'common' : userInfos.username }}
+				{{ userInfos.username === '' ? $t('message.user.defaultUsername') : userInfos.username }}
 				<el-icon class="el-icon--right">
 					<ele-ArrowDown />
 				</el-icon>
@@ -93,7 +93,7 @@
 				<el-dropdown-menu>
 					<el-dropdown-item command="/home">{{ $t('message.user.dropdown1') }}</el-dropdown-item>
 					<el-dropdown-item command="/personal">{{ $t('message.user.dropdown2') }}</el-dropdown-item>
-					<el-dropdown-item command="/versionUpgradeLog">更新日志</el-dropdown-item>
+					<el-dropdown-item command="/versionUpgradeLog">{{ $t('message.user.versionLog') }}</el-dropdown-item>
 					<el-dropdown-item divided command="logOut">{{ $t('message.user.dropdown5') }}</el-dropdown-item>
 				</el-dropdown-menu>
 			</template>
@@ -111,12 +111,15 @@ import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia';
 import { useUserInfo } from '/@/stores/userInfo';
 import { useThemeConfig } from '/@/stores/themeConfig';
+import { useFrontendMenuStore } from '/@/stores/frontendMenu';
+import { refreshRoutesForI18n } from '/@/router/backEnd';
 import other from '/@/utils/other';
 import mittBus from '/@/utils/mitt';
 import { Session, Local } from '/@/utils/storage';
 import headerImage from '/@/assets/img/headerImage.png';
 import { InfoFilled } from '@element-plus/icons-vue';
 import websocket from '/@/utils/websocket';
+import request from '/@/utils/request';
 // 引入组件
 const UserNews = defineAsyncComponent(() => import('/@/layout/navBars/breadcrumb/userNews.vue'));
 const Search = defineAsyncComponent(() => import('/@/layout/navBars/breadcrumb/search.vue'));
@@ -163,7 +166,7 @@ const onlineConfirmEvent = () => {
 // 全屏点击时
 const onScreenfullClick = () => {
 	if (!screenfull.isEnabled) {
-		ElMessage.warning('暂不不支持全屏');
+		ElMessage.warning(t('message.user.fullscreenNotSupported'));
 		return false;
 	}
 	screenfull.toggle();
@@ -229,13 +232,22 @@ const onComponentSizeChange = (size: string) => {
 	window.location.reload();
 };
 // 语言切换
-const onLanguageChange = (lang: string) => {
+const onLanguageChange = async (lang: string) => {
 	Local.remove('themeConfig');
 	themeConfig.value.globalI18n = lang;
 	Local.set('themeConfig', themeConfig.value);
 	locale.value = lang;
 	other.useTitle();
 	initI18nOrSize('globalI18n', 'disabledI18n');
+	// 重新请求菜单（带上新语言，让后端返回对应翻译）
+	await refreshRoutesForI18n();
+	// 持久化到后端 (FNT-03, INT-01 per D-01)
+	try {
+		await request({ url: '/api/system/user/update_language/', method: 'put', data: { language: lang } });
+	} catch (e) {
+		console.warn('Failed to persist language preference:', e);
+		// Non-blocking: localStorage is the source of truth for frontend
+	}
 };
 // 初始化组件大小/i18n
 const initI18nOrSize = (value: string, attr: keyof typeof state) => {

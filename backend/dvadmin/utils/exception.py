@@ -11,6 +11,7 @@ import traceback
 
 from django.db.models import ProtectedError
 from django.http import Http404
+from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import APIException as DRFAPIException, AuthenticationFailed, NotAuthenticated
 from rest_framework.status import HTTP_401_UNAUTHORIZED
 from rest_framework.views import set_rollback, exception_handler
@@ -50,7 +51,7 @@ def CustomExceptionHandler(ex, context):
             msg = ex.detail
     elif isinstance(ex,Http404):
         code = 400
-        msg = "接口地址不正确"
+        msg = _("Endpoint address is incorrect")
     elif isinstance(ex, DRFAPIException):
         set_rollback()
         msg = ex.detail
@@ -60,7 +61,7 @@ def CustomExceptionHandler(ex, context):
                     msg = "%s:%s" % (k, i)
     elif isinstance(ex, ProtectedError):
         set_rollback()
-        msg = "删除失败:该条数据与其他数据有相关绑定"
+        msg = _("Delete failed: this record has related data bindings")
     # elif isinstance(ex, DatabaseError):
     #     set_rollback()
     #     msg = "接口服务器异常,请联系管理员"

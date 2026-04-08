@@ -1,12 +1,12 @@
 <template>
 	<div>
-		<el-dialog title="更换头像" v-model="state.isShowDialog" width="769px">
+		<el-dialog :title="$t('message.components.cropper.title')" v-model="state.isShowDialog" width="769px">
 			<div class="cropper-warp">
 				<div class="cropper-warp-left">
 					<img :src="state.cropperImg" class="cropper-warp-left-img" />
 				</div>
 				<div class="cropper-warp-right">
-					<div class="cropper-warp-right-title">预览</div>
+					<div class="cropper-warp-right-title">{{ $t('message.components.cropper.preview') }}</div>
 					<div class="cropper-warp-right-item">
 						<div class="cropper-warp-right-value">
 							<img :src="state.cropperImgBase64" class="cropper-warp-right-value-img" />
@@ -23,8 +23,8 @@
 			</div>
 			<template #footer>
 				<span class="dialog-footer">
-					<el-button @click="onCancel" size="default">取 消</el-button>
-					<el-button type="primary" @click="onSubmit" size="default">更 换</el-button>
+					<el-button @click="onCancel" size="default">{{ $t('message.components.cropper.cancel') }}</el-button>
+					<el-button type="primary" @click="onSubmit" size="default">{{ $t('message.components.cropper.confirm') }}</el-button>
 				</span>
 			</template>
 		</el-dialog>
@@ -33,8 +33,11 @@
 
 <script setup lang="ts" name="cropper">
 import { reactive, nextTick } from 'vue';
+import { useI18n } from 'vue-i18n';
 import Cropper from 'cropperjs';
 import 'cropperjs/dist/cropper.css';
+
+const { t } = useI18n();
 
 // 定义变量内容
 const state = reactive({

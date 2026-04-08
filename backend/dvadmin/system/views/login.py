@@ -70,14 +70,14 @@ class LoginSerializer(TokenObtainPairSerializer):
         captcha = self.initial_data.get("captcha", None)
         if dispatch.get_system_config_values("base.captcha_state"):
             if captcha is None:
-                raise CustomValidationError("验证码不能为空")
+                raise CustomValidationError(_("Verification code is required"))
             self.image_code = CaptchaStore.objects.filter(
                 id=self.initial_data["captchaKey"]
             ).first()
             five_minute_ago = datetime.now() - timedelta(hours=0, minutes=5, seconds=0)
             if self.image_code and five_minute_ago > self.image_code.expiration:
                 self.image_code and self.image_code.delete()
-                raise CustomValidationError("验证码过期")
+                raise CustomValidationError(_("Verification code has expired"))
             else:
                 if self.image_code and (
                     self.image_code.response == captcha
@@ -86,16 +86,16 @@ class LoginSerializer(TokenObtainPairSerializer):
                     self.image_code and self.image_code.delete()
                 else:
                     self.image_code and self.image_code.delete()
-                    raise CustomValidationError("图片验证码错误")
+                    raise CustomValidationError(_("Image verification code is incorrect"))
         try:
             user = Users.objects.get(
                 Q(username=attrs['username']) | Q(email=attrs['username']) | Q(mobile=attrs['username']))
         except Users.DoesNotExist:
-            raise CustomValidationError("您登录的账号不存在")
+            raise CustomValidationError(_("The account you are logging in with does not exist"))
         except Users.MultipleObjectsReturned:
-            raise CustomValidationError("您登录的账号存在多个,请联系管理员检查登录账号唯一性")
+            raise CustomValidationError(_("Multiple accounts found for this login. Contact an administrator to check account uniqueness"))
         if not user.is_active:
-            raise CustomValidationError("账号已被锁定,联系管理员解锁")
+            raise CustomValidationError(_("Account has been locked. Contact an administrator to unlock"))
         try:
             # 必须重置用户名为username,否则使用邮箱手机号登录会提示密码错误
             attrs['username'] = user.username
@@ -106,6 +106,7 @@ class LoginSerializer(TokenObtainPairSerializer):
             data["avatar"] = self.user.avatar
             data['user_type'] = self.user.user_type
             data['pwd_change_count'] = self.user.pwd_change_count
+            data["language"] = getattr(self.user, 'language', 'zh-cn') or 'zh-cn'
             dept = getattr(self.user, 'dept', None)
             if dept:
                 data['dept_info'] = {
@@ -121,16 +122,16 @@ class LoginSerializer(TokenObtainPairSerializer):
             save_login_log(request=request)
             user.login_error_count = 0
             user.save()
-            return {"code": 2000, "msg": "请求成功", "data": data}
+            return {"code": 2000, "msg": _("Request successful"), "data": data}
         except Exception as e:
             user.login_error_count += 1
             if user.login_error_count >= 5:
                 user.is_active = False
                 user.save()
-                raise CustomValidationError("账号已被锁定,联系管理员解锁")
+                raise CustomValidationError(_("Account has been locked. Contact an administrator to unlock"))
             user.save()
             count = 5 - user.login_error_count
-            raise CustomValidationError(f"账号/密码错误;重试{count}次后将被锁定~")
+            raise CustomValidationError(_("Username/password incorrect. Account will be locked after {} failed attempts~").format(count))
 
 
 class LoginView(TokenObtainPairView):
@@ -220,11 +221,11 @@ class LoginTokenSerializer(TokenObtainPairSerializer):
 
     def validate(self, attrs):
         if not getattr(settings, "LOGIN_NO_CAPTCHA_AUTH", False):
-            return {"code": 4000, "msg": "该接口暂未开通!", "data": None}
+            return {"code": 4000, "msg": _("This interface is not yet available"), "data": None}
         data = super().validate(attrs)
         data["name"] = self.user.name
         data["userId"] = self.user.id
-        return {"code": 2000, "msg": "请求成功", "data": data}
+        return {"code": 2000, "msg": _("Request successful"), "data": data}
 
 
 class LoginTokenView(TokenObtainPairView):
@@ -238,7 +239,7 @@ class LoginTokenView(TokenObtainPairView):
 
 class LogoutView(APIView):
     def post(self, request):
-        return DetailResponse(msg="注销成功")
+        return DetailResponse(msg=_("Logout successful"))
 
 
 class ApiLoginSerializer(CustomModelSerializer):
@@ -271,4 +272,4 @@ class ApiLogin(APIView):
             login(request, user_obj)
             return redirect("/")
         else:
-            return ErrorResponse(msg="账号/密码错误")
+            return ErrorResponse(msg=_("Username/password incorrect"))

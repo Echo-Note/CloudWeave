@@ -171,6 +171,10 @@ onBeforeRouteUpdate((to) => {
 	setColumnsMenuHighlight(to.path);
 	mittBus.emit('setSendColumnsChildren', setSendChildren(to.path));
 });
+// 监听 routesList 变化（语言切换时重新刷新菜单）
+watch(routesList, () => {
+	setFilterRoutes();
+});
 // 监听布局配置信息的变化，动态增加菜单高亮位置移动像素
 watch(
 	pinia.state,

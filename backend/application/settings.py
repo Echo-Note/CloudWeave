@@ -68,6 +68,7 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "corsheaders.middleware.CorsMiddleware",  # 跨域中间件
+    "dvadmin.utils.middleware.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -109,6 +110,18 @@ DATABASES = {
         "PORT": DATABASE_PORT,
     }
 }
+
+# Enable SQLite WAL mode and busy timeout for concurrent Playwright test execution.
+# WAL mode allows concurrent reads during writes; busy_timeout lets writers wait up to
+# 5 seconds for locks instead of immediately failing.
+def _configure_sqlite_for_concurrency(sender, connection, **kwargs):
+    if connection.vendor == "sqlite":
+        connection.cursor().execute("PRAGMA journal_mode=WAL")
+        connection.cursor().execute("PRAGMA busy_timeout=5000")
+
+import django.db.backends.signals
+django.db.backends.signals.connection_created.connect(_configure_sqlite_for_concurrency)
+
 AUTH_USER_MODEL = "system.Users"
 USERNAME_FIELD = "username"
 
@@ -142,6 +155,22 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = False
+
+# ================================================= #
+# *************** 国际化配置 (i18n) *************** #
+# ================================================= #
+
+# Supported languages — maps frontend codes to Django locale names (D-07)
+LANGUAGES = [
+    ('zh-hans', 'Simplified Chinese'),
+    ('en', 'English'),
+    ('zh-hant', 'Traditional Chinese'),
+]
+
+# Locale file paths for Django .po/.mo files (BEI-04)
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, "locale"),
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/

@@ -106,7 +106,7 @@ class RoleMenuButtonSerializer(CustomModelSerializer):
 
     class Meta:
         model = MenuButton
-        fields = ['id', 'menu', 'name', 'isCheck', 'data_range', 'role_menu_btn_perm_id', 'dept']
+        fields = ['id', 'menu', 'name', 'name_en', 'name_zh_tw', 'isCheck', 'data_range', 'role_menu_btn_perm_id', 'dept']
 
 
 class RoleMenuFieldSerializer(CustomModelSerializer):

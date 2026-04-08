@@ -7,6 +7,7 @@
 @Remark: 自定义的JsonResonpse文件
 """
 
+from django.utils.translation import gettext_lazy as _
 from rest_framework.response import Response
 
 
@@ -51,7 +52,7 @@ class ErrorResponse(Response):
     (1)默认错误码返回400, 也可以指定其他返回码:ErrorResponse(code=xxx)
     """
 
-    def __init__(self, data=None, msg='error', code=400, status=None, template_name=None, headers=None,
+    def __init__(self, data=None, msg=_('error'), code=400, status=None, template_name=None, headers=None,
                  exception=False, content_type=None):
         std_data = {
             "code": code,

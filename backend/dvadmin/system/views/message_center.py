@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.utils.translation import gettext_lazy as _
 import json
 
 from asgiref.sync import async_to_sync
@@ -183,7 +184,7 @@ class MessageCenterCreateSerializer(CustomModelSerializer):
         for user in users:
             unread_count = MessageCenterTargetUser.objects.filter(users__id=user, is_read=False).count()
             websocket_push(user, message={"sender": 'system', "contentType": 'SYSTEM',
-                                          "content": '您有一条新消息~', "unread": unread_count})
+                                          "content": _('You have a new message~'), "unread": unread_count})
         return data
 
     class Meta:
@@ -226,8 +227,8 @@ class MessageCenterViewSet(CustomModelViewSet):
         # 主动推送消息
         unread_count = MessageCenterTargetUser.objects.filter(users__id=user_id, is_read=False).count()
         websocket_push(user_id, message={"sender": 'system', "contentType": 'TEXT',
-                                         "content": '您查看了一条消息~', "unread": unread_count})
-        return DetailResponse(data=serializer.data, msg="获取成功")
+                                         "content": _('You viewed a message~'), "unread": unread_count})
+        return DetailResponse(data=serializer.data, msg=_("Query successful"))
 
     @action(methods=['GET'], detail=False, permission_classes=[IsAuthenticated])
     def get_self_receive(self, request):
@@ -243,7 +244,7 @@ class MessageCenterViewSet(CustomModelViewSet):
             serializer = MessageCenterTargetUserListSerializer(page, many=True, request=request)
             return self.get_paginated_response(serializer.data)
         serializer = MessageCenterTargetUserListSerializer(queryset, many=True, request=request)
-        return SuccessResponse(data=serializer.data, msg="获取成功")
+        return SuccessResponse(data=serializer.data, msg=_("Query successful"))
 
     @action(methods=['GET'], detail=False, permission_classes=[IsAuthenticated])
     def get_newest_msg(self, request):
@@ -256,4 +257,4 @@ class MessageCenterViewSet(CustomModelViewSet):
         if queryset:
             serializer = MessageCenterTargetUserListSerializer(queryset.messagecenter, many=False, request=request)
             data = serializer.data
-        return DetailResponse(data=data, msg="获取成功")
+        return DetailResponse(data=data, msg=_("Query successful"))

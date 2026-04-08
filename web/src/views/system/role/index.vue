@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup name="role">
-import { defineAsyncComponent, onMounted, ref} from 'vue';
+import { defineAsyncComponent, onMounted, ref, watch} from 'vue';
 import { useFs } from '@fast-crud/fast-crud';
 import { createCrudOptions } from './crud';
 import { RoleDrawerStores } from './stores/RoleDrawerStores';
@@ -15,6 +15,10 @@ import { RoleMenuBtnStores } from './stores/RoleMenuBtnStores';
 import { RoleMenuFieldStores } from './stores/RoleMenuFieldStores';
 import { RoleUsersStores } from './stores/RoleUsersStores';
 import { RoleUserStores } from './stores/RoleUserStores';
+import { useThemeConfig } from '/@/stores/themeConfig';
+import { storeToRefs } from 'pinia';
+
+const { themeConfig } = storeToRefs(useThemeConfig());
 
 const RoleUser = defineAsyncComponent(() => import('./components/searchUsers/index.vue'));
 const RoleUserRef = ref();
@@ -27,10 +31,18 @@ const RoleMenuField = RoleMenuFieldStores();// 角色-菜单-字段
 const RoleUsers = RoleUsersStores();// 角色-用户
 const RoleUserDrawer = RoleUserStores(); // 授权用户抽屉参数
 
-const { crudBinding, crudRef, crudExpose } = useFs({
+const { crudBinding, crudRef, crudExpose, resetCrudOptions } = useFs({
 	createCrudOptions,
 	context: { RoleDrawer, RoleMenuBtn, RoleMenuField, RoleUserDrawer, RoleUserRef },
 });
+
+// 语言切换时重新构建 crud options
+watch(
+	() => themeConfig.value.globalI18n,
+	() => {
+		resetCrudOptions();
+	}
+);
 
 // 页面打开后获取列表数据
 onMounted(async () => {

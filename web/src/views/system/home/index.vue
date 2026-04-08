@@ -81,7 +81,7 @@
         <el-row :gutter="100" class="home-card-one mb15">
       			<el-col :span="24">
 				<div class="home-card-item" style=" width:350px; height: 100%">
-					<div class="home-card-item-title">{{$t('message.home.quickNavigationTool')}}</div>
+					<div class="home-card-item-title">{{ $t('message.pages.home.quickNav.quickNavTitle') }}</div>
 					<div class="home-monitor">
 						<div class="flex-warp">
 							<div class="flex-warp-item" v-for="(v, k) in homeThree" :key="k">
@@ -107,6 +107,7 @@
 
 <script lang="ts">
 import { toRefs, reactive, defineComponent, onMounted, ref, watch, nextTick, onActivated, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 import * as echarts from 'echarts';
 import { storeToRefs } from 'pinia';
 import { useThemeConfig } from '/@/stores/themeConfig';
@@ -142,6 +143,7 @@ export default defineComponent({
 		const storesThemeConfig = useThemeConfig();
 		const { themeConfig } = storeToRefs(storesThemeConfig);
 		const { isTagsViewCurrenFull } = storeToRefs(storesTagsViewRoutes);
+		const { t } = useI18n();
 		const router = useRouter(); // 将router移到组件级别
 		const defaultNewsItems: NewsItem[] = [];
 		
@@ -151,7 +153,7 @@ export default defineComponent({
 				{
 					num1: '125,12',
 					num2: '-12.32',
-					num3: '订单统计信息',
+					num3: t('message.pages.home.statCards.orderStats'),
 					num4: 'fa fa-meetup',
 					color1: '#FF6462',
 					color2: '--next-color-primary-lighter',
@@ -160,7 +162,7 @@ export default defineComponent({
 				{
 					num1: '653,33',
 					num2: '+42.32',
-					num3: '月度计划信息',
+					num3: t('message.pages.home.statCards.monthlyPlan'),
 					num4: 'iconfont icon-ditu',
 					color1: '#6690F9',
 					color2: '--next-color-success-lighter',
@@ -169,7 +171,7 @@ export default defineComponent({
 				{
 					num1: '520,43',
 					num2: '-10.01',
-					num3: '访问统计信息',
+					num3: t('message.pages.home.statCards.visitStats'),
 					num4: 'fa fa-github-alt',
 					color1: '#FF6462',
 					color2: '--next-color-danger-lighter',
@@ -228,26 +230,26 @@ export default defineComponent({
 			const option = {
 				backgroundColor: state.charts.bgColor,
 				title: {
-					text: '政策补贴额度',
+					text: t('message.pages.home.chart.lineTitle'),
 					x: 'left',
 					textStyle: { fontSize: '15', color: state.charts.color },
 				},
 				grid: { top: 70, right: 20, bottom: 30, left: 30 },
 				tooltip: { trigger: 'axis' },
-				legend: { data: ['预购队列', '最新成交价'], right: 0 },
+				legend: { data: [t('message.pages.home.chart.lineLegendPreOrder'), t('message.pages.home.chart.lineLegendLatestPrice')], right: 0 },
 				xAxis: {
-					data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+					data: ['1' + t('message.pages.home.chart.month'), '2' + t('message.pages.home.chart.month'), '3' + t('message.pages.home.chart.month'), '4' + t('message.pages.home.chart.month'), '5' + t('message.pages.home.chart.month'), '6' + t('message.pages.home.chart.month'), '7' + t('message.pages.home.chart.month'), '8' + t('message.pages.home.chart.month'), '9' + t('message.pages.home.chart.month'), '10' + t('message.pages.home.chart.month'), '11' + t('message.pages.home.chart.month'), '12' + t('message.pages.home.chart.month')],
 				},
 				yAxis: [
 					{
 						type: 'value',
-						name: '价格',
+						name: t('message.pages.home.chart.lineYAxisName'),
 						splitLine: { show: true, lineStyle: { type: 'dashed', color: '#f5f5f5' } },
 					},
 				],
 				series: [
 					{
-						name: '预购队列',
+						name: t('message.pages.home.chart.lineLegendPreOrder'),
 						type: 'line',
 						symbolSize: 6,
 						symbol: 'circle',
@@ -263,7 +265,7 @@ export default defineComponent({
 						},
 					},
 					{
-						name: '最新成交价',
+						name: t('message.pages.home.chart.lineLegendLatestPrice'),
 						type: 'line',
 						symbolSize: 6,
 						symbol: 'circle',
@@ -307,7 +309,13 @@ export default defineComponent({
 		const initPieChart = () => {
 			if (!global.dispose.some((b: any) => b === global.homeChartTwo)) global.homeChartTwo.dispose();
 			global.homeChartTwo = <any>echarts.init(homePieRef.value, state.charts.theme);
-			var getname = ['房屋及结构物', '专用设备', '通用设备', '文物和陈列品', '图书、档案'];
+			var getname = [
+				t('message.pages.home.chart.pieCategory1'),
+				t('message.pages.home.chart.pieCategory2'),
+				t('message.pages.home.chart.pieCategory3'),
+				t('message.pages.home.chart.pieCategory4'),
+				t('message.pages.home.chart.pieCategory5'),
+			];
 			var getvalue = [34.2, 38.87, 17.88, 9.05, 2.05];
 			var data = [];
 			for (var i = 0; i < getname.length; i++) {
@@ -317,7 +325,7 @@ export default defineComponent({
 			const option = {
 				backgroundColor: state.charts.bgColor,
 				title: {
-					text: '房屋建筑工程',
+					text: t('message.pages.home.chart.pieTitle'),
 					x: 'left',
 					textStyle: { fontSize: '15', color: state.charts.color },
 				},
@@ -395,12 +403,12 @@ export default defineComponent({
 			const option = {
 				backgroundColor: state.charts.bgColor,
 				title: {
-					text: '地热开发利用',
+					text: t('message.pages.home.chart.barTitle'),
 					x: 'left',
 					textStyle: { fontSize: '15', color: state.charts.color },
 				},
 				tooltip: { trigger: 'axis' },
-				legend: { data: ['供温', '回温', '压力值(Mpa)'], right: 0 },
+				legend: { data: [t('message.pages.home.chart.barLegendSupplyTemp'), t('message.pages.home.chart.barLegendReturnTemp'), t('message.pages.home.chart.barLegendPressure')], right: 0 },
 				grid: { top: 70, right: 80, bottom: 30, left: 80 },
 				xAxis: [
 					{
@@ -412,7 +420,7 @@ export default defineComponent({
 				],
 				yAxis: [
 					{
-						name: '供回温度(℃）',
+						name: t('message.pages.home.chart.barYAxisSupplyReturn'),
 						nameLocation: 'middle',
 						nameTextStyle: { padding: [3, 4, 50, 6] },
 						splitLine: { show: true, lineStyle: { type: 'dashed', color: '#f5f5f5' } },
@@ -421,7 +429,7 @@ export default defineComponent({
 						axisLabel: { color: state.charts.color, formatter: '{value} ' },
 					},
 					{
-						name: '压力值(Mpa)',
+						name: t('message.pages.home.chart.barLegendPressure'),
 						nameLocation: 'middle',
 						nameTextStyle: { padding: [50, 4, 5, 6] },
 						splitLine: { show: false },
@@ -432,7 +440,7 @@ export default defineComponent({
 				],
 				series: [
 					{
-						name: '供温',
+						name: t('message.pages.home.chart.barLegendSupplyTemp'),
 						type: 'line',
 						smooth: true,
 						showSymbol: true,
@@ -460,7 +468,7 @@ export default defineComponent({
 						],
 					},
 					{
-						name: '回温',
+						name: t('message.pages.home.chart.barLegendReturnTemp'),
 						type: 'line',
 						smooth: true,
 						showSymbol: true,
@@ -493,7 +501,7 @@ export default defineComponent({
 						],
 					},
 					{
-						name: '压力值(Mpa)',
+						name: t('message.pages.home.chart.barLegendPressure'),
 						type: 'bar',
 						barWidth: 30,
 						yAxisIndex: 1,
@@ -573,6 +581,22 @@ export default defineComponent({
 				immediate: true,
 			}
 		);
+		// 监听语言切换，重新渲染图表
+		watch(
+			() => themeConfig.value.globalI18n,
+			() => {
+				nextTick(() => {
+					// 更新 stat card labels
+					state.homeOne[0].num3 = t('message.pages.home.statCards.orderStats');
+					state.homeOne[1].num3 = t('message.pages.home.statCards.monthlyPlan');
+					state.homeOne[2].num3 = t('message.pages.home.statCards.visitStats');
+					// 重新渲染图表
+					initLineChart();
+					initPieChart();
+					initBarChart();
+				});
+			}
+		);
 		// 获取消息列表
 		const getMsg = (): void => {
 			// 先重置为默认数据
@@ -586,7 +610,7 @@ export default defineComponent({
 					try {
 						// 安全地进行类型转换并更新状态
 						state.newsInfoList = data.map((item: any): NewsItem => ({
-							creator_name: String(item.creator_name || '未知用户'),
+							creator_name: String(item.creator_name || t('message.pages.home.notifications.defaultCreator')),
 							create_datetime: String(item.create_datetime || ''),
 							title: String(item.title || '')
 						}));

@@ -1,16 +1,16 @@
 <template>
-	<el-dialog v-model="dialog" title="添加授权用户" direction="rtl" destroy-on-close :before-close="handleDialogClose">
+	<el-dialog v-model="dialog" :title="$t('message.pages.role.dialog.assignUsers')" direction="rtl" destroy-on-close :before-close="handleDialogClose">
 		<div style="height: 500px;" >
 			<fs-crud ref="crudRef" v-bind="crudBinding">
 				<template #pagination-right>
 					<el-popover placement="top" :width="200" trigger="click">
 						<template #reference>
-							<el-button text :type="selectedRowsCount > 0 ? 'primary' : ''">已选中{{ selectedRowsCount }}条数据</el-button>
+							<el-button text :type="selectedRowsCount > 0 ? 'primary' : ''">{{ $t('message.pages.user.buttons.selectedCount', { count: selectedRowsCount }) }}</el-button>
 						</template>
 						<el-table :data="selectedRows" size="small" :max-height="500">
 							<!-- <el-table-column width="100" property="id" label="id" /> -->
-							<el-table-column width="100" property="name" label="用户名" />
-							<el-table-column fixed="right" label="操作" min-width="50">
+							<el-table-column width="100" property="name" :label="$t('message.pages.user.table.columns.name')" />
+							<el-table-column fixed="right" :label="$t('message.pages.user.table.columns.actions')" min-width="50">
 								<template #default="scope">
 									<el-button text type="info" :icon="Close" @click="removeSelectedRows(scope.row)" circle />
 								</template>
@@ -23,21 +23,25 @@
 		</div>
 		<template #footer>
 			<div>
-				<el-button type="primary" @click="handleDialogConfirm"> 确定</el-button>
-				<el-button @click="handleDialogClose"> 取消</el-button>
+				<el-button type="primary" @click="handleDialogConfirm"> {{ $t('message.pages.role.buttons.confirm') }}</el-button>
+				<el-button @click="handleDialogClose"> {{ $t('message.pages.role.buttons.cancel') }}</el-button>
 			</div>
 		</template>
 	</el-dialog>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useFs } from '@fast-crud/fast-crud';
 import { createCrudOptions } from './crud';
 import { successNotification } from '/@/utils/message';
 import { addRoleUsers } from './api';
 import { Close } from '@element-plus/icons-vue';
 import XEUtils from 'xe-utils';
+import { useThemeConfig } from '/@/stores/themeConfig';
+import { storeToRefs } from 'pinia';
+
+const { themeConfig } = storeToRefs(useThemeConfig());
 
 const props = defineProps({
   refreshCallback: {
@@ -69,8 +73,16 @@ const handleDialogConfirm = async () => {
 	handleDialogClose();
 };
 
-const { crudBinding, crudRef, crudExpose, selectedRows } = useFs({ createCrudOptions, context: {} });
+const { crudBinding, crudRef, crudExpose, selectedRows, resetCrudOptions } = useFs({ createCrudOptions, context: {} });
 const { setSearchFormData, doRefresh } = crudExpose;
+
+// 语言切换时重新构建 crud options
+watch(
+	() => themeConfig.value.globalI18n,
+	() => {
+		resetCrudOptions();
+	}
+);
 
 // 选中行的条数
 const selectedRowsCount = computed(() => {
