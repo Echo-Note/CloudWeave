@@ -11,6 +11,8 @@ import copy
 from django.db import transaction
 from django_filters import DateTimeFromToRangeFilter
 from django_filters.rest_framework import FilterSet
+from django.utils.translation import gettext_lazy as _
+from django_restql.mixins import QueryArgumentsMixin
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.decorators import action
@@ -103,7 +105,7 @@ class CustomModelViewSet(ModelViewSet, ImportSerializerMixin, ExportSerializerMi
         serializer = self.get_serializer(data=request.data, request=request)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        return DetailResponse(data=serializer.data, msg="新增成功")
+        return DetailResponse(data=serializer.data, msg=_("Create successful"))
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
@@ -112,12 +114,12 @@ class CustomModelViewSet(ModelViewSet, ImportSerializerMixin, ExportSerializerMi
             serializer = self.get_serializer(page, many=True, request=request)
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True, request=request)
-        return SuccessResponse(data=serializer.data, msg="获取成功")
+        return SuccessResponse(data=serializer.data, msg=_("Query successful"))
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
-        return DetailResponse(data=serializer.data, msg="获取成功")
+        return DetailResponse(data=serializer.data, msg=_("Query successful"))
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
@@ -130,12 +132,12 @@ class CustomModelViewSet(ModelViewSet, ImportSerializerMixin, ExportSerializerMi
             # If 'prefetch_related' has been applied to a queryset, we need to
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
-        return DetailResponse(data=serializer.data, msg="更新成功")
+        return DetailResponse(data=serializer.data, msg=_("Update successful"))
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
         instance.delete()
-        return DetailResponse(data=[], msg="删除成功")
+        return DetailResponse(data=[], msg=_("Delete successful"))
 
     keys = openapi.Schema(description='主键列表', type=openapi.TYPE_ARRAY, items=openapi.Schema(type=openapi.TYPE_STRING))
     @swagger_auto_schema(request_body=openapi.Schema(
@@ -149,9 +151,9 @@ class CustomModelViewSet(ModelViewSet, ImportSerializerMixin, ExportSerializerMi
         keys = request_data.get('keys', None)
         if keys:
             self.get_queryset().filter(id__in=keys).delete()
-            return SuccessResponse(data=[], msg="删除成功")
+            return SuccessResponse(data=[], msg=_("Delete successful"))
         else:
-            return ErrorResponse(msg="未获取到keys字段")
+            return ErrorResponse(msg=_("keys field not provided"))
 
     @action(methods=['post'], detail=False)
     def get_by_ids(self, request):

@@ -1,15 +1,15 @@
 <template>
-	<el-input v-model="filterVal" :prefix-icon="Search" placeholder="请输入菜单名称" />
+	<el-input v-model="filterVal" :prefix-icon="Search" :placeholder="$t('message.pages.menu.tree.deptPlaceholder')" />
 	<div class="menu-tree-com">
 		<div class="mtc-head">
 			<el-icon size="16" color="#606266" class="mtc-head-icon">
 				<Menu />
 			</el-icon>
-			{{$t('message.systemMenu.MenuList')}}
+			{{ $t('message.pages.menu.tree.menuList') }}
 			<el-tooltip
 				effect="dark"
 				placement="right"
-        :content="$t('message.systemMenu.MenuListNote')"
+				:content="$t('message.pages.menu.tree.menuAlert')"
 			>
 				<el-icon size="16" color="var(--el-color-primary)" class="mtc-tooltip">
 					<QuestionFilled />
@@ -40,31 +40,31 @@
 		</el-tree>
 
 		<div class="mtc-tags">
-			<el-tooltip effect="dark" content="新增">
+			<el-tooltip effect="dark" :content="$t('message.pages.menu.tree.addTooltip')">
 				<el-icon size="16" v-auth="'menu:Create'" @click="handleUpdateMenu('create')" class="mtc-tags-icon">
 					<Plus />
 				</el-icon>
 			</el-tooltip>
 
-			<el-tooltip effect="dark" content="编辑">
+			<el-tooltip effect="dark" :content="$t('message.pages.menu.tree.editTooltip')">
 				<el-icon size="16" v-auth="'menu:Update'" @click="handleUpdateMenu('update')" class="mtc-tags-icon">
 					<Edit />
 				</el-icon>
 			</el-tooltip>
 
-			<el-tooltip effect="dark" content="上移">
+			<el-tooltip effect="dark" :content="$t('message.pages.menu.tree.moveUpTooltip')">
 				<el-icon size="16" v-auth="'menu:MoveUp'" @click="handleSort('up')" class="mtc-tags-icon">
 					<Top />
 				</el-icon>
 			</el-tooltip>
 
-			<el-tooltip effect="dark" content="下移">
+			<el-tooltip effect="dark" :content="$t('message.pages.menu.tree.moveDownTooltip')">
 				<el-icon size="16" v-auth="'menu:MoveDown'" @click="handleSort('down')" class="mtc-tags-icon">
 					<Bottom />
 				</el-icon>
 			</el-tooltip>
 
-			<el-tooltip effect="dark" content="删除">
+			<el-tooltip effect="dark" :content="$t('message.pages.menu.tree.deleteTooltip')">
 				<el-icon size="16" v-auth="'menu:Delete'" @click="handleDeleteMenu()" class="mtc-tags-icon">
 					<Delete />
 				</el-icon>
@@ -75,6 +75,7 @@
 
 <script lang="ts" setup>
 import { ref, toRaw, watch, h } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { ElTree } from 'element-plus';
 import { getElementLabelLine } from 'element-tree-line';
 import { Search } from '@element-plus/icons-vue';
@@ -83,6 +84,8 @@ import { lazyLoadMenu, menuMoveUp, menuMoveDown } from '../../api';
 import { warningNotification } from '/@/utils/message';
 import { TreeTypes, MenuTreeItemType } from '../../types';
 import type Node from 'element-plus/es/components/tree/src/model/node';
+
+const { t } = useI18n();
 
 interface IProps {
 	treeData: TreeTypes[];
@@ -153,7 +156,7 @@ const handleNodeClick = (record: MenuTreeItemType, node: Node) => {
 const handleUpdateMenu = (type: string) => {
 	if (type === 'update') {
 		if (!treeSelectMenu.value.id) {
-			warningNotification('请选择菜单！');
+			warningNotification(t('message.pages.menu.messages.selectMenu'));
 			return;
 		}
 		emit('updateDept', type, treeSelectMenu.value);
@@ -167,7 +170,7 @@ const handleUpdateMenu = (type: string) => {
  */
 const handleDeleteMenu = () => {
 	if (!treeSelectMenu.value.id) {
-		warningNotification('请选择菜单！');
+		warningNotification(t('message.pages.menu.messages.selectMenu'));
 		return;
 	}
 	emit('deleteDept', treeSelectMenu.value.id, () => {
@@ -180,7 +183,7 @@ const handleDeleteMenu = () => {
  */
 const handleSort = async (type: string) => {
 	if (!treeSelectMenu.value.id) {
-		warningNotification('请选择菜单！');
+		warningNotification(t('message.pages.menu.messages.selectMenu'));
 		return;
 	}
 	if (sortDisable.value) return;

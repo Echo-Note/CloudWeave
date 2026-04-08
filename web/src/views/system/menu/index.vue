@@ -15,12 +15,12 @@
 
 			<el-col :span="18">
         <el-tabs type="border-card">
-          <el-tab-pane label="按钮权限配置" >
+          <el-tab-pane :label="$t('message.pages.menu.dialog.buttonPermission')" >
             <div style="height: 72vh">
               <MenuButtonCom ref="menuButtonRef" />
             </div>
           </el-tab-pane>
-          <el-tab-pane label="列权限配置">
+          <el-tab-pane :label="$t('message.pages.menu.dialog.columnPermissionTab')">
             <div style="height: 72vh">
               <MenuFieldCom ref="menuFieldRef"></MenuFieldCom>
             </div>
@@ -30,7 +30,7 @@
 			</el-col>
 		</el-row>
 
-		<el-drawer v-model="drawerVisible" title="菜单配置" direction="rtl" size="500px" :close-on-click-modal="false" :before-close="handleDrawerClose">
+		<el-drawer v-model="drawerVisible" :title="$t('message.pages.menu.dialog.menuConfig')" direction="rtl" size="500px" :close-on-click-modal="false" :before-close="handleDrawerClose">
 			<MenuFormCom
 				v-if="drawerVisible"
 				:initFormData="drawerFormData"
@@ -52,6 +52,7 @@ import MenuFormCom from './components/MenuFormCom/index.vue';
 import MenuFieldCom from './components/MenuFieldCom/index.vue';
 import { GetList, DelObj } from './api';
 import { successNotification } from '/@/utils/message';
+import { i18n } from '/@/i18n/index';
 import { APIResponseData, MenuTreeItemType } from './types';
 
 let menuTreeData = ref([]);
@@ -104,9 +105,9 @@ const handleDrawerClose = (type?: string) => {
  * 部门的删除事件
  */
 const handleDeleteMenu = (id: string, callback: Function) => {
-	ElMessageBox.confirm('您确认删除该菜单项吗?', '温馨提示', {
-		confirmButtonText: '确认',
-		cancelButtonText: '取消',
+	ElMessageBox.confirm(i18n.global.t('message.pages.menu.dialog.deleteMenuConfirm'), i18n.global.t('message.pages.menu.dialog.confirm'), {
+		confirmButtonText: i18n.global.t('message.pages.menu.buttons.confirm'),
+		cancelButtonText: i18n.global.t('message.pages.menu.buttons.cancel'),
 		type: 'warning',
 	}).then(async () => {
 		const res: APIResponseData = await DelObj(id);

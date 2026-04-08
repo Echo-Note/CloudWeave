@@ -1,16 +1,16 @@
 <template>
   <div style="width: 100%; height: 100%;">
     <div class="selected-show" v-if="props.modelValue && props.selectable">
-      <el-text>已选择:</el-text>
+      <el-text>{{ $t('message.components.calendar.selected') }}</el-text>
       <el-tag v-if="props.multiple" v-for="item in data" closable @close="handleTagClose(item)">
         {{ item.toLocaleDateString('en-CA') }}
       </el-tag>
       <el-tag v-else closable @close="handleTagClose(data)">{{ data?.toLocaleDateString('en-CA') }}</el-tag>
-      <el-button v-if="props.modelValue" size="small" type="text" @click="clear">清空</el-button>
+      <el-button v-if="props.modelValue" size="small" type="text" @click="clear">{{ $t('message.components.calendar.clear') }}</el-button>
     </div>
     <div class="controls">
       <div>
-        今天：<el-text size="large">{{ today.toLocaleDateString('en-CA') }}</el-text>
+        {{ $t('message.components.calendar.today') }}<el-text size="large">{{ today.toLocaleDateString('en-CA') }}</el-text>
       </div>
       <!-- <div class="current-month">
           <el-tag size="large" type="primary">
@@ -21,18 +21,18 @@
         <el-button-group size="small" type="default" v-if="props.pageTurn">
           <el-popover trigger="click" width="160px">
             <template #reference>
-              <el-button type="text" size="small">节假日设置</el-button>
+              <el-button type="text" size="small">{{ $t('message.components.calendar.holidaySettings') }}</el-button>
             </template>
-            <el-switch v-model="showHoliday" active-text="显示节日" inactive-text="关闭节日" inline-prompt />
-            <el-checkbox v-model="showLunarHoliday" label="农历节日" />
-            <el-checkbox v-model="showJieQi" label="节气" />
-            <el-checkbox v-model="showDetailedHoliday" label="更多节日" />
+            <el-switch v-model="showHoliday" :active-text="$t('message.components.calendar.showHoliday')" :inactive-text="$t('message.components.calendar.closeHoliday')" inline-prompt />
+            <el-checkbox v-model="showLunarHoliday" :label="$t('message.components.calendar.lunarHoliday')" />
+            <el-checkbox v-model="showJieQi" :label="$t('message.components.calendar.solarTerm')" />
+            <el-checkbox v-model="showDetailedHoliday" :label="$t('message.components.calendar.moreHoliday')" />
           </el-popover>
-          <el-button icon="DArrowLeft" @click="turnToPreY">上年</el-button>
-          <el-button icon="ArrowLeft" @click="turnToPreM">上月</el-button>
-          <el-button @click="turnToToday">今天</el-button>
-          <el-button icon="ArrowRight" @click="turnToNextM">下月</el-button>
-          <el-button icon="DArrowRight" @click="turnToNextY">下年</el-button>
+          <el-button icon="DArrowLeft" @click="turnToPreY">{{ $t('message.components.calendar.prevYear') }}</el-button>
+          <el-button icon="ArrowLeft" @click="turnToPreM">{{ $t('message.components.calendar.prevMonth') }}</el-button>
+          <el-button @click="turnToToday">{{ $t('message.components.calendar.todayBtn') }}</el-button>
+          <el-button icon="ArrowRight" @click="turnToNextM">{{ $t('message.components.calendar.nextMonth') }}</el-button>
+          <el-button icon="DArrowRight" @click="turnToNextY">{{ $t('message.components.calendar.nextYear') }}</el-button>
         </el-button-group>
       </div>
     </div>
@@ -41,7 +41,7 @@
       <table style="width: 100%; border-collapse: collapse;">
         <thead>
           <tr>
-            <th class="calender-header" v-for="item, ind in ['日', '一', '二', '三', '四', '五', '六']" :key="ind">
+            <th class="calender-header" v-for="item, ind in weekdays" :key="ind">
               {{ item }}
             </th>
           </tr>
@@ -72,7 +72,7 @@
                 </div>
                 <div class="calender-cell-footer calender-cell-line">
                   <span>{{ item.holiday || '&nbsp;' }}</span>
-                  <el-text v-if="item.date.toDateString() === today.toDateString()" type="danger">今天</el-text>
+                  <el-text v-if="item.date.toDateString() === today.toDateString()" type="danger">{{ $t('message.components.calendar.todayCell') }}</el-text>
                 </div>
                 <!-- {{ item }} -->
               </div>
@@ -90,8 +90,10 @@
 <script lang="ts" setup>
 import { useUi } from '@fast-crud/fast-crud';
 import { ref, defineProps, PropType, watch, computed, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import Holidays from 'date-holidays';
 import Lunar from 'lunar-javascript';
+const { t } = useI18n();
 const LUNAR = Lunar.Lunar; // 农历
 const SOLAR = Lunar.Solar; // 阳历
 
@@ -118,6 +120,15 @@ const props = defineProps({
 type ValidDateFunc = (d: Date) => boolean;
 type PositionType = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center' | 'center-left' | 'center-right' | 'center-top';
 const today = new Date();
+const weekdays = computed(() => [
+  t('message.common.weekday.sunday'),
+  t('message.common.weekday.monday'),
+  t('message.common.weekday.tuesday'),
+  t('message.common.weekday.wednesday'),
+  t('message.common.weekday.thursday'),
+  t('message.common.weekday.friday'),
+  t('message.common.weekday.saturday'),
+]);
 const showHoliday = ref<boolean>(true); // 显示节日
 const showDetailedHoliday = ref<boolean>(false); // 显示详细的国际节日
 const showJieQi = ref<boolean>(true); // 显示节气

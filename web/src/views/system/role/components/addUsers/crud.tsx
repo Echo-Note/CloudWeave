@@ -13,8 +13,10 @@ import {
 
 import { ref , nextTick} from 'vue';
 import XEUtils from 'xe-utils';
+import { useI18n } from 'vue-i18n';
 
 export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
+  const { t } = useI18n();
   const pageRequest = async (query: UserPageQuery) => {
     return await getRoleUsersUnauthorized(query);
   };
@@ -103,7 +105,7 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 			},
       columns: {
         $checked: {
-					title: "选择",
+					title: t('message.pages.user.table.columns.select'),
 					form: { show: false},
 					column: {
 						show: true,
@@ -114,7 +116,7 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 					}
 				},
         _index: {
-          title: '序号',
+          title: t('message.pages.user.table.columns.index'),
           form: { show: false },
           column: {
             //type: 'index',
@@ -131,7 +133,7 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
           },
         },
         name: {
-          title: '用户名',
+          title: t('message.pages.user.table.columns.username'),
           search: {
             show: true,
             component: {
@@ -146,7 +148,7 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
           },
         },
         dept: {
-          title: '部门',
+          title: t('message.pages.user.table.columns.dept'),
           show: true,
           type: 'dict-tree',
           column: {

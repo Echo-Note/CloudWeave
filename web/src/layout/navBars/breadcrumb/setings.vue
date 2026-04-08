@@ -291,17 +291,17 @@
 				<div class="layout-breadcrumb-seting-bar-flex mt15">
 					<div class="layout-breadcrumb-seting-bar-flex-label">{{ $t('message.layout.fiveTagsStyle') }}</div>
 					<div class="layout-breadcrumb-seting-bar-flex-value">
-						<el-select v-model="getThemeConfig.tagsStyle" placeholder="请选择" size="default" style="width: 90px" @change="setLocalThemeConfig">
-							<el-option label="风格1" value="tags-style-one"></el-option>
-							<el-option label="风格4" value="tags-style-four"></el-option>
-							<el-option label="风格5" value="tags-style-five"></el-option>
+						<el-select v-model="getThemeConfig.tagsStyle" :placeholder="$t('message.layout.selectPlaceholder')" size="default" style="width: 90px" @change="setLocalThemeConfig">
+							<el-option :label="$t('message.layout.style1')" value="tags-style-one"></el-option>
+							<el-option :label="$t('message.layout.style4')" value="tags-style-four"></el-option>
+							<el-option :label="$t('message.layout.style5')" value="tags-style-five"></el-option>
 						</el-select>
 					</div>
 				</div>
 				<div class="layout-breadcrumb-seting-bar-flex mt15">
 					<div class="layout-breadcrumb-seting-bar-flex-label">{{ $t('message.layout.fiveAnimation') }}</div>
 					<div class="layout-breadcrumb-seting-bar-flex-value">
-						<el-select v-model="getThemeConfig.animation" placeholder="请选择" size="default" style="width: 90px" @change="setLocalThemeConfig">
+						<el-select v-model="getThemeConfig.animation" :placeholder="$t('message.layout.selectPlaceholder')" size="default" style="width: 90px" @change="setLocalThemeConfig">
 							<el-option label="slide-right" value="slide-right"></el-option>
 							<el-option label="slide-left" value="slide-left"></el-option>
 							<el-option label="opacitys" value="opacitys"></el-option>
@@ -313,14 +313,14 @@
 					<div class="layout-breadcrumb-seting-bar-flex-value">
 						<el-select
 							v-model="getThemeConfig.columnsAsideStyle"
-							placeholder="请选择"
+							:placeholder="$t('message.layout.selectPlaceholder')"
 							size="default"
 							style="width: 90px"
 							:disabled="getThemeConfig.layout !== 'columns' ? true : false"
 							@change="setLocalThemeConfig"
 						>
-							<el-option label="圆角" value="columns-round"></el-option>
-							<el-option label="卡片" value="columns-card"></el-option>
+							<el-option :label="$t('message.layout.rounded')" value="columns-round"></el-option>
+							<el-option :label="$t('message.layout.card')" value="columns-card"></el-option>
 						</el-select>
 					</div>
 				</div>
@@ -329,14 +329,14 @@
 					<div class="layout-breadcrumb-seting-bar-flex-value">
 						<el-select
 							v-model="getThemeConfig.columnsAsideLayout"
-							placeholder="请选择"
+							:placeholder="$t('message.layout.selectPlaceholder')"
 							size="default"
 							style="width: 90px"
 							:disabled="getThemeConfig.layout !== 'columns' ? true : false"
 							@change="setLocalThemeConfig"
 						>
-							<el-option label="水平" value="columns-horizontal"></el-option>
-							<el-option label="垂直" value="columns-vertical"></el-option>
+							<el-option :label="$t('message.layout.horizontal')" value="columns-horizontal"></el-option>
+							<el-option :label="$t('message.layout.vertical')" value="columns-vertical"></el-option>
 						</el-select>
 					</div>
 				</div>

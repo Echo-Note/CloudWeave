@@ -1,7 +1,8 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { Session } from '/@/utils/storage';
+import { Session, Local } from '/@/utils/storage';
 import qs from 'qs';
+import { i18n } from '/@/i18n/index';
 
 // 配置新建一个 axios 实例
 const service: AxiosInstance = axios.create({
@@ -20,8 +21,12 @@ service.interceptors.request.use(
 	(config: AxiosRequestConfig) => {
 		// 在发送请求之前做些什么 token
 		if (Session.get('token')) {
-			config.headers!['Authorization'] = `${Session.get('token')}`;
+			config.headers!['Authorization'] = `JWT ${Session.get('token')}`;
 		}
+		// Send Accept-Language header on all requests (FNT-02 per D-02)
+		const themeConfig = Local.get('themeConfig') as { [key: string]: any } | null;
+		const lang = themeConfig?.globalI18n || 'zh-cn';
+		config.headers!['Accept-Language'] = lang;
 		return config;
 	},
 	(error) => {
@@ -40,7 +45,7 @@ service.interceptors.response.use(
 			if (res.code === 401 || res.code === 4001) {
 				Session.clear(); // 清除浏览器全部临时缓存
 				window.location.href = '/'; // 去登录页
-				ElMessageBox.alert('你已被登出，请重新登录', '提示', {})
+				ElMessageBox.alert(i18n.global.t('message.common.logoutPrompt'), i18n.global.t('message.common.prompt'), {})
 					.then(() => {})
 					.catch(() => {});
 			}
@@ -52,12 +57,12 @@ service.interceptors.response.use(
 	(error) => {
 		// 对响应错误做点什么
 		if (error.message.indexOf('timeout') != -1) {
-			ElMessage.error('网络超时');
+			ElMessage.error(i18n.global.t('message.common.networkTimeout'));
 		} else if (error.message == 'Network Error') {
-			ElMessage.error('网络连接错误');
+			ElMessage.error(i18n.global.t('message.common.networkError'));
 		} else {
 			if (error.response.data) ElMessage.error(error.response.statusText);
-			else ElMessage.error('接口路径找不到');
+			else ElMessage.error(i18n.global.t('message.common.endpointNotFound'));
 		}
 		return Promise.reject(error);
 	}

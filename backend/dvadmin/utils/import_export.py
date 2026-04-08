@@ -5,6 +5,7 @@ from datetime import datetime
 
 import openpyxl
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 from dvadmin.utils.validator import CustomValidationError
 
@@ -62,7 +63,7 @@ def import_to_data(file_url, field_data, m2m_fields=None):
                 try:
                     cell_value = datetime.strptime(str(cell_value), '%Y-%m-%d %H:%M:%S').date()
                 except:
-                    raise CustomValidationError('日期格式不正确')
+                    raise CustomValidationError(_("Date format is incorrect"))
             elif value_type == 'datetime':
                 cell_value = datetime.strptime(str(cell_value), '%Y-%m-%d %H:%M:%S')
             else:

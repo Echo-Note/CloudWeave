@@ -1,7 +1,7 @@
 <template>
   <div style="display: inline-block">
     <el-button  type="success" @click="handleImport()">
-      <slot>导入</slot>
+      <slot>{{ $t('message.components.importExcel.import') }}</slot>
     </el-button>
     <el-dialog :title="props.upload.title" v-model="uploadShow" width="400px" append-to-body>
       <div v-loading="loading">
@@ -17,25 +17,23 @@
             :auto-upload="false"
             drag
         >
-          <i class="el-icon-upload"/>
+          <i class="el-icon-upload" />
           <div class="el-upload__text">
-            将文件拖到此处，或
-            <em>点击上传</em>
+            {{ $t('message.components.importExcel.dragDrop') }}，
+            <em>{{ $t('message.components.importExcel.clickUpload') }}</em>
           </div>
-          <template #tip>
-          <div  class="el-upload__tip" style="color:red">提示：仅允许导入“xls”或“xlsx”格式文件！</div>
-          </template>
+          <div class="el-upload__tip" style="color:red">{{ $t('message.components.importExcel.uploadTip') }}</div>
         </el-upload>
         <div>
-          <el-button type="warning" style="font-size:14px;margin-top: 20px" @click="importTemplate">下载导入模板</el-button>
-          <el-button type="warning" style="font-size:14px;margin-top: 20px" @click="updateTemplate">批量更新模板</el-button>
+          <el-button type="warning" style="font-size:14px;margin-top: 20px" @click="importTemplate">{{ $t('message.components.importExcel.downloadTemplate') }}</el-button>
+          <el-button type="warning" style="font-size:14px;margin-top: 20px" @click="updateTemplate">{{ $t('message.components.importExcel.batchUpdateTemplate') }}</el-button>
         </div>
       </div>
       <template #footer>
-      <div  class="dialog-footer">
-        <el-button type="primary" :disabled="loading" @click="submitFileForm">确 定</el-button>
-        <el-button :disabled="loading" @click="uploadShow = false">取 消</el-button>
-      </div>
+        <div class="dialog-footer">
+          <el-button type="primary" :disabled="loading" @click="submitFileForm">{{ $t('message.components.importExcel.confirm') }}</el-button>
+          <el-button :disabled="loading" @click="uploadShow = false">{{ $t('message.components.importExcel.cancel') }}</el-button>
+        </div>
       </template>
     </el-dialog>
   </div>
@@ -48,6 +46,8 @@ import { getBaseURL } from '/@/utils/baseUrl';
 import { Session } from '/@/utils/storage';
 import {  ElMessageBox } from 'element-plus'
 import type { Action } from 'element-plus'
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 const refreshView = inject('refreshView')
 
 let props = defineProps({
@@ -123,7 +123,7 @@ const handleFileSuccess=function (response:any, file:any, fileList:any) {
     }
   }).then((response:any) => {
     loading.value = false
-    ElMessageBox.alert('导入成功', '导入完成', {
+    ElMessageBox.alert(t('message.components.importExcel.importSuccessMsg'), t('message.components.importExcel.importSuccess'), {
       confirmButtonText: 'OK',
       callback: (action: Action) => {
         refreshView()

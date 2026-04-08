@@ -1,11 +1,5 @@
 # -*- coding: utf-8 -*-
-
-"""
-@author: 猿小天
-@contact: QQ:1638245306
-@Created on: 2021/6/3 003 0:30
-@Remark: 角色管理
-"""
+from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -48,7 +42,7 @@ class RoleCreateUpdateSerializer(CustomModelSerializer):
     dept = DeptSerializer(many=True, read_only=True)
     permission = MenuButtonSerializer(many=True, read_only=True)
     key = serializers.CharField(max_length=50,
-                                validators=[CustomUniqueValidator(queryset=Role.objects.all(), message="权限字符必须唯一")])
+                                validators=[CustomUniqueValidator(queryset=Role.objects.all(), message=_("Permission key must be unique"))])
     name = serializers.CharField(max_length=50, validators=[CustomUniqueValidator(queryset=Role.objects.all())])
 
     def validate(self, attrs: dict):
@@ -141,7 +135,7 @@ class RoleViewSet(CustomModelViewSet, FastCrudMixin,FieldPermissionMixin):
             # right : 添加用户权限
             role.users_set.add(*movedKeys)
         serializer = RoleSerializer(role)
-        return DetailResponse(data=serializer.data, msg="更新成功")
+        return DetailResponse(data=serializer.data, msg=_("Update successful"))
 
     @action(methods=['GET'], detail=False, permission_classes=[IsAuthenticated, CustomPermission])
     def get_role_users(self, request):
@@ -153,7 +147,7 @@ class RoleViewSet(CustomModelViewSet, FastCrudMixin,FieldPermissionMixin):
         role_id = request.query_params.get('role_id', None)
 
         if not role_id:
-            return ErrorResponse(msg="请选择角色")
+            return ErrorResponse(msg=_("Please select a role"))
 
         if request.query_params.get('authorized', 0) == "1":
             queryset = Users.objects.filter(role__id=role_id).exclude(is_superuser=True)
@@ -180,12 +174,12 @@ class RoleViewSet(CustomModelViewSet, FastCrudMixin,FieldPermissionMixin):
         user_id = request.data.get('user_id', None)
 
         if not user_id:
-            return ErrorResponse(msg="请选择用户")
+            return ErrorResponse(msg=_("Please select a user"))
 
         role = self.get_object()
         role.users_set.remove(*user_id)
 
-        return SuccessResponse(msg="删除成功")
+        return SuccessResponse(msg=_("Delete successful"))
 
     @action(methods=['POST'], detail=True, permission_classes=[IsAuthenticated, CustomPermission])
     def add_role_users(self, request, pk):
@@ -195,9 +189,9 @@ class RoleViewSet(CustomModelViewSet, FastCrudMixin,FieldPermissionMixin):
         users_id = request.data.get('users_id', None)
 
         if not users_id:
-            return ErrorResponse(msg="请选择用户")
+            return ErrorResponse(msg=_("Please select a user"))
 
         role = self.get_object()
         role.users_set.add(*users_id)
 
-        return DetailResponse(msg="添加成功")
+        return DetailResponse(msg=_("Add successful"))

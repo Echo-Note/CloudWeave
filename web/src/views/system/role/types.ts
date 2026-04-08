@@ -60,8 +60,12 @@ export interface RoleMenuBtnType {
 	menu_btn_pre_id: string | number;
 	/** 是否选中 */
 	isCheck: boolean;
-	/** 按钮名称 */
+	/** 按钮名称（当前语言） */
 	name: string;
+	/** 按钮名称-English */
+	name_en?: string;
+	/** 按钮名称-繁体中文 */
+	name_zh_tw?: string;
 	/** 数据权限范围 */
 	data_range: number | null;
 	/** 自定义部门 */

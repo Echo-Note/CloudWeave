@@ -1,19 +1,19 @@
 <template>
 	<div class="columns-table-com">
-		<p class="ctc-title">字段权限</p>
+		<p class="ctc-title">{{ $t('message.pages.columns.table.title') }}</p>
 
 		<div class="ctc-head">
-			<el-button type="primary" @click="handleUpdateColumn('create')">新增</el-button>
-			<el-button type="primary" @click="handleAutomatch">自动匹配</el-button>
+			<el-button type="primary" @click="handleUpdateColumn('create')">{{ $t('message.pages.columns.buttons.add') }}</el-button>
+			<el-button type="primary" @click="handleAutomatch">{{ $t('message.pages.columns.buttons.automatch') }}</el-button>
 		</div>
 
 		<el-table :data="state.data" border v-loading="state.loading" class="ctc-table">
-			<el-table-column prop="field_name" label="字段名" />
-			<el-table-column prop="title" label="列名" />
-			<el-table-column label="操作" width="180" align="center">
+			<el-table-column prop="field_name" :label="$t('message.pages.columns.form.fieldName')" />
+			<el-table-column prop="title" :label="$t('message.pages.columns.form.columnName')" />
+			<el-table-column :label="$t('message.pages.user.table.columns.actions')" width="180" align="center">
 				<template #default="scope">
-					<el-button type="primary" @click="handleUpdateColumn('update', scope.row)">编辑</el-button>
-					<el-button type="danger" @click="handleDelete(scope.row)">删除</el-button>
+					<el-button type="primary" @click="handleUpdateColumn('update', scope.row)">{{ $t('message.pages.user.buttons.edit') }}</el-button>
+					<el-button type="danger" @click="handleDelete(scope.row)">{{ $t('message.pages.user.buttons.delete') }}</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -31,7 +31,7 @@
 			/>
 		</div>
 
-		<el-drawer v-model="drawerVisible" title="字段权限" direction="rtl" size="500px" :close-on-click-modal="false" :before-close="handleDrawerClose">
+		<el-drawer v-model="drawerVisible" :title="$t('message.pages.columns.dialog.fieldPermission')" direction="rtl" size="500px" :close-on-click-modal="false" :before-close="handleDrawerClose">
 			<ColumnsFormCom v-if="drawerVisible" :currentInfo="props.currentInfo" :initFormData="drawerFormData" @drawerClose="handleDrawerClose" />
 		</el-drawer>
 	</div>
@@ -39,11 +39,14 @@
 
 <script lang="ts" setup>
 import { ref, reactive } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { ElMessageBox } from 'element-plus';
 import ColumnsFormCom from '../ColumnsFormCom/index.vue';
 import { getColumnsData, automatchColumnsData, deleteColumnsData, updateColumnsData } from './api';
 import { successNotification, warningNotification } from '/@/utils/message';
 import { APIResponseData, CurrentInfoType, ColumnsFormDataType, AddColumnsDataType } from '../../types';
+
+const { t } = useI18n();
 
 const props = defineProps({
 	currentInfo: {
@@ -85,12 +88,12 @@ const handleAutomatch = async () => {
 	if (props.currentInfo?.role && props.currentInfo?.model && props.currentInfo?.app) {
 		const res = await automatchColumnsData(props.currentInfo);
 		if (res?.code === 2000) {
-			successNotification('匹配成功');
+			successNotification(t('message.pages.columns.messages.matchSuccess'));
 			fetchData();
 		}
 		return;
 	}
-	warningNotification('请选择角色和模型表！');
+	warningNotification(t('message.pages.columns.messages.selectRoleAndTable'));
 };
 
 /**
@@ -104,7 +107,7 @@ const handleUpdateColumn = (type: string, record?: ColumnsFormDataType) => {
 		drawerVisible.value = true;
 		return;
 	}
-	warningNotification('请选择角色和模型表！');
+	warningNotification(t('message.pages.columns.messages.selectRoleAndTable'));
 };
 const handleDrawerClose = (type?: string) => {
 	if (type === 'submit') {
@@ -118,15 +121,15 @@ const handleDrawerClose = (type?: string) => {
  * 删除 deleteColumnsData
  */
 const handleDelete = ({ id }: { id: number }) => {
-	ElMessageBox.confirm('确定删除该字段吗？', '提示', {
+	ElMessageBox.confirm(t('message.pages.columns.messages.deleteConfirm'), t('message.pages.menu.buttons.confirm'), {
 		type: 'error',
-		confirmButtonText: '确定',
-		cancelButtonText: '取消',
+		confirmButtonText: t('message.pages.menu.buttons.confirm'),
+		cancelButtonText: t('message.pages.menu.buttons.cancel'),
 	})
 		.then(async () => {
 			const res = await deleteColumnsData(id);
 			if (res?.code === 2000) {
-				successNotification('删除成功');
+				successNotification(t('message.pages.columns.messages.deleteSuccess'));
 				fetchData();
 			}
 		})
@@ -135,7 +138,7 @@ const handleDelete = ({ id }: { id: number }) => {
 
 const handleChange = (record: AddColumnsDataType) => {
 	updateColumnsData(record).then((res: APIResponseData) => {
-		successNotification(res.msg || '更新成功');
+		successNotification(t('message.pages.columns.messages.updateSuccess'));
 	});
 };
 
