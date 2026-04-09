@@ -2,7 +2,6 @@ import {AddReq, DelReq, EditReq, dict, CreateCrudOptionsRet, CreateCrudOptionsPr
 import * as api from './api';
 import {auth} from '/@/utils/authFunction'
 import {request} from '/@/utils/service';
-import { successNotification } from '/@/utils/message';
 import { ElMessage } from 'element-plus';
 import { nextTick, ref } from 'vue';
 import XEUtils from 'xe-utils';
@@ -92,8 +91,10 @@ export const createCrudOptions = function ({crudExpose, context}: CreateCrudOpti
 							}
 							const result = await api.BatchAdd({ menu: context!.selectOptions.value.id });
 							if (result.code == 2000) {
-								successNotification(result.msg);
+								ElMessage.success(result.msg);
 								crudExpose.doRefresh();
+							} else {
+								ElMessage.error(result.msg);
 							}
 						},
 					},
