@@ -62,6 +62,7 @@
           </template>
 
           <el-table
+            :ref="(el: any) => { if (el) tableRefs[group.viewset] = el }"
             :data="group.buttons"
             border
             size="small"
@@ -148,6 +149,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue';
+import type { ElTable } from 'element-plus';
 import { ElMessage } from 'element-plus';
 import { scanGetApps, scanViewSet, scanBatchCreate } from '../../api';
 
@@ -201,6 +203,7 @@ const scanning = ref(false);
 const submitting = ref(false);
 const tableData = ref<ViewSetGroup[]>([]);
 const expandedGroups = ref<string[]>([]);
+const tableRefs = ref<Record<string, InstanceType<typeof ElTable>>>({});
 
 // --- 计算属性 ---
 const selectedCount = computed(() => {
@@ -234,6 +237,14 @@ const toggleGroup = (group: ViewSetGroup, checked: boolean) => {
       btn._checked = checked;
     }
   }
+  const tableRef = tableRefs.value[group.viewset];
+  if (tableRef) {
+    for (const btn of group.buttons) {
+      if (!btn.is_existing) {
+        tableRef.toggleRowSelection(btn, checked);
+      }
+    }
+  }
 };
 
 const toggleAll = (checked: boolean) => {
@@ -241,6 +252,14 @@ const toggleAll = (checked: boolean) => {
     for (const btn of group.buttons) {
       if (!btn.is_existing) {
         btn._checked = checked;
+      }
+    }
+    const tableRef = tableRefs.value[group.viewset];
+    if (tableRef) {
+      for (const btn of group.buttons) {
+        if (!btn.is_existing) {
+          tableRef.toggleRowSelection(btn, checked);
+        }
       }
     }
   }
@@ -351,6 +370,7 @@ const handleClose = () => {
   selectedApp.value = '';
   tableData.value = [];
   expandedGroups.value = [];
+  tableRefs.value = {};
 };
 
 const handleOpen = async () => {
