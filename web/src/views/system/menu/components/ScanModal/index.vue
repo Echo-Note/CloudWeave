@@ -66,7 +66,6 @@
             border
             size="small"
             style="width: 100%"
-            @selection-change="(rows: Button[]) => onSelectionChange(group, rows)"
           >
             <el-table-column type="selection" width="45" :selectable="(row: Button) => !row.is_existing" />
             <el-table-column prop="path" :label="$t('message.pages.menu.scan.path')" min-width="220" />
@@ -160,6 +159,7 @@ interface Button {
   value: string;
   is_existing: boolean;
   method_int: number;
+  _checked?: boolean;  // 是否勾选
   _editing?: boolean;
   _editName?: string;
   _editingValue?: boolean;
@@ -170,7 +170,6 @@ interface ViewSetGroup {
   viewset: string;
   viewset_verbose_name?: string;
   buttons: Button[];
-  _selectedSet?: Set<string>; // 追踪该 group 内选中的 row key
 }
 
 const props = defineProps<{
@@ -203,12 +202,10 @@ const submitting = ref(false);
 const tableData = ref<ViewSetGroup[]>([]);
 const expandedGroups = ref<string[]>([]);
 
-const rowKey = (btn: Button) => `${btn.path}::${btn.method}::${btn.action}`;
-
 // --- 计算属性 ---
 const selectedCount = computed(() => {
   return tableData.value.reduce((total, group) => {
-    return total + (group._selectedSet?.size || 0);
+    return total + group.buttons.filter(btn => !btn.is_existing && btn._checked).length;
   }, 0);
 });
 
@@ -222,52 +219,29 @@ const methodTagType = (method: string) => {
 
 const isGroupAllSelected = (group: ViewSetGroup) => {
   const selectable = group.buttons.filter(btn => !btn.is_existing);
-  return selectable.length > 0 && selectable.every(btn => group._selectedSet?.has(rowKey(btn)));
+  return selectable.length > 0 && selectable.every(btn => btn._checked);
 };
 
 const isGroupIndeterminate = (group: ViewSetGroup) => {
   const selectable = group.buttons.filter(btn => !btn.is_existing);
-  const selectedCount = selectable.filter(btn => group._selectedSet?.has(rowKey(btn))).length;
-  return selectedCount > 0 && selectedCount < selectable.length;
+  const selected = selectable.filter(btn => btn._checked).length;
+  return selected > 0 && selected < selectable.length;
 };
 
 const toggleGroup = (group: ViewSetGroup, checked: boolean) => {
   for (const btn of group.buttons) {
     if (!btn.is_existing) {
-      if (checked) {
-        group._selectedSet!.add(rowKey(btn));
-      } else {
-        group._selectedSet!.delete(rowKey(btn));
-      }
+      btn._checked = checked;
     }
   }
-  // 触发 el-table 的选中状态更新（通过重新设置 data 触发）
-  triggerTableRefresh(group);
 };
 
 const toggleAll = (checked: boolean) => {
   for (const group of tableData.value) {
-    toggleGroup(group, checked);
-  }
-};
-
-// 触发 el-table 刷新选中状态
-const triggerTableRefresh = (group: ViewSetGroup) => {
-  const data = [...group.buttons];
-  group.buttons = data;
-};
-
-const onSelectionChange = (group: ViewSetGroup, selectedRows: Button[]) => {
-  const selectedKeys = new Set(selectedRows.map(rowKey));
-  // 更新 _selectedSet
-  for (const btn of group.buttons) {
-    const key = rowKey(btn);
-    if (btn.is_existing) {
-      group._selectedSet!.delete(key);
-    } else if (selectedKeys.has(key)) {
-      group._selectedSet!.add(key);
-    } else {
-      group._selectedSet!.delete(key);
+    for (const btn of group.buttons) {
+      if (!btn.is_existing) {
+        btn._checked = checked;
+      }
     }
   }
 };
@@ -306,22 +280,17 @@ const handleScan = async () => {
     for (const group of (res.data || [])) {
       const buttons: Button[] = group.buttons.map((btn: any) => ({
         ...btn,
+        _checked: !btn.is_existing,
         _editing: false,
         _editName: btn.name,
         _editingValue: false,
         _editValue: btn.value,
       }));
-      const g: ViewSetGroup = {
+      groups.push({
         viewset: group.viewset,
         viewset_verbose_name: group.viewset_verbose_name,
         buttons,
-        _selectedSet: new Set(
-          buttons
-            .filter(btn => !btn.is_existing)
-            .map(rowKey)
-        ),
-      };
-      groups.push(g);
+      });
     }
     tableData.value = groups;
     expandedGroups.value = groups.map(g => g.viewset);
@@ -346,7 +315,7 @@ const handleSubmit = async () => {
   for (const group of tableData.value) {
     for (const btn of group.buttons) {
       if (btn.is_existing) continue;
-      if (!group._selectedSet?.has(rowKey(btn))) continue;
+      if (!btn._checked) continue;
       selected.push({
         path: btn.path,
         method: btn.method,
