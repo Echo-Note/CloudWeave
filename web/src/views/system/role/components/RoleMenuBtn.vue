@@ -239,7 +239,7 @@ const expandedModels = ref<string[]>([]);
 /** 按 Model > CRUD 意图分组 */
 const groupedButtons = computed(() => {
 	// value 格式: app:model:action
-	// 示例: system:User:List, test_app:Blog:Create
+	// 示例: system:Users:List, system:Menu:Create
 	const modelMap: Map<string, Map<IntentType, RoleMenuBtnType[]>> = new Map();
 
 	for (const btn of RoleMenuBtn.$state) {
