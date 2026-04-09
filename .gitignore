@@ -10,3 +10,6 @@ web/package-lock.json
 /backend/db.sqlite3-wal
 /backend/db.sqlite3-shm
 web/test-results/
+
+# Superpowers planning docs
+docs/superpowers/
