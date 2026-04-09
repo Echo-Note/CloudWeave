@@ -16,14 +16,14 @@
 			<el-col :span="18">
         <el-tabs type="border-card">
           <el-tab-pane :label="$t('message.pages.menu.dialog.buttonPermission')" >
-            <div style="height: 72vh">
+            <div class="menu-btn-pane">
               <div class="menu-scan-btn">
                 <el-button type="primary" @click="handleOpenScanModal">
                   <el-icon><Monitor /></el-icon>
-                  自动扫描
+                  {{ $t('message.pages.menu.scan.title') }}
                 </el-button>
               </div>
-              <MenuButtonCom ref="menuButtonRef" />
+              <MenuButtonCom ref="menuButtonRef" class="menu-btn-fill" />
             </div>
           </el-tab-pane>
           <el-tab-pane :label="$t('message.pages.menu.dialog.columnPermissionTab')">
@@ -192,5 +192,16 @@ onMounted(() => {
 	display: flex;
 	justify-content: flex-end;
 	margin-bottom: 8px;
+}
+
+.menu-btn-pane {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+
+	.menu-btn-fill {
+		flex: 1;
+		overflow: hidden;
+	}
 }
 </style>
