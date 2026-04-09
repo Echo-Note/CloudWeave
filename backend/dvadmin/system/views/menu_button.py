@@ -194,7 +194,10 @@ class MenuButtonViewSet(CustomModelViewSet):
                     continue
                 seen_viewset_ids.add(id(cls))
 
+                # 排除基类（名字含 Custom/Base/Generic）
                 viewset_name = cls.__name__
+                if any(viewset_name.startswith(prefix) for prefix in ('Custom', 'Base', 'Generic', 'Abstract')):
+                    continue
                 model_name = viewset_name.removesuffix('ViewSet') if viewset_name.endswith('ViewSet') else viewset_name
 
                 viewset_verbose_name = viewset_name
