@@ -1686,7 +1686,8 @@
                 "visible": true,
                 "children": [],
                 "name_en": "Task Management",
-                "name_zh_tw": "任務管理"
+                "name_zh_tw": "任務管理",
+                "component_name": "taskManage"
             },
             {
                 "name": "任务日志",
@@ -1701,10 +1702,13 @@
                 "visible": true,
                 "children": [],
                 "name_en": "Task Logs",
-                "name_zh_tw": "任務日誌"
+                "name_zh_tw": "任務日誌",
+                "component_name": "taskLog"
             }
         ],
         "name_en": "Scheduled Tasks",
-        "name_zh_tw": "定時任務"
+        "name_zh_tw": "定時任務",
+        "component": "",
+        "component_name": ""
     }
 ]

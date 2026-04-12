@@ -316,8 +316,8 @@ export default {
     systemMenu: {
       MenuList: 'Menu List',
       MenuListNote: '1. A red menu indicates that it is disabled; 2. When adding a menu, if it is a directory, the component address can be left blank; 3. When adding a root node menu, the parent ID can be left blank;',
-      welcomeInfo1: ' 这里是您的工作台，请愉快的工作吧！',
-      quickNavigationTool: '快捷导航工具',
+      welcomeInfo1: ' This is your workspace, please work happily!',
+      quickNavigationTool: 'Quick Navigation Tools',
     },
   },
   staticRoutes: {

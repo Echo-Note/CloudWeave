@@ -27,9 +27,7 @@
 			</div>
 			<template #dropdown>
 				<el-dropdown-menu>
-					<el-dropdown-item command="zh-cn" :disabled="state.disabledI18n === 'zh-cn'">{{ $t('message.user.langZhCn') }}</el-dropdown-item>
-					<el-dropdown-item command="en" :disabled="state.disabledI18n === 'en'">{{ $t('message.user.langEn') }}</el-dropdown-item>
-					<el-dropdown-item command="zh-tw" :disabled="state.disabledI18n === 'zh-tw'">{{ $t('message.user.langZhTw') }}</el-dropdown-item>
+					<el-dropdown-item v-for="item in languageLabels" :key="item.command" :command="item.command" :disabled="state.disabledI18n === item.command">{{ item.label }}</el-dropdown-item>
 				</el-dropdown-menu>
 			</template>
 		</el-dropdown>
@@ -132,6 +130,13 @@ const storesThemeConfig = useThemeConfig();
 const { userInfos } = storeToRefs(stores);
 const { themeConfig } = storeToRefs(storesThemeConfig);
 const searchRef = ref();
+// 语言切换下拉选项（固定使用各语言母语名称，不受当前 locale 影响）
+const languageLabels = [
+	{ command: 'zh-cn', label: '简体中文' },
+	{ command: 'en', label: 'English' },
+	{ command: 'zh-tw', label: '繁體中文' },
+];
+
 const state = reactive({
 	isScreenfull: false,
 	disabledI18n: 'zh-cn',
