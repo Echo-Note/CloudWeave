@@ -408,7 +408,7 @@ class SystemConfigInitSerializer(CustomModelSerializer):
 
     class Meta:
         model = SystemConfig
-        fields = ['parent', 'title', 'key', 'value', 'sort', 'status', 'data_options', 'form_item_type', 'rule',
+        fields = ['parent', 'title', 'title_en', 'title_zh_tw', 'key', 'value', 'sort', 'status', 'data_options', 'form_item_type', 'rule',
                   'placeholder', 'setting', 'creator', 'dept_belong_id', 'children']
         read_only_fields = ["id"]
         extra_kwargs = {
