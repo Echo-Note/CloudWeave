@@ -274,9 +274,13 @@ import { messageCenterStore } from '/@/stores/messageCenter';
 import { getBaseURL } from '/@/utils/baseUrl';
 const messageCenter = messageCenterStore();
 let eventSource: EventSource | null = null; // 存储 EventSource 实例
-const token = Session.get('token');
 const isConnected = ref(false); // 标志变量，记录是否已连接过
 const getMessageCenterCount = () => {
+	const token = Session.get('token');
+	if (!token) {
+		console.warn('SSE 连接失败：缺少 token');
+		return;
+	}
 	// 创建 EventSource 实例并连接到后端 SSE 端点
 	eventSource = new EventSource(`${getBaseURL()}sse/?token=${token}`); // 替换为你的后端地址
 	// 首次连接成功时打印一次

@@ -320,9 +320,9 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 					title: t('message.pages.messageCenter.table.columns.content'),
 					column: {
 						width: 300,
-						show: false,
+						show: true,
 					},
-					type: ['editor-wang5', 'colspan'],
+					type: ['textarea'],
 					form: {
 						rules: [
 							// 表单校验规则

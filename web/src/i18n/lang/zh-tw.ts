@@ -8,7 +8,7 @@ export default {
       quickNavigationTool: '快捷導航工具',
     },
     footer: {
-      copyright: ' ❤️ Powered by tiantianxiangshang Copyright © 巨夢·DVAmin團隊 ❤️',
+      copyright: ' ❤️ Powered by DVAdmin Copyright © 巨夢科技·DVAmin團隊 ❤️',
     },
     router: {
       home: '首頁',

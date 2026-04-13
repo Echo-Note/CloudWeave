@@ -216,7 +216,7 @@ export default defineComponent({
           url:'#/areas',
 				},
 			],
-			myCharts: [],
+			myCharts: [] as any[],
 			charts: {
 				theme: '',
 				bgColor: '',
@@ -225,7 +225,13 @@ export default defineComponent({
 		});
 		// 折线图
 		const initLineChart = () => {
-			if (!global.dispose.some((b: any) => b === global.homeChartOne)) global.homeChartOne.dispose();
+			if (!global.dispose.some((b: any) => b === global.homeChartOne)) {
+				try {
+					global.homeChartOne.dispose();
+				} catch (e) {
+					// 忽略已销毁的实例
+				}
+			}
 			global.homeChartOne = <any>echarts.init(homeLineRef.value, state.charts.theme);
 			const option = {
 				backgroundColor: state.charts.bgColor,
@@ -303,12 +309,22 @@ export default defineComponent({
 				],
 			};
 			(<any>global.homeChartOne).setOption(option);
-			(<any>state.myCharts).push(global.homeChartOne);
+			// 清除旧实例，添加新实例
+			state.myCharts = [];
+			state.myCharts.push(global.homeChartOne);
 		};
 		// 饼图
 		const initPieChart = () => {
-			if (!global.dispose.some((b: any) => b === global.homeChartTwo)) global.homeChartTwo.dispose();
-			global.homeChartTwo = <any>echarts.init(homePieRef.value, state.charts.theme);
+			if (!homePieRef.value) return;
+			if (homePieRef.value.clientWidth === 0 || homePieRef.value.clientHeight === 0) {
+				requestAnimationFrame(initPieChart);
+				return;
+			}
+			if (global.homeChartTwo) {
+				try { global.homeChartTwo.dispose(); } catch (e) {}
+			}
+			try {
+				global.homeChartTwo = <any>echarts.init(homePieRef.value, state.charts.theme);
 			var getname = [
 				t('message.pages.home.chart.pieCategory1'),
 				t('message.pages.home.chart.pieCategory2'),
@@ -393,8 +409,11 @@ export default defineComponent({
 					},
 				],
 			};
-			(<any>global.homeChartTwo).setOption(option);
-			(<any>state.myCharts).push(global.homeChartTwo);
+				(<any>global.homeChartTwo).setOption(option);
+				(<any>state.myCharts).push(global.homeChartTwo);
+			} catch (e) {
+				console.error('ECharts初始化失败:', e);
+			}
 		};
 		// 柱状图
 		const initBarChart = () => {
@@ -532,7 +551,11 @@ export default defineComponent({
 			nextTick(() => {
 				for (let i = 0; i < state.myCharts.length; i++) {
 					setTimeout(() => {
-						(<any>state.myCharts[i]).resize();
+						try {
+							(<any>state.myCharts[i]).resize();
+						} catch (e) {
+							// 忽略已销毁的实例
+						}
 					}, i * 1000);
 				}
 			});

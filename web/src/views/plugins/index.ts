@@ -2,11 +2,18 @@ import { defineAsyncComponent, AsyncComponentLoader } from 'vue';
 export let pluginsAll: any = [];
 // 扫描插件目录并注册插件
 export const scanAndInstallPlugins = (app: any) => {
+	const registeredComponents = new Set();
 	const components = import.meta.glob('./**/*.ts');
 	const pluginNames = new Set();
 	// 遍历对象并注册异步组件
 	for (const [key, value] of Object.entries(components)) {
 		const name = key.slice(key.lastIndexOf('/') + 1, key.lastIndexOf('.'));
+		// 检查组件是否已注册，避免重复注册
+		if (registeredComponents.has(name)) {
+			console.warn(`组件 "${name}" 已注册，跳过重复注册`);
+			continue;
+		}
+		registeredComponents.add(name);
 		app.component(name, defineAsyncComponent(value as AsyncComponentLoader));
 		const pluginsName = key.match(/\/([^\/]*)\//)?.[1];
 		pluginNames.add(pluginsName);
@@ -16,6 +23,12 @@ export const scanAndInstallPlugins = (app: any) => {
 	for (let [key, value] of Object.entries(dreamComponents)) {
 		key = key.replace('node_modules/@great-dream/', '');
 		const name = key.slice(key.lastIndexOf('/') + 1, key.lastIndexOf('.'));
+		// 检查组件是否已注册，避免重复注册
+		if (registeredComponents.has(name)) {
+			console.warn(`组件 "${name}" 已注册，跳过重复注册`);
+			continue;
+		}
+		registeredComponents.add(name);
 		app.component(name, defineAsyncComponent(value as AsyncComponentLoader));
 		const pluginsName = key.match(/\/([^\/]*)\//)?.[1];
 		pluginNames.add(pluginsName);

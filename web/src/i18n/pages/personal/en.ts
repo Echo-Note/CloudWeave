@@ -3,8 +3,8 @@ export default {
     message: {
         pages: {
             personal: {
-                PersonalInfo1: 'Basic Info',
-                PersonalInfo2: 'Complete your personal information here',
+                      PersonalInfo1: ' Idleness is the root of all evil.',
+                      PersonalInfo2: 'DVAdmin is an efficient and user-friendly backend management system developed based on Django and Vue.js, primarily designed for rapidly building management backends for enterprise-level web applications. Utilizing a front-end and back-end separation architecture, it provides a comprehensive set of out-of-the-box functional modules, assisting developers and businesses in reducing development costs and enhancing management efficiency. (Note: The prompt text can be changed by modifying the personal.PersonalInfo2 file located in the src/i18n/pages/personal/ directory under the frontend directory.)',
                 info: {
                     myInfoTitle: 'My Information',
                     updateInfoTitle: 'Update Info',
@@ -18,17 +18,18 @@ export default {
                     boundEmail: 'Bound Email:',
                 },
                 form: {
-                    nickname: 'Nickname',
+                    nickname: 'Nickname:',
                     nicknamePlaceholder: 'Please enter your nickname',
-                    email: 'Email',
+                    email: 'Email:',
                     emailPlaceholder: 'Please enter your email',
-                    mobile: 'Mobile',
+                    mobile: 'Mobile:',
                     mobilePlaceholder: 'Please enter your mobile number',
-                    gender: 'Gender',
+                    gender: 'Gender:',
                     genderPlaceholder: 'Please select gender',
                     genderMale: 'Male',
                     genderFemale: 'Female',
                     genderSecret: 'Secret',
+                    passwd: 'Password:',
                 },
                 dialog: {
                     passwordChange: 'Change Password',

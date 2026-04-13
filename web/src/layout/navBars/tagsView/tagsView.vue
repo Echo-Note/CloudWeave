@@ -124,15 +124,18 @@ const addBrowserSetSession = (tagsViewList: Array<object>) => {
 const getTagsViewRoutes = async () => {
 	state.routeActive = await setTagsViewHighlight(route);
 	state.routePath = (await route.meta.isDynamic) ? route.meta.isDynamicPath : route.path;
-	state.tagsViewList = [];
 	state.tagsViewRoutesList = tagsViewRoutes.value;
-	initTagsView();
+	
+	// 只有在标签栏为空时才重新初始化
+	if (state.tagsViewList.length === 0) {
+		initTagsView();
+	}
 };
 // pinia 中获取路由信息：如果是设置了固定的（isAffix），进行初始化显示
 const initTagsView = async () => {
-	if (Session.get('tagsViewList') && getThemeConfig.value.isCacheTagsView) {
-		state.tagsViewList = await Session.get('tagsViewList');
-	} else {
+	// 只有在标签栏为空时才添加固定路由
+	if (state.tagsViewList.length === 0) {
+		// 重新初始化标签栏，确保使用最新的路由数据
 		await state.tagsViewRoutesList.map((v: RouteItem) => {
 			if (v.meta?.isAffix && !v.meta.isHide) {
 				v.url = setTagsViewHighlight(v);
@@ -140,8 +143,19 @@ const initTagsView = async () => {
 				storesKeepALiveNames.addCachedView(v);
 			}
 		});
+	}
+	
+	// 检查当前路由是否已经在标签栏中，如果不是才添加
+	const currentRoutePath = route.meta?.isDynamic ? route.meta.isDynamicPath : route.path;
+	const isCurrentRouteInTagsView = state.tagsViewList.some((v: RouteItem) => {
+		return v.path === currentRoutePath;
+	});
+	
+	if (!isCurrentRouteInTagsView) {
+		// 添加当前路由到标签栏
 		await addTagsView(route.path, <RouteToFrom>route);
 	}
+	
 	// 初始化当前元素(li)的下标
 	getTagsRefsIndex(getThemeConfig.value.isShareTagsView ? state.routePath : state.routeActive);
 };
@@ -187,41 +201,51 @@ const singleAddTagsView = (path: string, to?: RouteToFrom) => {
 	});
 };
 // 1、添加 tagsView：未设置隐藏（isHide）也添加到在 tagsView 中（可开启多标签详情，单标签详情）
-const addTagsView = (path: string, to?: RouteToFrom) => {
+const addTagsView = async (path: string, to?: RouteToFrom) => {
 	// 防止拿取不到路由信息
-	nextTick(async () => {
-		// 修复：https://gitee.com/lyt-top/vue-next-admin/issues/I3YX6G
-		let item: RouteItem;
-		if (to?.meta?.isDynamic) {
-			// 动态路由（xxx/:id/:name"）：参数不同，开启多个 tagsview
-			if (!getThemeConfig.value.isShareTagsView) await solveAddTagsView(path, to);
-			else await singleAddTagsView(path, to);
-			if (state.tagsViewList.some((v: RouteItem) => v.path === to?.meta?.isDynamicPath)) {
-				// 防止首次进入界面时(登录进入) tagsViewList 不存浏览器中
-				addBrowserSetSession(state.tagsViewList);
-				return false;
-			}
-			item = state.tagsViewRoutesList.find((v: RouteItem) => v.path === to?.meta?.isDynamicPath);
-		} else {
-			// 普通路由：参数不同，开启多个 tagsview
-			if (!getThemeConfig.value.isShareTagsView) await solveAddTagsView(path, to);
-			else await singleAddTagsView(path, to);
-			if (state.tagsViewList.some((v: RouteItem) => v.path === path)) {
-				// 防止首次进入界面时(登录进入) tagsViewList 不存浏览器中
-				addBrowserSetSession(state.tagsViewList);
-				return false;
-			}
-			item = state.tagsViewRoutesList.find((v: RouteItem) => v.path === path);
-		}
-		if (!item) return false;
-		if (item?.meta?.isLink && !item.meta.isIframe) return false;
-		if (to?.meta?.isDynamic) item.params = to?.params ? to?.params : route.params;
-		else item.query = to?.query ? to?.query : route.query;
-		item.url = setTagsViewHighlight(item);
-		await storesKeepALiveNames.addCachedView(item);
-		await state.tagsViewList.push({ ...item });
-		await addBrowserSetSession(state.tagsViewList);
+	// 修复：https://gitee.com/lyt-top/vue-next-admin/issues/I3YX6G
+	let item: RouteItem;
+	const currentRoutePath = to?.meta?.isDynamic ? to.meta.isDynamicPath : path;
+	
+	// 检查当前路由是否已经在标签栏中，避免重复添加
+	const isRouteExist = state.tagsViewList.some((v: RouteItem) => {
+		return v.path === currentRoutePath;
 	});
+	if (isRouteExist) {
+		// 防止首次进入界面时(登录进入) tagsViewList 不存浏览器中
+		addBrowserSetSession(state.tagsViewList);
+		return false;
+	}
+	
+	if (to?.meta?.isDynamic) {
+		// 动态路由（xxx/:id/:name"）：参数不同，开启多个 tagsview
+		if (!getThemeConfig.value.isShareTagsView) await solveAddTagsView(path, to);
+		else await singleAddTagsView(path, to);
+		if (state.tagsViewList.some((v: RouteItem) => v.path === to?.meta?.isDynamicPath)) {
+			// 防止首次进入界面时(登录进入) tagsViewList 不存浏览器中
+			addBrowserSetSession(state.tagsViewList);
+			return false;
+		}
+		item = state.tagsViewRoutesList.find((v: RouteItem) => v.path === to?.meta?.isDynamicPath);
+	} else {
+		// 普通路由：参数不同，开启多个 tagsview
+		if (!getThemeConfig.value.isShareTagsView) await solveAddTagsView(path, to);
+		else await singleAddTagsView(path, to);
+		if (state.tagsViewList.some((v: RouteItem) => v.path === path)) {
+			// 防止首次进入界面时(登录进入) tagsViewList 不存浏览器中
+			addBrowserSetSession(state.tagsViewList);
+			return false;
+		}
+		item = state.tagsViewRoutesList.find((v: RouteItem) => v.path === path);
+	}
+	if (!item) return false;
+	if (item?.meta?.isLink && !item.meta.isIframe) return false;
+	if (to?.meta?.isDynamic) item.params = to?.params ? to?.params : route.params;
+	else item.query = to?.query ? to?.query : route.query;
+	item.url = setTagsViewHighlight(item);
+	await storesKeepALiveNames.addCachedView(item);
+	await state.tagsViewList.push({ ...item });
+	await addBrowserSetSession(state.tagsViewList);
 };
 // 2、刷新当前 tagsView：
 const refreshCurrentTagsView = async (fullPath: string) => {
@@ -578,9 +602,8 @@ onBeforeRouteUpdate(async (to) => {
 });
 // 监听路由的变化，动态赋值给 tagsView
 watch(
-	pinia.state,
-	(val) => {
-		if (val.tagsViewRoutes.tagsViewRoutes.length === state.tagsViewRoutesList.length) return false;
+	() => tagsViewRoutes.value,
+	() => {
 		getTagsViewRoutes();
 	},
 	{
