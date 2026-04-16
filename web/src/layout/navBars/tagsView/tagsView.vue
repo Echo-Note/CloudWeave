@@ -120,14 +120,62 @@ const isActive = (v: RouteItem) => {
 const addBrowserSetSession = (tagsViewList: Array<object>) => {
 	Session.set('tagsViewList', tagsViewList);
 };
+// 用于跟踪是否是语言变化触发的更新
+const isLangChange = ref(false);
+
 // 获取 pinia 中的 tagsViewRoutes 列表
 const getTagsViewRoutes = async () => {
 	state.routeActive = await setTagsViewHighlight(route);
 	state.routePath = (await route.meta.isDynamic) ? route.meta.isDynamicPath : route.path;
 	state.tagsViewRoutesList = tagsViewRoutes.value;
 	
-	// 只有在标签栏为空时才重新初始化
-	if (state.tagsViewList.length === 0) {
+	// 语言变化时，更新所有标签栏项目的名称
+	if (isLangChange.value) {
+		// 重新构建标签栏项目，确保使用最新的语言设置
+		const updatedTagsViewList = [];
+		
+		// 遍历现有的标签栏项目
+		for (const tag of state.tagsViewList) {
+			// 找到对应的路由信息
+			const routeInfo = state.tagsViewRoutesList.find((v: RouteItem) => v.path === tag.path);
+			if (routeInfo) {
+				// 保留原有的参数和查询信息
+				const updatedTag = { ...routeInfo };
+				if (tag.params) updatedTag.params = tag.params;
+				if (tag.query) updatedTag.query = tag.query;
+				updatedTag.url = setTagsViewHighlight(updatedTag);
+				updatedTagsViewList.push(updatedTag);
+			}
+		}
+		
+		// 如果没有标签栏项目，添加固定标签
+		if (updatedTagsViewList.length === 0) {
+			await state.tagsViewRoutesList.map((v: RouteItem) => {
+				if (v.meta?.isAffix && !v.meta.isHide) {
+					v.url = setTagsViewHighlight(v);
+					updatedTagsViewList.push({ ...v });
+				}
+			});
+			
+			// 添加当前路由标签
+			const currentRoutePath = route.meta?.isDynamic ? route.meta.isDynamicPath : route.path;
+			const currentRoute = state.tagsViewRoutesList.find((v: RouteItem) => v.path === currentRoutePath);
+			if (currentRoute && !currentRoute.meta?.isAffix) {
+				currentRoute.url = setTagsViewHighlight(currentRoute);
+				// 检查是否已经添加过
+				if (!updatedTagsViewList.some((v: RouteItem) => v.path === currentRoutePath)) {
+					updatedTagsViewList.push({ ...currentRoute });
+				}
+			}
+		}
+		
+		// 更新标签栏列表
+		state.tagsViewList = updatedTagsViewList;
+		addBrowserSetSession(state.tagsViewList);
+		
+		isLangChange.value = true;
+	} else {
+		// 初始化标签栏
 		initTagsView();
 	}
 };
@@ -135,7 +183,7 @@ const getTagsViewRoutes = async () => {
 const initTagsView = async () => {
 	// 只有在标签栏为空时才添加固定路由
 	if (state.tagsViewList.length === 0) {
-		// 重新初始化标签栏，确保使用最新的路由数据
+		// 重新初始化标签栏，确保使用最新的路由数据和语言设置
 		await state.tagsViewRoutesList.map((v: RouteItem) => {
 			if (v.meta?.isAffix && !v.meta.isHide) {
 				v.url = setTagsViewHighlight(v);
@@ -608,6 +656,16 @@ watch(
 	},
 	{
 		deep: true,
+	}
+);
+
+// 监听语言变化，更新标签栏名称
+watch(
+	() => themeConfig.value.globalI18n,
+	() => {
+		// 语言变化时，设置标志并重新获取标签栏路由信息
+		isLangChange.value = true;
+		getTagsViewRoutes();
 	}
 );
 </script>
