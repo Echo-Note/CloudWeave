@@ -22,7 +22,7 @@ export default {
       systemMenu: '選單管理',
       systemRole: '角色管理',
       systemUser: '用戶管理',
-      systemDept: '部門管理',
+      systemDept: '架構管理',
       systemNotice: '通知中心',
       systemNotice1: '通知中心',
       loginLog: '登錄日誌',

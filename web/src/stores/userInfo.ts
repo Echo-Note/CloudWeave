@@ -41,7 +41,7 @@ export const useUserInfo = defineStore('userInfo', {
 		async updateUserInfos(userInfos:any) {
 			this.userInfos.id = userInfos.id;
 			this.userInfos.username = userInfos.name;
-			this.userInfos.avatar = userInfos.avatar;
+			this.userInfos.avatar = userInfos.avatar ? getBaseURL(userInfos.avatar) : headerImage;
 			this.userInfos.name = userInfos.name;
 			this.userInfos.email = userInfos.email;
 			this.userInfos.mobile = userInfos.mobile;
@@ -56,11 +56,15 @@ export const useUserInfo = defineStore('userInfo', {
 			// 存储用户信息到浏览器缓存
 			if (Session.get('userInfo')) {
 				this.userInfos = Session.get('userInfo');
+				// 确保 avatar 有正确的值
+				if (!this.userInfos.avatar || this.userInfos.avatar === 'null' || this.userInfos.avatar === null) {
+					this.userInfos.avatar = headerImage;
+				}
 			} else {
 				let userInfos: any = await this.getApiUserInfo();
 				this.userInfos.id = userInfos.id;
 				this.userInfos.username = userInfos.data.name;
-				this.userInfos.avatar = userInfos.data.avatar;
+				this.userInfos.avatar = userInfos.data.avatar ? getBaseURL(userInfos.data.avatar) : headerImage;
 				this.userInfos.name = userInfos.data.name;
 				this.userInfos.email = userInfos.data.email;
 				this.userInfos.mobile = userInfos.data.mobile;
@@ -82,7 +86,7 @@ export const useUserInfo = defineStore('userInfo', {
 			}).then((res:any)=>{
 				this.userInfos.id = res.data.id;
 				this.userInfos.username = res.data.name;
-				this.userInfos.avatar = (res.data.avatar && getBaseURL(res.data.avatar)) || headerImage;
+				this.userInfos.avatar = res.data.avatar ? getBaseURL(res.data.avatar) : headerImage;
 				this.userInfos.name = res.data.name;
 				this.userInfos.email = res.data.email;
 				this.userInfos.mobile = res.data.mobile;

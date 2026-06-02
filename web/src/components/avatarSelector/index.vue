@@ -1,6 +1,6 @@
 <template>
 	<div class="user-info-head" @click="editCropper()">
-		<el-avatar :size="100" :src="getBaseURL(options.img)" />
+		<el-avatar :size="100" :src="options.img" />
 		<el-dialog :title="title" v-model="dialogVisiable" width="600px" append-to-body @opened="modalOpened" @close="closeDialog">
 			<el-row>
 				<el-col class="flex justify-center">
@@ -78,7 +78,7 @@ const dialogVisiable = computed({
 
 //图片裁剪数据
 const options = reactive({
-	img: userStore.userInfos.avatar || headerImage, // 裁剪图片的地址
+	img: userStore.userInfos.avatar ? getBaseURL(userStore.userInfos.avatar) : headerImage, // 裁剪图片的地址
 	fileName: '',
 	autoCrop: true, // 是否默认生成截图框
 	autoCropWidth: 200, // 默认生成截图框宽度
@@ -159,11 +159,11 @@ function compress(img) {
 /** 关闭窗口 */
 function closeDialog() {
 	options.visible = false;
-	options.img = userStore.userInfos.avatar;
+	options.img = userStore.userInfos.avatar ? getBaseURL(userStore.userInfos.avatar) : headerImage;
 }
 
 const updateAvatar = (img) => {
-	options.img = img;
+	options.img = img ? getBaseURL(img) : headerImage;
 };
 
 defineExpose({

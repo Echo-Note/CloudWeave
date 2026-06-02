@@ -22,7 +22,7 @@ export default {
       systemMenu: 'Menu MGT',
       systemRole: 'Role MGT',
       systemUser: 'User MGT',
-      systemDept: 'Dept MGT',
+      systemDept: 'Architecture MGT',
       systemNotice: 'Notification Center',
       systemNotice1: 'NTF Center',
       loginLog: 'Login Log',

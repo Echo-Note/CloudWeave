@@ -13,25 +13,21 @@
 				</div>
 			</el-col>
 
-			<el-col :span="18" style="height: 100%; display: flex; flex-direction: column;">
-        <el-tabs type="border-card" style="flex: 1; display: flex; flex-direction: column;">
-          <el-tab-pane :label="$t('message.pages.menu.dialog.buttonPermission')" style="height: 100%; display: flex; flex-direction: column;">
-            <div class="menu-btn-pane">
-              <div class="menu-scan-btn">
-                <el-button type="primary" @click="handleOpenScanModal">
-                  <el-icon><Monitor /></el-icon>
-                  {{ $t('message.pages.menu.scan.title') }}
-                </el-button>
-              </div>
-              <MenuButtonCom ref="menuButtonRef" class="menu-btn-fill" />
-            </div>
-          </el-tab-pane>
-          <el-tab-pane :label="$t('message.pages.menu.dialog.columnPermissionTab')">
-            <div style="height: 72vh">
-              <MenuFieldCom ref="menuFieldRef"></MenuFieldCom>
-            </div>
-          </el-tab-pane>
-        </el-tabs>
+			<el-col :span="18">
+				<div class="menu-box menu-table">
+					<el-tabs type="card" class="menu-tabs">
+						<el-tab-pane :label="$t('message.pages.menu.dialog.buttonPermission')">
+							<div style="height: 72vh">
+								<MenuButtonCom ref="menuButtonRef" class="menu-btn-fill" :handleScanClick="handleOpenScanModal" />
+							</div>
+						</el-tab-pane>
+						<el-tab-pane :label="$t('message.pages.menu.dialog.columnPermissionTab')">
+							<div style="height: 72vh">
+								<MenuFieldCom ref="menuFieldRef" />
+							</div>
+						</el-tab-pane>
+					</el-tabs>
+				</div>
 
 				<ScanModal
 					ref="scanModalRef"
@@ -43,13 +39,24 @@
 			</el-col>
 		</el-row>
 
-		<el-drawer v-model="drawerVisible" :title="$t('message.pages.menu.dialog.menuConfig')" direction="rtl" size="500px" :close-on-click-modal="false" :before-close="handleDrawerClose">
+		<el-drawer v-model="drawerVisible" direction="rtl" size="500px" :close-on-click-modal="false" :show-close="false" :before-close="handleDrawerClose">
+			<template #header>
+				<div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+					<span>{{ $t('message.pages.menu.dialog.menuConfig') }}</span>
+					<div>
+						<el-button @click="handleDrawerClose" size="small">{{ $t('message.pages.menu.buttons.cancel') }}</el-button>
+						<el-button type="primary" @click="handleSaveMenu" size="small" :loading="menuBtnLoading">{{ $t('message.pages.menu.buttons.save') }}</el-button>
+					</div>
+				</div>
+			</template>
 			<MenuFormCom
 				v-if="drawerVisible"
 				:initFormData="drawerFormData"
 				:cacheData="menuTreeCacheData"
 				:treeData="menuTreeData"
 				@drawerClose="handleDrawerClose"
+				@save="handleSaveMenu"
+				ref="menuFormComRef"
 			/>
 		</el-drawer>
 	</fs-page>
@@ -79,6 +86,8 @@ let menuFieldRef = ref<InstanceType<typeof MenuFieldCom> | null>(null);
 let selectedMenuId = ref<number | null>(null);
 let scanModalVisible = ref(false);
 let scanModalRef = ref<any>(null);
+let menuFormComRef = ref<InstanceType<typeof MenuFormCom> | null>(null);
+let menuBtnLoading = ref(false);
 const getData = () => {
 	GetList({}).then((ret: APIResponseData) => {
 		const responseData = ret.data;
@@ -117,6 +126,10 @@ const handleDrawerClose = (type?: string) => {
 	}
 	drawerVisible.value = false;
 	drawerFormData.value = {};
+};
+
+const handleSaveMenu = () => {
+	menuFormComRef.value?.handleSubmit();
 };
 
 const handleOpenScanModal = () => {
@@ -186,6 +199,12 @@ onMounted(() => {
 
 .menu-right-box {
 	border-radius: 8px 0 0 8px;
+}
+
+.menu-table {
+	margin-left: 10px;
+	padding-bottom: 10px;
+	border-radius: 8px;
 }
 
 .menu-scan-btn {

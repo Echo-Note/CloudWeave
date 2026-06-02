@@ -45,9 +45,18 @@ const { themeConfig } = storeToRefs(useThemeConfig());
 
 const { t } = useI18n();
 
+// 定义 props
+interface Props {
+	handleScanClick?: () => void;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	handleScanClick: undefined,
+});
+
 let selectOptions: any = ref({ name: null });
 
-const { crudRef, crudBinding, crudExpose, selectedRows, resetCrudOptions } = useFs({ createCrudOptions, context: { selectOptions } });
+const { crudRef, crudBinding, crudExpose, selectedRows, resetCrudOptions } = useFs({ createCrudOptions, context: { selectOptions, handleScanClick: props.handleScanClick } });
 const { doRefresh, setTableData } = crudExpose;
 
 // 语言切换时重新构建 crud options

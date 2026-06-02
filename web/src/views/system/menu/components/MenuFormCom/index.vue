@@ -5,17 +5,29 @@
 		</div>
 		<el-form ref="formRef" :rules="rules" :model="menuFormData" label-width="80px" label-position="right">
 			<el-form-item :label="$t('message.pages.menu.form.menuName')" prop="name">
-				<el-tabs v-model="activeMenuNameTab" class="menu-name-tabs">
-					<el-tab-pane :label="$t('message.pages.menu.form.menuNameZhCn')" name="zhCn">
-						<el-input v-model="menuFormData.name" :placeholder="$t('message.pages.menu.form.menuNameZhCnPlaceholder')" clearable />
-					</el-tab-pane>
-					<el-tab-pane :label="$t('message.pages.menu.form.menuNameEn')" name="en">
-						<el-input v-model="menuFormData.name_en" :placeholder="$t('message.pages.menu.form.menuNameEnPlaceholder')" clearable />
-					</el-tab-pane>
-					<el-tab-pane :label="$t('message.pages.menu.form.menuNameZhTw')" name="zhTw">
-						<el-input v-model="menuFormData.name_zh_tw" :placeholder="$t('message.pages.menu.form.menuNameZhTwPlaceholder')" clearable />
-					</el-tab-pane>
-				</el-tabs>
+				<el-row :gutter="5" class="menu-name-row">
+					<el-col :span="8">
+						<el-input 
+							v-model="menuFormData.name" 
+							:placeholder="$t('message.pages.menu.form.menuNameZhCn')" 
+							clearable 
+						/>
+					</el-col>
+					<el-col :span="8">
+						<el-input 
+							v-model="menuFormData.name_en" 
+							:placeholder="$t('message.pages.menu.form.menuNameEn')" 
+							clearable 
+						/>
+					</el-col>
+					<el-col :span="8">
+						<el-input 
+							v-model="menuFormData.name_zh_tw" 
+							:placeholder="$t('message.pages.menu.form.menuNameZhTw')" 
+							clearable 
+						/>
+					</el-col>
+				</el-row>
 			</el-form-item>
 			<el-form-item :label="$t('message.pages.menu.form.parentMenu')" prop="parent">
 				<el-tree-select v-model="menuFormData.parent" :props="defaultTreeProps" :data="deptDefaultList"
@@ -104,11 +116,6 @@
 
 			<el-divider></el-divider>
 		</el-form>
-
-		<div class="menu-form-btns">
-			<el-button @click="handleSubmit" type="primary" :loading="menuBtnLoading">{{ $t('message.pages.menu.buttons.save') }}</el-button>
-			<el-button @click="handleCancel">{{ $t('message.pages.menu.buttons.cancel') }}</el-button>
-		</div>
 	</div>
 </template>
 
@@ -287,6 +294,10 @@ const handleSubmit = () => {
 	});
 };
 
+defineExpose({
+	handleSubmit
+});
+
 const handleCancel = (type: string = '') => {
 	activeMenuNameTab.value = 'zhCn';
 	emit('drawerClose', type);
@@ -320,19 +331,8 @@ onMounted(async () => {
 		background-color: var(--el-color-primary);
 	}
 
-	.menu-form-btns {
-		padding-bottom: 10px;
-		box-sizing: border-box;
-	}
-
-	.menu-name-tabs {
+	.menu-name-row {
 		width: 100%;
-	}
-	:deep(.menu-name-tabs .el-tabs__header) {
-		margin-bottom: 0;
-	}
-	:deep(.menu-name-tabs .el-tabs__nav-wrap::after) {
-		display: none;
 	}
 }
 </style>
