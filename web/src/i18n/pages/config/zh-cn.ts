@@ -4,7 +4,9 @@ export default {
         pages: {
             config: {
                 header: {
+                    title: '系统配置中心',
                     tagText: '系统配置：您可在此对网站进行自定义配置',
+                    searchPlaceholder: '搜索配置项...',
                 },
                 table: {
                     columns: {
@@ -54,8 +56,17 @@ export default {
                 },
                 messages: {
                     addSuccess: '新增成功',
+                    updateSuccess: '更新成功',
+                    updateFailed: '更新失败',
                     saveSuccess: '保存成功',
                     saveFailed: '保存失败',
+                    deleteSuccess: '删除成功',
+                    deleteFailed: '删除失败',
+                    deleteConfirm: '确定要删除该配置项吗？',
+                    deleteGroupConfirm: '确定要删除当前分组及其所有配置项吗？',
+                    deleteGroupSuccess: '删除分组成功',
+                    deleteGroupFailed: '删除分组失败',
+                    groupNotFound: '未找到当前分组',
                     uploadFailed: '上传失败',
                     uploadFailedDetail: '上传失败：{msg}',
                     invalidImage: '仅允许上传图片文件（jpg/png）',
@@ -64,11 +75,14 @@ export default {
                 buttons: {
                     addGroup: '添加分组',
                     addContent: '添加内容',
+                    deleteGroup: '删除当前分组',
                     createNow: '立即创建',
                     cancel: '取消',
                     confirm: '确定',
                     save: '保存',
                     submit: '提交',
+                    edit: '编辑',
+                    delete: '删除',
                 },
                 validationRules: {
                     required: '必填项',
