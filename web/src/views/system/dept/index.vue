@@ -156,9 +156,10 @@ onMounted(() => {
 }
 
 .dept-left {
-	background-color: var(--el-fill-color-blank);;
-	border-radius: 0 8px 8px 0;
+	background-color: var(--el-fill-color-blank);
+	border-radius: 0 8px 8px 8px;
 	padding: 10px;
+	margin-right: 10px;
 }
 
 .dept-table {

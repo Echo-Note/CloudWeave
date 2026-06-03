@@ -337,14 +337,20 @@ watch(
 	border-radius: 8px 0 0 8px;
 	box-sizing: border-box;
 	color: var(--next-bg-topBarColor);
-	background-color: var(--el-fill-color-blank);;
+	background-color: var(--el-fill-color-blank);
 }
+
+// 部门详情展开时,表格高度减去详情区域的高度
 .dept-user-com-table {
-	height: calc(100% - 200px);
+	height: calc(100% - 260px);
 }
+
+// 部门详情折叠时,表格高度只需要减去header的高度
 .dept-user-com-table-collapsed {
 	height: calc(100% - 70px);
 }
+
+// 隐藏部门详情时,表格占满全部高度
 .dept-user-com-table-cover {
 	height: 100%;
 }
