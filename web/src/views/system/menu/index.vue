@@ -153,7 +153,7 @@ const handleScanSuccess = () => {
  * 部门的删除事件
  */
 const handleDeleteMenu = (id: string, callback: Function) => {
-	ElMessageBox.confirm(i18n.global.t('message.pages.menu.dialog.deleteMenuConfirm'), i18n.global.t('message.pages.menu.dialog.confirm'), {
+	ElMessageBox.confirm(i18n.global.t('message.pages.menu.dialog.deleteMenuConfirm'), '删除确认', {
 		confirmButtonText: i18n.global.t('message.pages.menu.buttons.confirm'),
 		cancelButtonText: i18n.global.t('message.pages.menu.buttons.cancel'),
 		type: 'warning',

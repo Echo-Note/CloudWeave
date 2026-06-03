@@ -21,6 +21,7 @@
     <fs-crud ref="crudRef" v-bind="crudBinding">
       <template #actionbar-left="scope">
         <el-upload :action="getBaseURL() + 'api/system/file/'" :multiple="false"
+          :headers="{ Authorization: 'JWT ' + Session.get('token') }"
           :on-success="() => crudExpose.doRefresh()" :drag="false" :show-file-list="false">
           <el-button type="primary" icon="plus">{{ $t('message.pages.fileList.buttons.upload') }}</el-button>
         </el-upload>
@@ -71,10 +72,12 @@ import { useI18n } from 'vue-i18n';
 import { useExpose, useCrud } from '@fast-crud/fast-crud';
 import { createCrudOptions } from './crud';
 import { getBaseURL } from '/@/utils/baseUrl';
+import { Session } from '/@/utils/storage';
 import FileSelector from '/@/components/fileSelector/index.vue';
 import { SHOW } from '/@/components/fileSelector/types';
 import { useThemeConfig } from '/@/stores/themeConfig';
 import { storeToRefs } from 'pinia';
+import { QuestionFilled } from '@element-plus/icons-vue';
 
 const { t } = useI18n();
 const { themeConfig } = storeToRefs(useThemeConfig());

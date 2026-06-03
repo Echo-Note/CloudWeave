@@ -76,7 +76,7 @@ const selectedRowsCount = computed(() => {
 const handleBatchDelete = async () => {
 	await ElMessageBox.confirm(
 		t('message.pages.menu.messages.batchDeleteConfirm', { count: selectedRows.value.length }),
-		t('message.pages.menu.buttons.confirm'),
+		'删除确认',
 		{ distinguishCancelAndClose: true, confirmButtonText: t('message.pages.menu.buttons.confirm'), cancelButtonText: t('message.pages.menu.buttons.cancel'), closeOnClickModal: false, type: 'warning' }
 	);
 	await BatchDelete(XEUtils.pluck(selectedRows.value, 'id'));

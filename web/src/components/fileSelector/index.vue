@@ -130,6 +130,7 @@
               <el-button type="default" circle icon="refresh" @click="listRequest" />
               <template v-if="tabsActived > 3 ? isSuperTenent : true">
                 <el-upload ref="uploadRef" :action="getBaseURL() + 'api/system/file/'" :multiple="false" :drag="false"
+                  :headers="{ Authorization: 'JWT ' + Session.get('token') }"
                   :data="{ upload_method: 1 }" :show-file-list="true" :accept="AcceptList[tabsActived % 4]"
                   :on-success="() => { listRequest(); listRequestAll(); uploadRef.clearFiles(); }"
                   v-if="props.showUploadButton">
@@ -198,6 +199,7 @@ import { request } from '/@/utils/service';
 import { SHOW } from './types';
 import FileItem from './fileItem.vue';
 import { pluginsAll } from '/@/views/plugins/index';
+import { Session } from '/@/utils/storage';
 import { storeToRefs } from "pinia";
 import { useUserInfo } from "/@/stores/userInfo";
 import { errorNotification, successNotification } from '/@/utils/message';
@@ -392,7 +394,13 @@ const confirmNetUrl = () => {
     let form = new FormData();
     form.append('file', file);
     form.append('upload_method', '1');
-    fetch(getBaseURL() + 'api/system/file/', { method: 'post', body: form })
+    fetch(getBaseURL() + 'api/system/file/', { 
+      method: 'post', 
+      body: form,
+      headers: {
+        'Authorization': 'JWT ' + Session.get('token')
+      }
+    })
       .then(() => successNotification(t('message.components.fileSelector.netUploadSuccess')))
       .then(() => { netVisiable.value = false; listRequest(); listRequestAll(); })
       .catch(() => errorNotification(t('message.components.fileSelector.netUploadFailed')))
