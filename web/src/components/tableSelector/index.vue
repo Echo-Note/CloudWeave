@@ -24,7 +24,7 @@
 					:lazy="props.tableConfig.lazy"
 					:load="props.tableConfig.load"
 					:tree-props="props.tableConfig.treeProps"
-					style="width: 600px"
+					style="width: 100%"
 					max-height="200"
 					height="200"
 					:highlight-current-row="!props.tableConfig.isMultiple"

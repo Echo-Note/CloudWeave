@@ -44,6 +44,18 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 				editRequest,
 				delRequest,
 			},
+			form: {
+				col: { span: 24 },
+				labelWidth: '100px',
+				wrapper: {
+					is: 'el-dialog',
+					width: '800px',
+				},
+				// 设置新增表单的初始值
+				initialValue: {
+					target_type: 3,
+				},
+			},
 			actionbar: {
 				buttons: {
 					add: {
@@ -143,6 +155,7 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 						component: {
 							optionName: 'el-radio-button',
 						},
+						value: 3, // 默认选中通知公告
 						rules: [{ required: true, message: t('message.pages.messageCenter.validation.targetTypeRequired'), trigger: ['blur', 'change'] }],
 					},
 				},
@@ -170,12 +183,12 @@ export default function ({ crudExpose, context }: CreateCrudOptionsProps): Creat
 									{
 										prop: 'name',
 										label: t('message.pages.messageCenter.table.columns.targetUser'),
-										width: 120,
+										minWidth: 120,
 									},
 									{
 										prop: 'phone',
 										label: t('message.pages.messageCenter.form.phone'),
-										width: 120,
+										minWidth: 120,
 									},
 								],
 							},
