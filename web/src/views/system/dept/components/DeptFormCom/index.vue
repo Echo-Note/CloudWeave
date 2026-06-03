@@ -24,12 +24,6 @@
 		<el-form-item :label="$t('message.pages.dept.form.remark')">
 			<el-input v-model="deptFormData.description" maxlength="200" show-word-limit type="textarea" :placeholder="$t('message.pages.dept.form.remarkPlaceholder')" />
 		</el-form-item>
-		<el-form-item>
-			<el-button @click="handleUpdateMenu" type="primary" :loading="deptBtnLoading">
-				{{ deptFormData.id ? $t('message.pages.dept.buttons.save') : $t('message.pages.dept.buttons.add') }}
-			</el-button>
-			<el-button @click="handleClose">{{ $t('message.pages.dept.buttons.cancel') }}</el-button>
-		</el-form-item>
 	</el-form>
 </template>
 
@@ -118,6 +112,7 @@ const handleUpdateMenu = () => {
 			}
 			if (res?.code === 2000) {
 				successNotification(res.msg as string);
+				emit('submit');
 				handleClose('submit');
 			}
 		} finally {
@@ -137,6 +132,8 @@ onMounted(async () => {
 	});
 	setDeptFormData();
 });
+
+defineExpose({ handleUpdateMenu, deptBtnLoading });
 </script>
 
 <style lang="scss" scoped>
