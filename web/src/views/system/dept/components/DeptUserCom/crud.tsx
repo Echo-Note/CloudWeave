@@ -393,9 +393,6 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 				avatar: {
 					title: t('message.pages.dept.user.tableColumns.avatar'),
 					type: 'avatar-uploader',
-					form: {
-						show: false,
-					},
 					column: {
 						width: 100,
 						showOverflowTooltip: true,
