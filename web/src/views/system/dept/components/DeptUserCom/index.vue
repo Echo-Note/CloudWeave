@@ -1,40 +1,62 @@
 <template>
 	<div v-show="!showCount" class="dept-user-com-box dept-info">
-		<div class="di-left">
-			<h3>{{ deptInfo.dept_name || '' }}</h3>
-			<div class="di-cell">
-				<p>{{ $t('message.pages.dept.user.deptLeader') }}</p>
-				<p class="content">{{ deptInfo.owner || $t('message.pages.dept.user.none') }}</p>
+		<div class="dept-info-header" @click="toggleInfoCollapse">
+			<div class="header-left">
+				<div class="dept-icon" :class="{ 'is-active': !isInfoCollapsed }">
+					<el-icon :size="20">
+						<OfficeBuilding />
+					</el-icon>
+				</div>
+				<span class="collapse-text">{{ $t('message.pages.dept.user.deptDetail') }}</span>
 			</div>
-			<div class="di-cell">
-				<p>{{ $t('message.pages.dept.user.deptCount') }}</p>
-				<p class="content">{{ deptInfo.dept_user || 0 }}{{ $t('message.pages.dept.user.peopleUnit') }}</p>
-			</div>
-			<div class="di-cell">
-				<p>{{ $t('message.pages.dept.user.deptDesc') }}</p>
-				<p class="content">{{ deptInfo.description || $t('message.pages.dept.user.none') }}</p>
-			</div>
-			<div class="di-cell">
-				<p>{{ $t('message.pages.dept.user.showChild') }}</p>
-				<el-switch
-					v-model="isShowChildFlag"
-					inline-prompt
-					:active-text="$t('message.pages.dept.user.yes')"
-					:inactive-text="$t('message.pages.dept.user.no')"
-					:disabled="!currentDeptId"
-					@change="handleSwitchChange"
-					style="--el-switch-on-color: var(--el-color-primary)"
-				/>
+			<div class="collapse-icon" :class="{ 'is-active': !isInfoCollapsed }">
+				<el-icon :size="16" class="arrow-icon">
+					<ArrowRight />
+				</el-icon>
 			</div>
 		</div>
-		<div style="height: 180px; width: 380px" ref="deptCountBar"></div>
-		<div style="height: 180px; width: 200px" ref="deptSexPie"></div>
+		<transition name="collapse-transition">
+			<div v-show="!isInfoCollapsed" class="dept-info-content">
+				<div class="di-left">
+					<h3>{{ deptInfo.dept_name || '' }}</h3>
+					<div class="di-cell">
+						<p>{{ $t('message.pages.dept.user.deptLeader') }}</p>
+						<p class="content">{{ deptInfo.owner || $t('message.pages.dept.user.none') }}</p>
+					</div>
+					<div class="di-cell">
+						<p>{{ $t('message.pages.dept.user.deptCount') }}</p>
+						<p class="content">{{ deptInfo.dept_user || 0 }}{{ $t('message.pages.dept.user.peopleUnit') }}</p>
+					</div>
+					<div class="di-cell">
+						<p>{{ $t('message.pages.dept.user.deptDesc') }}</p>
+						<p class="content">{{ deptInfo.description || $t('message.pages.dept.user.none') }}</p>
+					</div>
+					<div class="di-cell">
+						<p>{{ $t('message.pages.dept.user.showChild') }}</p>
+						<el-switch
+							v-model="isShowChildFlag"
+							inline-prompt
+							:active-text="$t('message.pages.dept.user.yes')"
+							:inactive-text="$t('message.pages.dept.user.no')"
+							:disabled="!currentDeptId"
+							@click.stop
+							@change="handleSwitchChange"
+							style="--el-switch-on-color: var(--el-color-primary)"
+						/>
+					</div>
+				</div>
+				<div class="di-charts">
+					<div style="height: 180px; width: 380px" ref="deptCountBar"></div>
+					<div style="height: 180px; width: 200px" ref="deptSexPie"></div>
+				</div>
+			</div>
+		</transition>
 	</div>
 
 	<fs-crud
 		ref="crudRef"
 		v-bind="crudBinding"
-		:customClass="!showCount ? 'dept-user-com-box dept-user-com-table' : 'dept-user-com-box dept-user-com-table-cover'"
+		:customClass="!showCount ? (isInfoCollapsed ? 'dept-user-com-box dept-user-com-table-collapsed' : 'dept-user-com-box dept-user-com-table') : 'dept-user-com-box dept-user-com-table-cover'"
 	>
 		<template #toolbar-left>
 			<el-button :icon="!showCount ? 'Hide' : 'View'" circle @click="showCount = !showCount"></el-button>
@@ -43,14 +65,15 @@
 			<importExcel api="api/system/user/" v-auth="'user:Import'">{{ $t('message.pages.dept.user.import') }} </importExcel>
 		</template>
 		<template #cell_avatar="scope">
-              <div v-if="scope.row.avatar" style="display: flex; justify-content: center; align-items: center;">
-                <el-image
-                  style="width: 50px; height: 50px; border-radius: 50%; aspect-ratio: 1 /1 ; "
-                  :src="getBaseURL(scope.row.avatar)"
-                  :preview-src-list="[getBaseURL(scope.row.avatar)]"
-                  :preview-teleported="true" />
-              </div>
-            </template>
+			<div v-if="scope.row.avatar" style="display: flex; justify-content: center; align-items: center;">
+				<el-image
+					style="width: 25px; height: 25px; border-radius: 50%; aspect-ratio: 1 / 1"
+					:src="getBaseURL(scope.row.avatar)"
+					:preview-src-list="[getBaseURL(scope.row.avatar)]"
+					:preview-teleported="true"
+				/>
+			</div>
+		</template>
 	</fs-crud>
 
 	<el-dialog v-model="resetPwdVisible" :title="$t('message.pages.dept.user.resetPwd')" width="400px" draggable :before-close="handleResetPwdClose">
@@ -82,6 +105,7 @@ import { getDeptInfoById, resetPwd } from './api';
 import { warningNotification, successNotification } from '/@/utils/message';
 import { HeadDeptInfoType } from '../../types';
 import {getBaseURL} from '/@/utils/baseUrl';
+import { ArrowUp, ArrowDown, ArrowRight, OfficeBuilding } from '@element-plus/icons-vue';
 
 const { themeConfig } = storeToRefs(useThemeConfig());
 
@@ -103,6 +127,7 @@ let deptSexPie = ref();
 let isShowChildFlag = ref(false);
 let deptInfo = ref<Partial<HeadDeptInfoType>>({});
 let showCount = ref(false);
+let isInfoCollapsed = ref(false); // 控制信息区域折叠状态
 
 let resetPwdVisible = ref(false);
 let resetPwdFormState = reactive({
@@ -193,9 +218,9 @@ const initDeptSexPieChart = () => {
 				},
 				color: ['#188df0', '#f56c6c', '#dcdfe6'],
 				data: [
-					{ value: deptInfo.value.gender?.male || 0, name: t('message.pages.loginLog.status.success') },
-					{ value: deptInfo.value.gender?.female || 0, name: t('message.pages.loginLog.status.failed') },
-					{ value: deptInfo.value.gender?.unknown || 0, name: t('message.pages.dept.user.none') },
+					{ value: deptInfo.value.gender?.male || 0, name: t('message.pages.dept.user.male') },
+					{ value: deptInfo.value.gender?.female || 0, name: t('message.pages.dept.user.female') },
+					{ value: deptInfo.value.gender?.unknown || 0, name: t('message.pages.dept.user.unknown') },
 				],
 			},
 		],
@@ -226,6 +251,11 @@ const handleDoRefreshUser = (id: string) => {
 
 const handleSwitchChange = () => {
 	handleDoRefreshUser(currentDeptId.value);
+};
+
+// 切换信息区域折叠状态
+const toggleInfoCollapse = () => {
+	isInfoCollapsed.value = !isInfoCollapsed.value;
 };
 
 const handleResetPwdOpen = ({ id }: { id: number }) => {
@@ -288,11 +318,15 @@ const { resetCrudOptions } = useCrud({
 	context: {},
 });
 
-// 语言切换时重新构建 crud options
+// 语言切换时重新构建 crud options 和图表
 watch(
 	() => themeConfig.value.globalI18n,
-	() => {
+	async () => {
 		resetCrudOptions();
+		// 重新获取部门信息以更新图表
+		if (currentDeptId.value) {
+			await getDeptInfo();
+		}
 	}
 );
 </script>
@@ -303,44 +337,146 @@ watch(
 	border-radius: 8px 0 0 8px;
 	box-sizing: border-box;
 	color: var(--next-bg-topBarColor);
-	background-color: var(--el-fill-color-blank);;
+	background-color: var(--el-fill-color-blank);
 }
+
+// 部门详情展开时,表格高度减去详情区域的高度
 .dept-user-com-table {
-	height: calc(100% - 200px);
+	height: calc(100% - 260px);
 }
+
+// 部门详情折叠时,表格高度只需要减去header的高度
+.dept-user-com-table-collapsed {
+	height: calc(100% - 70px);
+}
+
+// 隐藏部门详情时,表格占满全部高度
 .dept-user-com-table-cover {
 	height: 100%;
 }
 .dept-info {
 	width: 100%;
-	height: 200px;
-	display: flex;
-	align-items: center;
-	justify-content: space-around;
+	height: auto;
+	min-height: 40px;
 	margin-bottom: 10px;
 
-	.di-left {
-		h3 {
-			font-size: 18px;
-			font-weight: 900;
-		}
-		.di-cell {
-			margin-top: 6px;
+	.dept-info-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 10px 15px;
+		cursor: pointer;
+		user-select: none;
+		border-radius: 8px;
+		background-color: var(--el-fill-color-blank);
+
+		.header-left {
 			display: flex;
 			align-items: center;
+			gap: 10px;
+			flex: 1;
 
-			p:nth-child(1) {
-				display: block;
-				width: 85px;
-				text-align: left;
+			.dept-icon {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				color: var(--el-color-primary);
+				transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+				transform: rotate(0deg);
+
+				.el-icon {
+					transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+				}
 			}
-			.content {
-				max-width: 120px;
-				overflow: hidden;
-				white-space: nowrap;
-				text-overflow: ellipsis;
+
+			.dept-icon.is-active {
+				transform: rotate(360deg);
+			}
+
+			.collapse-text {
+				font-size: 14px;
+				font-weight: 500;
+				color: var(--el-text-color-primary);
 			}
 		}
+
+		.collapse-icon {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 32px;
+			height: 32px;
+			border-radius: 50%;
+			background-color: var(--el-fill-color-light);
+			transition: background-color 0.3s ease;
+
+			.arrow-icon {
+				transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+				transform: rotate(0deg);
+			}
+		}
+
+		.collapse-icon.is-active {
+			.arrow-icon {
+				transform: rotate(90deg);
+			}
+		}
+
+		.collapse-icon:hover {
+			background-color: var(--el-fill-color);
+		}
 	}
+
+	.dept-info-content {
+		padding: 15px;
+		background-color: var(--el-fill-color-blank);
+		border-radius: 8px;
+		margin-top: 8px;
+		display: flex;
+		gap: 20px;
+
+		.di-left {
+			flex: 1;
+			h3 {
+				font-size: 18px;
+				font-weight: 900;
+				margin: 0 0 10px 0;
+			}
+			.di-cell {
+				margin-top: 6px;
+				display: flex;
+				align-items: center;
+
+				p:nth-child(1) {
+					display: block;
+					width: 85px;
+					text-align: left;
+				}
+				.content {
+					max-width: 120px;
+					overflow: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+				}
+			}
+		}
+
+		.di-charts {
+			display: flex;
+			gap: 20px;
+		}
+	}
+}
+
+// 折叠过渡动画
+.collapse-transition-enter-active,
+.collapse-transition-leave-active {
+	transition: all 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.collapse-transition-enter-from,
+.collapse-transition-leave-to {
+	opacity: 0;
+	transform: translateY(-10px);
 }
 </style>

@@ -90,6 +90,8 @@ export async function refreshRoutesForI18n() {
 	dynamicRoutes[0].children = await backEndComponent(frameIn);
 	const storesRoutesList = useRoutesList(pinia);
 	storesRoutesList.setRoutesList([...(dynamicRoutes[0].children || []), ...frameOut]);
+	// 更新标签栏路由
+	setCacheTagsViewRoutes();
 	// 通知侧边栏刷新菜单
 	mittBus.emit('getBreadcrumbIndexSetFilterRoutes');
 }

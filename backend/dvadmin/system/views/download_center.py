@@ -12,12 +12,16 @@ class DownloadCenterSerializer(CustomModelSerializer):
 
     def get_url(self, instance):
         if self.request.query_params.get('prefix'):
-            if settings.ENVIRONMENT in ['local']:
+            # 根据DEBUG设置判断环境
+            if settings.DEBUG:
                 prefix = 'http://127.0.0.1:8000'
-            elif settings.ENVIRONMENT in ['test']:
-                prefix = 'http://{host}/api'.format(host=self.request.get_host())
             else:
-                prefix = 'https://{host}/api'.format(host=self.request.get_host())
+                # 生产环境使用https
+                host = self.request.get_host()
+                if self.request.is_secure():
+                    prefix = f'https://{host}/api'
+                else:
+                    prefix = f'http://{host}/api'
             return (f'{prefix}/media/{str(instance.url)}')
         return f'media/{str(instance.url)}'
 

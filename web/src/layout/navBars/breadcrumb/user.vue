@@ -56,32 +56,15 @@
 				:class="!state.isScreenfull ? 'icon-fullscreen' : 'icon-tuichuquanping'"
 			></i>
 		</div>
-    <div>
-      <span v-if="!isSocketOpen" class="online-status-span">
-        <el-popconfirm
-            width="250"
-            ref="onlinePopoverRef"
-            :confirm-button-text="$t('message.user.retry')"
-            :icon="InfoFilled"
-            trigger="hover"
-            icon-color="#626AEF"
-            :title="$t('message.user.onlinePrompt')"
-            @confirm="onlineConfirmEvent"
-        >
-          <template #reference>
-            <el-badge is-dot class="item" :class="{'online-status': isSocketOpen,'online-down':!isSocketOpen}">
-              <img :src="getBaseURL(userInfos.avatar) || headerImage" class="layout-navbars-breadcrumb-user-link-photo mr5" />
-            </el-badge>
-          </template>
-        </el-popconfirm>
-      </span>
-    </div>
-		<div></div>
 		<el-dropdown :show-timeout="70" :hide-timeout="50" @command="onHandleCommandClick">
 			<span class="layout-navbars-breadcrumb-user-link">
-<!--				<el-badge is-dot class="item online-status">-->
-<!--					<img :src="userInfos.avatar || headerImage" class="layout-navbars-breadcrumb-user-link-photo mr5" />-->
-<!--				</el-badge>-->
+				<el-badge 
+					is-dot 
+					class="item" 
+					:class="{'online-status': isSocketOpen, 'online-down': !isSocketOpen}"
+				>
+					<img :src="userInfos.avatar" class="layout-navbars-breadcrumb-user-link-photo mr5" />
+				</el-badge>
 				{{ userInfos.username === '' ? $t('message.user.defaultUsername') : userInfos.username }}
 				<el-icon class="el-icon--right">
 					<ele-ArrowDown />
@@ -116,8 +99,6 @@ import mittBus from '/@/utils/mitt';
 import { Session, Local } from '/@/utils/storage';
 import headerImage from '/@/assets/img/headerImage.png';
 import { InfoFilled } from '@element-plus/icons-vue';
-import websocket from '/@/utils/websocket';
-import request from '/@/utils/request';
 // 引入组件
 const UserNews = defineAsyncComponent(() => import('/@/layout/navBars/breadcrumb/userNews.vue'));
 const Search = defineAsyncComponent(() => import('/@/layout/navBars/breadcrumb/search.vue'));
@@ -155,18 +136,6 @@ const layoutUserFlexNum = computed(() => {
 
 // 定义变量内容
 const { isSocketOpen } = storeToRefs(useUserInfo());
-
-// websocket状态
-const onlinePopoverRef = ref()
-const onlineConfirmEvent = () => {
-  if (!isSocketOpen.value) {
-    websocket.is_reonnect = true
-    websocket.reconnect_current = 1
-    websocket.reconnect()
-  }
-  // 手动隐藏弹出
-  unref(onlinePopoverRef).popperRef?.delayHide?.()
-}
 
 // 全屏点击时
 const onScreenfullClick = () => {
@@ -274,9 +243,13 @@ import { messageCenterStore } from '/@/stores/messageCenter';
 import { getBaseURL } from '/@/utils/baseUrl';
 const messageCenter = messageCenterStore();
 let eventSource: EventSource | null = null; // 存储 EventSource 实例
-const token = Session.get('token');
 const isConnected = ref(false); // 标志变量，记录是否已连接过
 const getMessageCenterCount = () => {
+	const token = Session.get('token');
+	if (!token) {
+		console.warn('SSE 连接失败：缺少 token');
+		return;
+	}
 	// 创建 EventSource 实例并连接到后端 SSE 端点
 	eventSource = new EventSource(`${getBaseURL()}sse/?token=${token}`); // 替换为你的后端地址
 	// 首次连接成功时打印一次

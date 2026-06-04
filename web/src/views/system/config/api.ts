@@ -10,6 +10,19 @@ export function GetList(query: UserPageQuery) {
 		params: query,
 	});
 }
+
+// 获取某个分组下的所有配置项
+export function GetDetail(parentKey: string, language?: string) {
+	return request({
+		url: apiPrefix,
+		method: 'get',
+		params: {
+			parent__key: parentKey,
+			limit: 999,
+			language: language,
+		},
+	});
+}
 export function GetObj(id: InfoReq) {
 	return request({
 		url: apiPrefix + id,

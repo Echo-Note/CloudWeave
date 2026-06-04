@@ -3,8 +3,8 @@ export default {
     message: {
         pages: {
             personal: {
-                PersonalInfo1: '基本信息',
-                PersonalInfo2: '在这里完善你的个人信息',
+                PersonalInfo1: '生活变的再糟糕，也不妨碍我变得更好！',
+                PersonalInfo2: 'DVAdmin 是一款基于 Django 和 Vue.js 开发的高效、易用的后台管理系统，主要用于快速构建企业级 Web 应用的管理后台。它通过前后端分离架构，提供了一整套开箱即用的功能模块，帮助开发者和企业降低开发成本、提升管理效率。（更改前端目录下src/i18n/pages/personal/下的翻译文件中personal.PersonalInfo2可更改此提示文字）',
                 info: {
                     myInfoTitle: '个人信息',
                     updateInfoTitle: '更新信息',
@@ -18,17 +18,18 @@ export default {
                     boundEmail: '已绑定邮箱：',
                 },
                 form: {
-                    nickname: '昵称',
+                    nickname: '昵称：',
                     nicknamePlaceholder: '请输入昵称',
-                    email: '邮箱',
+                    email: '邮箱：',
                     emailPlaceholder: '请输入邮箱',
-                    mobile: '手机',
+                    mobile: '手机：',
                     mobilePlaceholder: '请输入手机',
-                    gender: '性别',
+                    gender: '性别：',
                     genderPlaceholder: '请选择性别',
                     genderMale: '男',
                     genderFemale: '女',
                     genderSecret: '保密',
+                    passwd: '密码：',
                 },
                 dialog: {
                     passwordChange: '密码修改',

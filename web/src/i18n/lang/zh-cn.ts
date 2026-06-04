@@ -45,7 +45,7 @@ export default {
             quickNavigationTool: '快捷导航工具',
         },
         footer: {
-            copyright: ' ❤️ Powered by tiantianxiangshang Copyright © 巨梦·DVAdmin团队 ❤️',
+            copyright: ' ❤️ Powered by DVAdmin Copyright © 巨梦科技·DVAdmin团队 ❤️',
         },
         router: {
             home: '首页',
@@ -61,7 +61,7 @@ export default {
             systemMenu: '菜单管理',
             systemRole: '角色管理',
             systemUser: '用户管理',
-            systemDept: '部门管理',
+            systemDept: '架构管理',
             systemNotice: '通知中心',
             systemNotice1: '通知中心',
             /* 日志管理 */

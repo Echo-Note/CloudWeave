@@ -20,13 +20,23 @@
 			</el-col>
 		</el-row>
 
-		<el-drawer v-model="drawerVisible" :title="$t('message.pages.dept.dialog.deptConfig')" direction="rtl" size="500px" :close-on-click-modal="false" :before-close="handleDrawerClose">
+		<el-drawer v-model="drawerVisible" direction="rtl" size="500px" :close-on-click-modal="false" :show-close="false" :before-close="handleDrawerClose">
+			<template #header>
+				<div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+					<span>{{ $t('message.pages.dept.dialog.deptConfig') }}</span>
+					<div>
+						<el-button @click="handleDrawerClose" size="small">{{ $t('message.pages.dept.buttons.cancel') }}</el-button>
+						<el-button type="primary" @click="handleSubmit" size="small" :loading="deptBtnLoading">{{ $t('message.pages.dept.buttons.save') }}</el-button>
+					</div>
+				</div>
+			</template>
 			<DeptFormCom
 				v-if="drawerVisible"
 				:initFormData="drawerFormData"
 				:treeData="deptTreeData"
 				:cacheData="deptTreeCacheData"
 				@drawerClose="handleDrawerClose"
+				ref="deptFormRef"
 			/>
 		</el-drawer>
 	</fs-page>
@@ -52,6 +62,8 @@ let drawerVisible = ref(false);
 let drawerFormData = ref<Partial<TreeItemType>>({});
 let deptUserRef = ref<InstanceType<typeof DeptUserCom> | null>(null);
 let deptTreeRef = ref<InstanceType<typeof DeptTreeCom> | null>(null);
+let deptFormRef = ref<InstanceType<typeof DeptFormCom> | null>(null);
+let deptBtnLoading = ref(false);
 
 const getData = async () => {
 	let res: APIResponseData = await GetList({});
@@ -116,6 +128,10 @@ const handleDrawerClose = (type?: string) => {
 	drawerFormData.value = {};
 };
 
+const handleSubmit = async () => {
+	await deptFormRef.value?.handleUpdateMenu();
+};
+
 onMounted(() => {
 	getData();
 });
@@ -140,9 +156,10 @@ onMounted(() => {
 }
 
 .dept-left {
-	background-color: var(--el-fill-color-blank);;
-	border-radius: 0 8px 8px 0;
+	background-color: var(--el-fill-color-blank);
+	border-radius: 0 8px 8px 8px;
 	padding: 10px;
+	margin-right: 10px;
 }
 
 .dept-table {

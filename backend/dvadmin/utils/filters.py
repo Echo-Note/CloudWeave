@@ -95,6 +95,9 @@ class DataLevelPermissionsFilter(BaseFilterBackend):
         """
         api = request.path  # 当前请求接口
         method = request.method  # 当前请求方法
+        # 处理 PUT 和 PATCH 方法的映射(PUT 和 PATCH 都用于更新操作)
+        if method == 'PATCH':
+            method = 'PUT'  # 将 PATCH 视为 PUT
         methodList = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
         method = methodList.index(method)
         # ***接口白名单***

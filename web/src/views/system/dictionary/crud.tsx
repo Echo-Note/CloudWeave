@@ -33,7 +33,7 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
       },
       rowHandle: {
         fixed: 'right',
-        width: 200,
+        width: 250,
         buttons: {
           view: {
             show: false,

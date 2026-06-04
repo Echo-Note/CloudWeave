@@ -110,6 +110,10 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 					is: 'el-dialog',
 					width: '600px',
 				},
+				// 设置新增表单的初始值
+				initialValue: {
+					status: true,
+				},
 			},
 			columns: {
 				_index: {
@@ -197,6 +201,9 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
 					dict: dict({
 						data: dictionary('button_status_bool'),
 					}),
+					form: {
+						value: true, // 默认启用状态(布尔值)
+					},
 				},
 			},
 		},

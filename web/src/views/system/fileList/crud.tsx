@@ -33,7 +33,7 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
       actionbar: {
         buttons: {
           add: {
-            text: t('message.pages.fileList.buttons.add'),
+            text: '文件选择器',
             show: true,
             click: () => context.openAddHandle?.()
           },
@@ -141,7 +141,7 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
           }
         },
         url: {
-          title: t('message.pages.fileList.table.columns.url'),
+          title: '文件地址（点击可下载）',
           type: 'file-uploader',
           search: {
             disabled: true,

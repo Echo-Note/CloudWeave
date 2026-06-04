@@ -9,7 +9,7 @@ from django.utils.translation import gettext_lazy as _
 """
 import django_filters
 from django.db.models import Q
-from django_filters.rest_framework import BooleanFilter
+from django_filters.rest_framework import BooleanFilter, CharFilter
 from rest_framework import serializers
 from rest_framework.views import APIView
 
@@ -42,6 +42,20 @@ class SystemConfigCreateSerializer(CustomModelSerializer):
         if instance:
             raise CustomValidationError(_('Variable name already exists'))
         return value
+
+
+class SystemConfigUpdateSerializer(CustomModelSerializer):
+    """
+    系统配置-更新时使用-序列化器
+    """
+    form_item_type_label = serializers.CharField(source='get_form_item_type_display', read_only=True)
+
+    class Meta:
+        model = SystemConfig
+        fields = "__all__"
+        # 更新时,只允许修改 value 和 status 字段,其他字段都设为只读
+        read_only_fields = ["id", "key", "title", "title_en", "title_zh_tw", "parent", "sort", 
+                           "form_item_type", "rule", "placeholder", "setting", "data_options"]
 
 
 
@@ -154,10 +168,11 @@ class SystemConfigFilter(django_filters.rest_framework.FilterSet):
     过滤器
     """
     parent__isnull = BooleanFilter(field_name='parent', lookup_expr="isnull")
+    parent__key = CharFilter(field_name='parent__key', lookup_expr='exact')
 
     class Meta:
         model = SystemConfig
-        fields = ['id', 'parent', 'status', 'parent__isnull']
+        fields = ['id', 'parent', 'status', 'parent__isnull', 'parent__key']
 
 
 class SystemConfigViewSet(CustomModelViewSet):
@@ -167,6 +182,7 @@ class SystemConfigViewSet(CustomModelViewSet):
     queryset = SystemConfig.objects.order_by('sort', 'create_datetime')
     serializer_class = SystemConfigChinldernSerializer
     create_serializer_class = SystemConfigCreateSerializer
+    update_serializer_class = SystemConfigUpdateSerializer  # 指定更新序列化器
     retrieve_serializer_class = SystemConfigChinldernSerializer
     # filter_fields = ['id','parent']
     filter_class = SystemConfigFilter

@@ -67,7 +67,7 @@ export const createCrudOptions = function ({ crudExpose }: { crudExpose: CrudExp
                     download: {
                         show: compute(ctx => ctx.row.task_status === 2),
                         text: t('message.pages.downloadCenter.buttons.downloadFile'),
-                        type: 'warning',
+                        type: 'primary',
                         click: (ctx) => window.open(getBaseURL(ctx.row.url), '_blank')
                     }
                 },

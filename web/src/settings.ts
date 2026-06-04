@@ -9,6 +9,7 @@ import {getBaseURL} from '/@/utils/baseUrl';
 // element
 import ui from '@fast-crud/ui-element';
 import {request} from '/@/utils/service';
+import { Session } from '/@/utils/storage';
 //扩展包
 import {FsExtendsEditor, FsExtendsUploader } from '@fast-crud/fast-extends';
 import '@fast-crud/fast-extends/dist/style.css';
@@ -103,7 +104,8 @@ export default {
                         method: "post",
                         timeout: 60000,
                         headers: {
-                            "Content-Type": "multipart/form-data"
+                            "Content-Type": "multipart/form-data",
+                            "Authorization": "JWT " + Session.get('token')
                         },
                         data,
                         onUploadProgress: (p: any) => {

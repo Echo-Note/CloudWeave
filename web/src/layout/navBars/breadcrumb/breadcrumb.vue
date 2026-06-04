@@ -10,13 +10,13 @@
 			<transition-group name="breadcrumb">
 				<el-breadcrumb-item v-for="(v, k) in state.breadcrumbList" :key="!v.meta.tagsViewName ? v.meta.title : v.meta.tagsViewName">
 					<span v-if="k === state.breadcrumbList.length - 1" class="layout-navbars-breadcrumb-span">
-						<SvgIcon :name="v.meta.icon" class="layout-navbars-breadcrumb-iconfont" v-if="themeConfig.isBreadcrumbIcon" />
-						<div v-if="!v.meta.tagsViewName">{{ $t(v.meta.title) }}</div>
-						<div v-else>{{ v.meta.tagsViewName }}</div>
-					</span>
-					<a v-else @click.prevent="onBreadcrumbClick(v)">
-						<SvgIcon :name="v.meta.icon" class="layout-navbars-breadcrumb-iconfont" v-if="themeConfig.isBreadcrumbIcon" />{{ $t(v.meta.title) }}
-					</a>
+							<SvgIcon :name="v.meta.icon" class="layout-navbars-breadcrumb-iconfont" v-if="themeConfig.isBreadcrumbIcon" />
+							<div v-if="!v.meta.tagsViewName">{{ v.meta.title }}</div>
+							<div v-else>{{ v.meta.tagsViewName }}</div>
+						</span>
+						<a v-else @click.prevent="onBreadcrumbClick(v)">
+							<SvgIcon :name="v.meta.icon" class="layout-navbars-breadcrumb-iconfont" v-if="themeConfig.isBreadcrumbIcon" />{{ v.meta.title }}
+						</a>
 				</el-breadcrumb-item>
 			</transition-group>
 		</el-breadcrumb>

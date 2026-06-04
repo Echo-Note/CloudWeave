@@ -23,7 +23,7 @@
                 "component_name": "user",
                 "status": true,
                 "cache": false,
-                "visible": true,
+                "visible": false,
                 "children": [],
                 "menu_button": [
                     {
@@ -351,7 +351,7 @@
                 "name_zh_tw": "選單管理"
             },
             {
-                "name": "部门管理",
+                "name": "架构管理",
                 "icon": "ele-OfficeBuilding",
                 "sort": 3,
                 "is_link": false,

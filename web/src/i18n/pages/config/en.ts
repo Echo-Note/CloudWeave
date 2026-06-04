@@ -4,7 +4,9 @@ export default {
         pages: {
             config: {
                 header: {
+                    title: 'System Config Center',
                     tagText: 'System Config: Customize your website settings here',
+                    searchPlaceholder: 'Search config items...',
                 },
                 table: {
                     columns: {
@@ -54,8 +56,17 @@ export default {
                 },
                 messages: {
                     addSuccess: 'Added successfully',
+                    updateSuccess: 'Updated successfully',
+                    updateFailed: 'Update failed',
                     saveSuccess: 'Saved successfully',
                     saveFailed: 'Save failed',
+                    deleteSuccess: 'Deleted successfully',
+                    deleteFailed: 'Delete failed',
+                    deleteConfirm: 'Are you sure you want to delete this config item?',
+                    deleteGroupConfirm: 'Are you sure you want to delete the current group and all its config items?',
+                    deleteGroupSuccess: 'Group deleted successfully',
+                    deleteGroupFailed: 'Failed to delete group',
+                    groupNotFound: 'Current group not found',
                     uploadFailed: 'Upload failed',
                     uploadFailedDetail: 'Upload failed: {msg}',
                     invalidImage: 'Only image files (jpg/png) are allowed',
@@ -64,11 +75,14 @@ export default {
                 buttons: {
                     addGroup: 'Add Group',
                     addContent: 'Add Content',
+                    deleteGroup: 'Delete Current Group',
                     createNow: 'Create Now',
                     cancel: 'Cancel',
                     confirm: 'Confirm',
                     save: 'Save',
                     submit: 'Submit',
+                    edit: 'Edit',
+                    delete: 'Delete',
                 },
                 validationRules: {
                     required: 'Required',

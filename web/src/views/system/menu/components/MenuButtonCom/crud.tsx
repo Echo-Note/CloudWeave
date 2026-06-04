@@ -98,6 +98,19 @@ export const createCrudOptions = function ({crudExpose, context}: CreateCrudOpti
 							}
 						},
 					},
+					scan: {
+						show: true,
+						text: t('message.pages.menu.scan.title'),
+						click: async () => {
+							if (context!.selectOptions.value.id == undefined) {
+								ElMessage.warning(t('message.pages.menu.messages.selectMenuFirst'));
+								return;
+							}
+							if (context!.handleScanClick) {
+								context!.handleScanClick();
+							}
+						},
+					},
                 },
             },
             rowHandle: {

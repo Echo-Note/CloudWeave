@@ -90,8 +90,12 @@ export function setTagsViewNameI18n(item: any) {
 			tagsViewName = query?.tagsViewName || params?.tagsViewName;
 		}
 	} else {
-		// 非自定义 tagsView 名称
-		tagsViewName = i18n.global.t(meta.title);
+		// 非自定义 tagsView 名称，支持国际化
+		if (meta.title && typeof meta.title === 'string' && meta.title.includes('message.')) {
+			tagsViewName = i18n.global.t(meta.title);
+		} else {
+			tagsViewName = meta.title;
+		}
 	}
 	return tagsViewName;
 }
