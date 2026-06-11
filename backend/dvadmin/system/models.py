@@ -461,9 +461,17 @@ class OperationLog(CoreModel):
 
 
 def media_file_name(instance, filename):
+    """
+    生成文件存储路径，保留原始文件名
+    格式: files/{md5前两位}/{md5第三四位}/{原始文件名}_{时间戳}.{扩展名}
+    """
+    import time
     h = instance.md5sum
     basename, ext = os.path.splitext(filename)
-    return os.path.join("files", h[:1], h[1:2], h + ext.lower())
+    # 保留原始文件名，添加时间戳避免冲突
+    timestamp = int(time.time() * 1000)
+    safe_basename = basename.replace('/', '_').replace('\\', '_')  # 移除路径分隔符
+    return os.path.join("files", h[:1], h[1:2], f"{safe_basename}_{timestamp}{ext.lower()}")
 
 
 class FileList(CoreModel):
@@ -575,22 +583,22 @@ class SystemConfig(CoreModel):
     status = models.BooleanField(default=True, verbose_name="启用状态", help_text="启用状态")
     data_options = models.JSONField(verbose_name="数据options", help_text="数据options", null=True, blank=True)
     FORM_ITEM_TYPE_LIST = (
-        (0, "text"),
-        (1, "datetime"),
-        (2, "date"),
-        (3, "textarea"),
-        (4, "select"),
-        (5, "checkbox"),
-        (6, "radio"),
-        (7, "img"),
-        (8, "file"),
-        (9, "switch"),
-        (10, "number"),
-        (11, "array"),
-        (12, "imgs"),
-        (13, "foreignkey"),
-        (14, "manytomany"),
-        (15, "time"),
+        (0, "文本"),
+        (1, "日期时间"),
+        (2, "日期"),
+        (3, "长文本"),
+        (4, "下拉"),
+        (5, "多选"),
+        (6, "单选"),
+        (7, "图片(单张)"),
+        (8, "文件"),
+        (9, "开关"),
+        (10, "数字"),
+        (11, "数组"),
+        (12, "图片(多张)"),
+        (13, "关联表"),
+        (14, "关联表(多选)"),
+        (15, "时间"),
     )
     form_item_type = models.IntegerField(
         choices=FORM_ITEM_TYPE_LIST, verbose_name="表单类型", help_text="表单类型", default=0, blank=True

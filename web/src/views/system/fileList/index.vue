@@ -1,7 +1,8 @@
 <template>
   <fs-page>
     <FileSelector v-model="selected" :showInput="false" ref="fileSelectorRef" :tabsShow="SHOW.ALL" :itemSize="120"
-      :multiple="false" :selectable="true" valueKey="url" inputType="image">
+      :multiple="false" :selectable="true" valueKey="url" inputType="image"
+      @onClosed="crudExpose.doRefresh()">
       <!-- <template #input="scope">
         input：{{ scope }}
       </template> -->
@@ -22,7 +23,7 @@
       <template #actionbar-left="scope">
         <el-upload :action="getBaseURL() + 'api/system/file/'" :multiple="false"
           :headers="{ Authorization: 'JWT ' + Session.get('token') }"
-          :on-success="() => crudExpose.doRefresh()" :drag="false" :show-file-list="false">
+          :on-success="() => { crudExpose.doRefresh(); fileSelectorRef?.listRequest?.(); }" :drag="false" :show-file-list="false">
           <el-button type="primary" icon="plus">{{ $t('message.pages.fileList.buttons.upload') }}</el-button>
         </el-upload>
       </template>

@@ -50,18 +50,33 @@ def _get_all_system_config():
     )
     for system_config in system_config_obj:
         value = system_config.get("value", "")
+        # 处理 img 类型 (form_item_type=7)
         if value and system_config.get("form_item_type") == 7:
-            value = value[0].get("url")
+            try:
+                if isinstance(value, list) and len(value) > 0 and isinstance(value[0], dict):
+                    value = value[0].get("url")
+            except (AttributeError, IndexError, TypeError):
+                pass
+        # 处理 array 类型 (form_item_type=11)
         if value and system_config.get("form_item_type") == 11:
-            new_value = []
-            for ele in value:
-                new_value.append({
-                    "key": ele.get('key'),
-                    "title": ele.get('title'),
-                    "value": ele.get('value'),
-                })
-            new_value.sort(key=lambda s: s["key"])
-            value = new_value
+            try:
+                new_value = []
+                for ele in value:
+                    # 如果元素是字典，提取 key, title, value
+                    if isinstance(ele, dict):
+                        new_value.append({
+                            "key": ele.get('key'),
+                            "title": ele.get('title'),
+                            "value": ele.get('value'),
+                        })
+                    else:
+                        # 如果是简单值（字符串、数字等），直接添加
+                        new_value.append(ele)
+                new_value.sort(key=lambda s: s.get("key", 0) if isinstance(s, dict) else str(s))
+                value = new_value
+            except (AttributeError, TypeError):
+                # 如果排序失败，保持原样
+                pass
         data[f"{system_config.get('parent__key')}.{system_config.get('key')}"] = value
     return data
 
