@@ -13,3 +13,7 @@ web/test-results/
 
 # Superpowers planning docs
 docs/superpowers/
+
+# Local configuration files (not tracked in git)
+/backend/application/settings.py
+/backend/conf/env.py

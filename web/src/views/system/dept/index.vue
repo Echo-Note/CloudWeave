@@ -116,13 +116,39 @@ const handleUpdateMenu = (type: string, record?: TreeItemType) => {
 	if (type === 'update' && record) {
 		const parentData = deptTreeRef.value?.treeRef?.currentNode.parent.data || {};
 		deptTreeCacheData.value = [parentData];
-		drawerFormData.value = record;
+		// 从最新的树数据中查找当前节点的最新数据
+		const latestRecord = findNodeById(deptTreeData.value, record.id);
+		drawerFormData.value = latestRecord || record;
 	}
 	drawerVisible.value = true;
 };
+
+/**
+ * 递归查找树节点
+ */
+const findNodeById = (nodes: TreeItemType[], id: string): TreeItemType | undefined => {
+	for (const node of nodes) {
+		if (node.id === id) {
+			return node;
+		}
+		if (node.children && node.children.length > 0) {
+			const found = findNodeById(node.children, id);
+			if (found) return found;
+		}
+	}
+	return undefined;
+};
 const handleDrawerClose = (type?: string) => {
 	if (type === 'submit') {
+		// 保存当前选中的节点ID
+		const selectedNodeId = deptTreeRef.value?.treeRef?.currentNode?.data?.id;
 		getData();
+		// 数据加载完成后恢复选中状态
+		if (selectedNodeId) {
+			setTimeout(() => {
+				deptTreeRef.value?.treeRef?.setCurrentKey(selectedNodeId);
+			}, 100);
+		}
 	}
 	drawerVisible.value = false;
 	drawerFormData.value = {};
