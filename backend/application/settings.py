@@ -61,6 +61,14 @@ INSTALLED_APPS = [
     "channels",
     "dvadmin.system",
     "dvadmin.test_app",
+    # === CloudWeave 业务模块 ===
+    "dvadmin.company",      # 主体公司管理（通用组织架构）
+    "dvadmin.cloud",        # 云平台管理（账号/注册商/同步日志/余额）
+    "dvadmin.assets",       # 资产管理（项目/服务器/域名/IP/端口 + 关联中间表）
+    "dvadmin.icp",          # ICP备案管理
+    "dvadmin.alerts",       # 告警管理
+    "dvadmin.office",       # 办公资产管理
+    "dvadmin.mcp_server",   # MCP 智能集成（API Key/审计日志）
 ]
 
 MIDDLEWARE = [
@@ -438,7 +446,10 @@ SHARED_APPS = []
 # ********** 一键导入插件配置开始 **********
 # 例如:
 # from dvadmin_upgrade_center.settings import *    # 升级中心
-from dvadmin3_celery.settings import *            # celery 异步任务
+try:
+    from dvadmin3_celery.settings import *            # celery 异步任务
+except ImportError:
+    pass
 # from dvadmin_third.settings import *            # 第三方用户管理
 # from dvadmin_ak_sk.settings import *            # 秘钥管理管理
 # from dvadmin_tenants.settings import *            # 租户管理
