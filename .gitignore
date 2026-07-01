@@ -17,3 +17,6 @@ docs/superpowers/
 # Local configuration files (not tracked in git)
 /backend/application/settings.py
 /backend/conf/env.py
+
+docker_env
+.codebuddy
