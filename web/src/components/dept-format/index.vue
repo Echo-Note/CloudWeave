@@ -4,7 +4,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import {defineProps,ref,watch} from 'vue'
+import {ref, watch} from 'vue'
 import {useDeptInfoStore} from '/@/stores/modules/dept'
 const props = defineProps({
   modelValue:{

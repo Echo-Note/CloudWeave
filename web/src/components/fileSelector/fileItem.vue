@@ -11,7 +11,7 @@
 </template>
 <script setup lang="ts">
 import { defineComponent } from 'vue';
-import { ref, defineProps, PropType, watch, onMounted, h } from 'vue';
+import { ref, PropType, watch, onMounted, h } from 'vue';
 import { successNotification } from '/@/utils/message';
 import { useI18n } from 'vue-i18n';
 

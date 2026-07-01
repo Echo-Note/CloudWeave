@@ -193,7 +193,7 @@
 
 <script setup lang="ts">
 import { useUi, UserPageQuery, AddReq, EditReq, DelReq } from '@fast-crud/fast-crud';
-import { ref, reactive, defineProps, PropType, watch, onMounted, nextTick, computed } from 'vue';
+import { ref, reactive, PropType, watch, onMounted, nextTick, computed } from 'vue';
 import { getBaseURL } from '/@/utils/baseUrl';
 import { request } from '/@/utils/service';
 import { SHOW } from './types';

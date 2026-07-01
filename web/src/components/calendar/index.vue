@@ -89,7 +89,7 @@
 
 <script lang="ts" setup>
 import { useUi } from '@fast-crud/fast-crud';
-import { ref, defineProps, PropType, watch, computed, onMounted } from 'vue';
+import { ref, PropType, watch, computed, onMounted } from 'vue';
 import { useI18n } from 'vue-i18n';
 import Holidays from 'date-holidays';
 import Lunar from 'lunar-javascript';
