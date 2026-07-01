@@ -270,7 +270,11 @@ class BaseCloudSyncer(ABC):
 
     @property
     def credentials(self) -> dict[str, str]:
-        """获取解密后的 API 凭证（子类可按需实现真正的解密逻辑）"""
+        """获取 API 凭证明文。
+
+        secret_id / secret_key 使用 EncryptedCharField，模型属性读取时已自动解密，
+        此处直接返回明文供子类调用 SDK。
+        """
         return {
             "secret_id": self.cloud_platform.secret_id or "",
             "secret_key": self.cloud_platform.secret_key or "",

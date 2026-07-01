@@ -48,3 +48,11 @@ LOGIN_NO_CAPTCHA_AUTH = True
 ALLOWED_HOSTS = ["*"]
 # 列权限中排除App应用
 COLUMN_EXCLUDE_APPS = []
+
+# ================================================= #
+# *************** 敏感字段加密 配置  *************** #
+# ================================================= #
+# AES-256-GCM 加密密钥（用于云平台 API 凭证等敏感字段）
+# 生产环境必须配置为 32 位以上随机字符串，可通过环境变量 CLOUDWEAVE_AES_KEY 覆盖
+# 生成示例: python -c "import secrets; print(secrets.token_urlsafe(32))"
+CLOUDWEAVE_AES_KEY = "CloudWeave-CHANGE-ME-IN-PRODUCTION-001"

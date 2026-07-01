@@ -5,7 +5,7 @@
 保证数据库中只存储密文，业务代码通过 EncryptedCharField 透明读取明文。
 
 密文存储格式：``enc:v1:<base64(nonce + ciphertext + tag)>``
-  - ``enc:v1:`` 前缀用于区分密文与历史明文，便于平滑迁移
+  - ``enc:v1:`` 前缀标识密文
   - base64 内容包含 12 字节随机 nonce、密文、16 字节 GCM tag
 
 密钥来源（优先级从高到低）：
@@ -35,7 +35,7 @@ except ImportError as _exc:  # pragma: no cover
         "`pip install cryptography` 安装。"
     ) from _exc
 
-# 密文前缀，用于区分密文与历史明文
+# 密文前缀，标识密文格式
 _CIPHER_PREFIX = "enc:v1:"
 # GCM nonce 长度（字节）
 _NONCE_LENGTH = 12
@@ -84,9 +84,6 @@ def encrypt(plaintext: str) -> str:
     """
     if not plaintext:
         return plaintext
-    # 兼容：已是密文则不重复加密
-    if plaintext.startswith(_CIPHER_PREFIX):
-        return plaintext
     key = _get_key()
     nonce = os.urandom(_NONCE_LENGTH)
     aesgcm = AESGCM(key)
@@ -99,17 +96,14 @@ def encrypt(plaintext: str) -> str:
 def decrypt(ciphertext: str) -> str:
     """解密密文，返回明文。
 
-    对于无 ``enc:v1:`` 前缀的历史明文，直接原样返回以兼容旧数据。
-
-    :param ciphertext: 密文或历史明文
+    :param ciphertext: ``enc:v1:<base64>`` 格式密文
     :return: 明文
-    :raises ValueError: 密文格式损坏或被篡改时抛出
+    :raises ValueError: 密文格式损坏、缺少前缀或被篡改时抛出
     """
     if not ciphertext:
         return ciphertext
-    # 无前缀视为历史明文，原样返回（兼容迁移前数据）
     if not ciphertext.startswith(_CIPHER_PREFIX):
-        return ciphertext
+        raise ValueError("无效密文：缺少 enc:v1: 前缀，可能为未加密的明文")
     encoded = ciphertext[len(_CIPHER_PREFIX):]
     try:
         blob = base64.urlsafe_b64decode(encoded)

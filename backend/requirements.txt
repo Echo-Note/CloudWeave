@@ -1,4 +1,5 @@
 Django==4.2.14
+cryptography==43.0.1
 django-comment-migrate==0.1.7
 django-cors-headers==4.4.0
 django-filter==24.2
