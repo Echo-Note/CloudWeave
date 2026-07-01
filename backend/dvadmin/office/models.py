@@ -7,7 +7,7 @@
 from django.conf import settings
 from django.db import models
 
-from dvadmin.utils.models import CoreModel, table_prefix
+from dvadmin.utils.models import CoreModel, table_name
 
 
 class AssetCategory(CoreModel):
@@ -49,7 +49,7 @@ class AssetCategory(CoreModel):
     )
 
     class Meta:
-        db_table = f"{table_prefix}asset_category"
+        db_table = table_name("office", "asset_category")
         verbose_name = "资产类型"
         verbose_name_plural = verbose_name
         ordering = ['-is_preset', 'name']
@@ -161,7 +161,7 @@ class OfficeAsset(CoreModel):
     )
 
     class Meta:
-        db_table = f"{table_prefix}office_asset"
+        db_table = table_name("office", "asset")
         verbose_name = "办公资产"
         verbose_name_plural = verbose_name
         ordering = ['-create_datetime']
@@ -261,7 +261,7 @@ class SimCardInfo(CoreModel):
     )
 
     class Meta:
-        db_table = f"{table_prefix}sim_card_info"
+        db_table = table_name("office", "sim_card_info")
         verbose_name = "SIM卡实名信息"
         verbose_name_plural = verbose_name
 
@@ -362,7 +362,7 @@ class AssetBorrowRecord(CoreModel):
     )
 
     class Meta:
-        db_table = f"{table_prefix}asset_borrow_record"
+        db_table = table_name("office", "asset_borrow_record")
         verbose_name = "借用记录"
         verbose_name_plural = verbose_name
         ordering = ['-create_datetime']
@@ -444,7 +444,7 @@ class AssetTransferRecord(CoreModel):
     )
 
     class Meta:
-        db_table = f"{table_prefix}asset_transfer_record"
+        db_table = table_name("office", "asset_transfer_record")
         verbose_name = "资产调拨记录"
         verbose_name_plural = verbose_name
         ordering = ['-create_datetime']
@@ -503,7 +503,7 @@ class AssetOperationLog(CoreModel):
     )
 
     class Meta:
-        db_table = f"{table_prefix}asset_operation_log"
+        db_table = table_name("office", "asset_operation_log")
         verbose_name = "资产操作流水"
         verbose_name_plural = verbose_name
         ordering = ['-create_datetime']

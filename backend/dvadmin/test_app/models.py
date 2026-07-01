@@ -1,5 +1,7 @@
 from django.db import models
 
+from dvadmin.utils.models import table_name
+
 
 class Blog(models.Model):
     title = models.CharField(max_length=200, verbose_name="标题")
@@ -8,7 +10,7 @@ class Blog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
     class Meta:
-        db_table = "test_blog"
+        db_table = table_name("test_app", "blog")
         verbose_name = "博客"
         verbose_name_plural = verbose_name
 
@@ -21,6 +23,6 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
     class Meta:
-        db_table = "test_product"
+        db_table = table_name("test_app", "product")
         verbose_name = "产品"
         verbose_name_plural = verbose_name
