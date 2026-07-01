@@ -1,0 +1,183 @@
+[
+    {
+        "name": "云平台管理",
+        "icon": "ele-Cloudy",
+        "sort": 200,
+        "is_link": false,
+        "is_catalog": true,
+        "web_path": "/cloud",
+        "component": "",
+        "component_name": "cloud",
+        "status": true,
+        "cache": false,
+        "visible": true,
+        "children": [
+            {
+                "name": "云平台账号",
+                "icon": "ele-Connection",
+                "sort": 1,
+                "is_link": false,
+                "is_catalog": false,
+                "web_path": "/cloud/platform",
+                "component": "cloud/platform/index",
+                "component_name": "cloud_platform",
+                "status": true,
+                "cache": false,
+                "visible": true,
+                "children": [],
+                "menu_button": [
+                    {
+                        "name": "查询",
+                        "value": "cloud_platform:Query",
+                        "api": "/api/cloud/platform/",
+                        "method": 0,
+                        "name_en": "Query",
+                        "name_zh_tw": "查詢"
+                    },
+                    {
+                        "name": "新增",
+                        "value": "cloud_platform:Create",
+                        "api": "/api/cloud/platform/",
+                        "method": 1,
+                        "name_en": "Create",
+                        "name_zh_tw": "新增"
+                    },
+                    {
+                        "name": "编辑",
+                        "value": "cloud_platform:Update",
+                        "api": "/api/cloud/platform/{id}/",
+                        "method": 2,
+                        "name_en": "Update",
+                        "name_zh_tw": "編輯"
+                    },
+                    {
+                        "name": "删除",
+                        "value": "cloud_platform:Delete",
+                        "api": "/api/cloud/platform/{id}/",
+                        "method": 3,
+                        "name_en": "Delete",
+                        "name_zh_tw": "刪除"
+                    },
+                    {
+                        "name": "导入",
+                        "value": "cloud_platform:Import",
+                        "api": "/api/cloud/platform/import_data/",
+                        "method": 1,
+                        "name_en": "Import",
+                        "name_zh_tw": "匯入"
+                    }
+                ],
+                "menu_field": []
+            },
+            {
+                "name": "域名注册商",
+                "icon": "ele-Postcard",
+                "sort": 2,
+                "is_link": false,
+                "is_catalog": false,
+                "web_path": "/cloud/registrar",
+                "component": "cloud/registrar/index",
+                "component_name": "cloud_registrar",
+                "status": true,
+                "cache": false,
+                "visible": true,
+                "children": [],
+                "menu_button": [
+                    {
+                        "name": "查询",
+                        "value": "cloud_registrar:Query",
+                        "api": "/api/cloud/registrar/",
+                        "method": 0,
+                        "name_en": "Query",
+                        "name_zh_tw": "查詢"
+                    },
+                    {
+                        "name": "新增",
+                        "value": "cloud_registrar:Create",
+                        "api": "/api/cloud/registrar/",
+                        "method": 1,
+                        "name_en": "Create",
+                        "name_zh_tw": "新增"
+                    },
+                    {
+                        "name": "编辑",
+                        "value": "cloud_registrar:Update",
+                        "api": "/api/cloud/registrar/{id}/",
+                        "method": 2,
+                        "name_en": "Update",
+                        "name_zh_tw": "編輯"
+                    },
+                    {
+                        "name": "删除",
+                        "value": "cloud_registrar:Delete",
+                        "api": "/api/cloud/registrar/{id}/",
+                        "method": 3,
+                        "name_en": "Delete",
+                        "name_zh_tw": "刪除"
+                    },
+                    {
+                        "name": "导入",
+                        "value": "cloud_registrar:Import",
+                        "api": "/api/cloud/registrar/import_data/",
+                        "method": 1,
+                        "name_en": "Import",
+                        "name_zh_tw": "匯入"
+                    }
+                ],
+                "menu_field": []
+            },
+            {
+                "name": "同步日志",
+                "icon": "ele-Refresh",
+                "sort": 3,
+                "is_link": false,
+                "is_catalog": false,
+                "web_path": "/cloud/synclog",
+                "component": "cloud/synclog/index",
+                "component_name": "cloud_synclog",
+                "status": true,
+                "cache": false,
+                "visible": true,
+                "children": [],
+                "menu_button": [
+                    {
+                        "name": "查询",
+                        "value": "cloud_synclog:Query",
+                        "api": "/api/cloud/sync_log/",
+                        "method": 0,
+                        "name_en": "Query",
+                        "name_zh_tw": "查詢"
+                    }
+                ],
+                "menu_field": []
+            },
+            {
+                "name": "余额记录",
+                "icon": "ele-Wallet",
+                "sort": 4,
+                "is_link": false,
+                "is_catalog": false,
+                "web_path": "/cloud/balance",
+                "component": "cloud/balance/index",
+                "component_name": "cloud_balance",
+                "status": true,
+                "cache": false,
+                "visible": true,
+                "children": [],
+                "menu_button": [
+                    {
+                        "name": "查询",
+                        "value": "cloud_balance:Query",
+                        "api": "/api/cloud/balance/",
+                        "method": 0,
+                        "name_en": "Query",
+                        "name_zh_tw": "查詢"
+                    }
+                ],
+                "menu_field": []
+            }
+        ],
+        "menu_button": [],
+        "menu_field": []
+    }
+]

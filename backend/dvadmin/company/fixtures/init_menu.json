@@ -1,7 +1,7 @@
 [
     {
         "name": "主体公司管理",
-        "icon": "iconfont icon-gongsi",
+        "icon": "ele-OfficeBuilding",
         "sort": 100,
         "is_link": false,
         "is_catalog": false,

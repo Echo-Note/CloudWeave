@@ -107,7 +107,8 @@ class Registrar(CoreModel):
     """
     域名注册商表
 
-    管理域名注册商账户信息，记录注册商的基本信息和归属。
+    管理域名注册商账户信息。腾讯云/阿里云等云厂商注册商复用云平台账号密钥
+    （cloud_platform 关联），GoDaddy/易名等独立注册商可不关联。
     """
     name = models.CharField(
         max_length=100,
@@ -123,6 +124,12 @@ class Registrar(CoreModel):
         max_length=200, null=True, blank=True,
         verbose_name="注册账户ID", help_text="注册账户ID",
         db_comment="注册账户ID"
+    )
+    cloud_platform = models.ForeignKey(
+        CloudPlatform, on_delete=models.SET_NULL, null=True, blank=True,
+        db_constraint=False,
+        verbose_name="关联云平台账号", help_text="云厂商注册商复用云平台账号密钥，独立注册商留空",
+        db_comment="关联云平台账号"
     )
     company = models.ForeignKey(
         'company.CompanyEntity', on_delete=models.SET_NULL, null=True, blank=True,
