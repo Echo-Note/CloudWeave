@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     "dvadmin.system",
     "dvadmin.test_app",
     # === CloudWeave 业务模块 ===
+    "dvadmin.ocr_engine",   # OCR 引擎（可选，PaddleOCR 未安装时不影响其他功能）
     "dvadmin.company",      # 主体公司管理（通用组织架构）
     "dvadmin.cloud",        # 云平台管理（账号/注册商/同步日志/余额）
     "dvadmin.assets",       # 资产管理（项目/服务器/域名/IP/端口 + 关联中间表）

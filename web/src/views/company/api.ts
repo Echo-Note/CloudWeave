@@ -44,3 +44,27 @@ export function BatchSetStatus(ids: number[], status: string) {
         data: { ids, status },
     });
 }
+
+/** 检查 OCR 引擎是否可用 */
+export function CheckOcrStatus() {
+    return request({ url: apiPrefix + 'ocr_status/', method: 'get' });
+}
+
+/** OCR 营业执照识别 — 传入文件 ID，返回识别结果 */
+export function RecognizeLicense(fileId: number | string) {
+    return request({
+        url: apiPrefix + 'recognize_license/',
+        method: 'post',
+        data: { file_id: fileId },
+        timeout: 60000, // OCR 首次加载模型 + 识别耗时较长，60s 超时
+    });
+}
+
+/** 删除未使用的上传文件 */
+export function DeleteUnusedFile(url: string) {
+    return request({
+        url: '/api/system/file/delete_by_url/',
+        method: 'post',
+        data: { url },
+    });
+}

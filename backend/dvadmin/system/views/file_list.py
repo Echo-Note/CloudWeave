@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 
 from application import dispatch
 from dvadmin.system.models import FileList
-from dvadmin.utils.json_response import DetailResponse, SuccessResponse
+from dvadmin.utils.json_response import DetailResponse, ErrorResponse, SuccessResponse
 from dvadmin.utils.serializers import CustomModelSerializer
 from dvadmin.utils.viewset import CustomModelViewSet
 
@@ -19,21 +19,20 @@ class FileSerializer(CustomModelSerializer):
     url = serializers.SerializerMethodField(read_only=True)
 
     def get_url(self, instance):
-        if self.request.query_params.get('prefix'):
-            # 根据DEBUG设置判断环境
-            if settings.DEBUG:
-                prefix = 'http://127.0.0.1:8000'
-            else:
-                # 生产环境使用https
-                host = self.request.get_host()
-                if self.request.is_secure():
-                    prefix = f'https://{host}/api'
-                else:
-                    prefix = f'http://{host}/api'
-            if instance.file_url:
-                return instance.file_url if instance.file_url.startswith('http') else f"{prefix}/{instance.file_url}"
-            return (f'{prefix}/media/{str(instance.url)}')
-        return instance.file_url or (f'media/{str(instance.url)}')
+        """
+        根据 engine 字段返回文件可访问 URL
+
+        - oss/cos：文件由独立 SDK 直传，file_url 存储完整 URL，直接返回
+        - local（默认）：文件由 Django FileField 管理（实际后端由 STORAGES 配置决定，
+          私有 S3/COS 桶会生成 presigned URL，本地存储返回 /media/ 相对路径）
+        """
+        engine = instance.engine or 'local'
+        if engine in ('oss', 'cos'):
+            # 独立 SDK 直传，file_url 已是完整 URL
+            return instance.file_url or ''
+        # local：通过 FileField 的 storage 生成 URL
+        # 私有对象存储 → presigned URL；本地存储 → /media/xxx 相对路径
+        return instance.url.url if instance.url else (instance.file_url or '')
 
     class Meta:
         model = FileList
@@ -129,3 +128,48 @@ class FileViewSet(CustomModelViewSet):
             with schema_context('public'):
                 return super().list(request, *args, **kwargs)
         return super().list(request, *args, **kwargs)
+
+    @action(methods=['POST'], detail=False)
+    def delete_by_url(self, request):
+        """
+        根据文件 URL 删除文件记录及物理文件
+
+        用于清理表单中上传但未提交的文件。
+        请求体: {"url": "media/xxx.png"} 或 {"url": ["media/xxx.png", "media/yyy.png"]}
+        """
+        urls = request.data.get("url", "")
+        if not urls:
+            return ErrorResponse(msg="请提供文件 URL")
+
+        # 兼容字符串和列表两种输入
+        if isinstance(urls, str):
+            urls = [urls]
+
+        if not isinstance(urls, list):
+            return ErrorResponse(msg="URL 格式不正确")
+
+        from urllib.parse import urlparse
+
+        deleted_count = 0
+        for url in urls:
+            if not url:
+                continue
+            path = urlparse(url).path
+            # 去除可能的 /api/ 前缀
+            if path.startswith('/api/'):
+                path = path[4:]
+            if path.startswith('/'):
+                path = path[1:]
+
+            # 通过 url 字段查找（FileField 存储路径）
+            file_obj = FileList.objects.filter(url__icontains=path).first()
+            if not file_obj:
+                file_obj = FileList.objects.filter(file_url__icontains=url).first()
+
+            if file_obj:
+                file_obj.delete()  # 删除数据库记录和物理文件
+                deleted_count += 1
+
+        if deleted_count > 0:
+            return SuccessResponse(msg=f"成功删除 {deleted_count} 个文件")
+        return SuccessResponse(msg="文件不存在或已删除")

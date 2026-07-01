@@ -4,19 +4,51 @@ import { successMessage } from '/@/utils/message';
 import { auth } from '/@/utils/authFunction';
 import { useI18n } from 'vue-i18n';
 import { commonCrudConfig } from '/@/utils/commonCrud';
-import { shallowRef } from 'vue';
+import { shallowRef, h } from 'vue';
 import { getBaseURL } from '/@/utils/baseUrl';
+import OcrButton from './components/OcrButton';
 
 export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOptionsProps): CreateCrudOptionsRet {
   const { t } = useI18n();
 
+  /**
+   * 规范化表单数据中的 business_license 字段
+   * 1. file-uploader 存数组 → 取第一个转字符串
+   * 2. presigned URL（http 开头）→ 去掉域名和查询参数，还原为相对路径 media/{key}
+   *    后端存储的是稳定的相对路径，presigned URL 会过期不能存
+   * 3. pathname 中的 percent-encoding 需解码为原始字符，
+   *    否则后端 default_storage.url() 会二次编码导致签名失效
+   */
+  const normalizeFormData = (form: Record<string, any>) => {
+    let val = form.business_license;
+    if (Array.isArray(val)) {
+      val = val[0] || '';
+    }
+    if (typeof val === 'string' && val.startsWith('http')) {
+      // presigned URL → 还原为相对路径（解码 percent-encoding）
+      try {
+        const urlObj = new URL(val);
+        form.business_license = `media${decodeURIComponent(urlObj.pathname)}`;
+      } catch {
+        form.business_license = val;
+      }
+    } else {
+      form.business_license = val;
+    }
+    return form;
+  };
+
   const pageRequest = async (query: UserPageQuery) => await api.GetList(query);
   const editRequest = async ({ form, row }: EditReq) => {
     form.id = row.id;
+    normalizeFormData(form);
     return await api.UpdateObj(form);
   };
   const delRequest = async ({ row }: DelReq) => await api.DelObj(row.id);
-  const addRequest = async ({ form }: AddReq) => await api.AddObj(form);
+  const addRequest = async ({ form }: AddReq) => {
+    normalizeFormData(form);
+    return await api.AddObj(form);
+  };
 
   // 引入通用字段（创建时间、更新时间、创建人、修改人、部门、备注）
   const commonFields = commonCrudConfig({
@@ -87,9 +119,28 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
       form: {
         col: { span: 12 },
         labelWidth: '140px',
-        wrapper: { is: 'el-dialog', width: '800px' },
-        doSubmit: {
-          close: true,
+        wrapper: {
+          is: 'el-dialog',
+          width: '800px',
+          onOpen: (ctx: any) => {
+            (context as any).formSubmitted.value = false;
+            (context as any).initialLicense.value = ctx.initialForm?.business_license || '';
+            // 重置文件 ID，编辑已有记录时需要重新上传才能识别
+            (context as any).licenseFileId.value = null;
+          },
+          onClosed: (ctx: any) => {
+            if ((context as any).formSubmitted.value) return;
+            const form = ctx.getFormData();
+            const currentLicense = form?.business_license || '';
+            const initialLicense = (context as any).initialLicense.value;
+            if (currentLicense && currentLicense !== initialLicense) {
+              api.DeleteUnusedFile(currentLicense).catch(() => {});
+            }
+          },
+        },
+        onSuccess: (ctx: any) => {
+          (context as any).formSubmitted.value = true;
+          return crudExpose!.doRefresh();
         },
       },
       // 列定义
@@ -157,6 +208,20 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
             },
           },
         },
+        company_type: {
+          title: t('message.pages.company.table.columns.companyType'),
+          type: 'input',
+          column: {
+            minWidth: 160,
+          },
+          form: {
+            col: { span: 12 },
+            component: {
+              props: { clearable: true, maxlength: 100 },
+              placeholder: t('message.pages.company.form.companyTypePlaceholder'),
+            },
+          },
+        },
         credit_code: {
           title: t('message.pages.company.table.columns.creditCode'),
           search: {
@@ -191,17 +256,43 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
           title: t('message.pages.company.table.columns.businessLicense'),
           type: 'file-uploader',
           column: {
-            minWidth: 150,
-            component: {
-              async buildUrl(value: any) {
-                if (!value) return '';
-                return getBaseURL(value);
-              },
-            },
+            minWidth: 120,
           },
           form: {
             col: { span: 24 },
             helper: t('message.pages.company.form.businessLicenseHelper'),
+            component: {
+              // 构建文件预览 URL（用于编辑模式回显已上传文件）
+              buildUrl: async (value: any) => {
+                if (!value) return '';
+                // getBaseURL 自动处理 http URL（对象存储）和相对路径（本地）
+                return getBaseURL(value);
+              },
+              // 上传成功后保存 file_id 到 context，供 OCR 按钮使用
+              onSuccess: (ctx: any) => {
+                // ctx = { res, file, fileList }
+                // res 是 successHandle 返回值: { url, key: id, ...ret.data }
+                const res = ctx?.res || {};
+                const fileId = res.id || res.key;
+                if (fileId) {
+                  (context as any).licenseFileId.value = fileId;
+                }
+              },
+            },
+            bottomRender: (scope: any) => {
+              const { form } = scope;
+              const available = (context as any).ocrAvailable?.value;
+              if (!available) {
+                return null;
+              }
+              return h('div', { style: 'margin-top: 8px; text-align: right;' }, [
+                h(OcrButton, {
+                  getLicense: () => form.business_license,
+                  getFileId: () => (context as any).licenseFileId?.value,
+                  getForm: () => form,
+                }),
+              ]);
+            }
           },
           viewForm: {
             col: { span: 24 },

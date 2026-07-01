@@ -14,8 +14,8 @@ from dvadmin.utils.models import CoreModel
 table_prefix = "company_"  # 数据库表前缀（App 级别）
 
 
+# 保留此函数以兼容已有迁移文件 0003，不再被新代码使用
 def _business_license_path(instance: "CompanyEntity", filename: str) -> str:
-    """生成营业执照上传路径：files/license/{timestamp}_{原始文件名}"""
     basename, ext = os.path.splitext(filename)
     timestamp = int(time.time() * 1000)
     safe_name = basename.replace("/", "_").replace("\\", "_")
@@ -39,14 +39,19 @@ class CompanyEntity(CoreModel):
         verbose_name="简称", help_text="简称，如'子公司A'",
         db_comment="简称"
     )
+    company_type = models.CharField(
+        max_length=100, null=True, blank=True,
+        verbose_name="公司类型", help_text="公司类型，如'有限责任公司(法人独资)'",
+        db_comment="公司类型"
+    )
     credit_code = models.CharField(
         max_length=50, null=True, blank=True, unique=True,
         verbose_name="统一社会信用代码", help_text="18位统一社会信用代码，不为空时唯一",
         db_comment="统一社会信用代码"
     )
-    business_license = models.FileField(
-        upload_to=_business_license_path, null=True, blank=True,
-        verbose_name="营业执照", help_text="营业执照扫描件（图片或PDF）",
+    business_license = models.CharField(
+        max_length=500, null=True, blank=True,
+        verbose_name="营业执照", help_text="营业执照扫描件路径（文件由 FileList 统一管理）",
         db_comment="营业执照"
     )
     legal_person = models.CharField(
