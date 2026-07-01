@@ -19,6 +19,19 @@ from datetime import timedelta
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ================================================= #
+# ****** 自动加载 .env 文件（本地敏感配置） ********* #
+# ================================================= #
+# 简单的 .env 加载器，不引入额外依赖
+_ENV_FILE = BASE_DIR / ".env"
+if _ENV_FILE.exists():
+    for _line in _ENV_FILE.read_text().splitlines():
+        _line = _line.strip()
+        if not _line or _line.startswith("#") or "=" not in _line:
+            continue
+        _key, _, _value = _line.partition("=")
+        os.environ.setdefault(_key.strip(), _value.strip())
+
+# ================================================= #
 # ******************** 动态配置 ******************** #
 # ================================================= #
 
@@ -69,6 +82,7 @@ INSTALLED_APPS = [
     "dvadmin.alerts",       # 告警管理
     "dvadmin.office",       # 办公资产管理
     "dvadmin.mcp_server",   # MCP 智能集成（API Key/审计日志）
+    "storages",             # S3 对象存储（django-storages）
 ]
 
 MIDDLEWARE = [
@@ -190,8 +204,35 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-MEDIA_ROOT = "media"  # 项目下的目录
 MEDIA_URL = "/media/"  # 跟STATIC_URL类似，指定用户可以通过这个url找到文件
+MEDIA_ROOT = BASE_DIR / "media"  # 默认本地回退路径；启用 S3 时不影响上传
+
+# ================================================= #
+# ************** 文件存储配置（S3 / 本地） ************ #
+# ================================================= #
+# 当 S3 凭证已配置时使用 S3 对象存储，否则回退到本地文件系统
+_S3_CONFIGURED = all([AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME])
+
+if _S3_CONFIGURED:
+    STORAGES = {
+        "default": {
+            "BACKEND": "storages.backends.s3.S3Storage",
+            "OPTIONS": {
+                "access_key": AWS_ACCESS_KEY_ID,
+                "secret_key": AWS_SECRET_ACCESS_KEY,
+                "bucket_name": AWS_STORAGE_BUCKET_NAME,
+                "region_name": AWS_S3_REGION_NAME,
+                "endpoint_url": AWS_S3_ENDPOINT_URL or None,
+                "custom_domain": AWS_S3_CUSTOM_DOMAIN or None,
+                "addressing_style": AWS_S3_ADDRESSING_STYLE,
+                "default_acl": AWS_DEFAULT_ACL,
+                "file_overwrite": False,
+            },
+        },
+        "staticfiles": {
+            "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+        },
+    }
 
 #添加以下代码以后就不用写{% load staticfiles %}，可以直接引用
 STATICFILES_FINDERS = (

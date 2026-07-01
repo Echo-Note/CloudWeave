@@ -4,11 +4,22 @@
 CompanyEntity 是全系统通用的组织架构实体，统一承载域名归属、
 云平台账号归属、办公资产归属、ICP 备案主体、项目归属等场景。
 """
+import os
+import time
+
 from django.db import models
 
 from dvadmin.utils.models import CoreModel
 
 table_prefix = "company_"  # 数据库表前缀（App 级别）
+
+
+def _business_license_path(instance: "CompanyEntity", filename: str) -> str:
+    """生成营业执照上传路径：files/license/{timestamp}_{原始文件名}"""
+    basename, ext = os.path.splitext(filename)
+    timestamp = int(time.time() * 1000)
+    safe_name = basename.replace("/", "_").replace("\\", "_")
+    return f"files/license/{timestamp}_{safe_name}{ext.lower()}"
 
 
 class CompanyEntity(CoreModel):
@@ -32,6 +43,11 @@ class CompanyEntity(CoreModel):
         max_length=50, null=True, blank=True, unique=True,
         verbose_name="统一社会信用代码", help_text="18位统一社会信用代码，不为空时唯一",
         db_comment="统一社会信用代码"
+    )
+    business_license = models.FileField(
+        upload_to=_business_license_path, null=True, blank=True,
+        verbose_name="营业执照", help_text="营业执照扫描件（图片或PDF）",
+        db_comment="营业执照"
     )
     legal_person = models.CharField(
         max_length=50, null=True, blank=True,
