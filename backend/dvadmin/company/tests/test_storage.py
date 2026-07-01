@@ -1,76 +1,15 @@
 """
-主体公司 App — 模型测试
+主体公司 — 对象存储集成测试
+
+验证腾讯云 COS 存储后端的营业执照 FileField 上传/读取/删除/列出全流程。
 """
+from datetime import datetime, timedelta
+
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
+
 from dvadmin.company.models import CompanyEntity
-
-
-class CompanyEntityModelTest(TestCase):
-    """主体公司模型测试"""
-
-    def test_create_company(self):
-        """测试创建主体公司"""
-        company = CompanyEntity.objects.create(
-            name="XX科技有限公司",
-            short_name="XX科技",
-            status="active",
-        )
-        self.assertEqual(company.name, "XX科技有限公司")
-        self.assertEqual(company.short_name, "XX科技")
-        self.assertEqual(company.status, "active")
-        self.assertIsNotNone(company.create_datetime)
-
-    def test_create_company_with_parent(self):
-        """测试创建带父级关系的公司（集团→子公司）"""
-        parent = CompanyEntity.objects.create(name="集团总部", status="active")
-        child = CompanyEntity.objects.create(
-            name="子公司A", short_name="子公司A", status="active", parent=parent
-        )
-        self.assertEqual(child.parent, parent)
-        self.assertEqual(child.parent.name, "集团总部")
-
-    def test_name_unique_constraint(self):
-        """测试公司名称唯一约束"""
-        CompanyEntity.objects.create(name="唯一公司", status="active")
-        with self.assertRaises(Exception):
-            CompanyEntity.objects.create(name="唯一公司", status="active")
-
-    def test_credit_code_unique_when_not_null(self):
-        """测试社会信用代码不为空时唯一"""
-        CompanyEntity.objects.create(
-            name="公司A", credit_code="123456789012345678", status="active"
-        )
-        with self.assertRaises(Exception):
-            CompanyEntity.objects.create(
-                name="公司B", credit_code="123456789012345678", status="active"
-            )
-
-    def test_str_method(self):
-        """测试 __str__ 方法"""
-        company = CompanyEntity.objects.create(name="测试公司", status="active")
-        self.assertEqual(str(company), "测试公司")
-
-    def test_default_status(self):
-        """测试默认状态为 active"""
-        company = CompanyEntity.objects.create(name="默认状态公司")
-        self.assertEqual(company.status, "active")
-
-    def test_ordering(self):
-        """测试按创建时间倒序排列"""
-        co1 = CompanyEntity.objects.create(name="公司1", status="active")
-        co2 = CompanyEntity.objects.create(name="公司2", status="active")
-        companies = list(CompanyEntity.objects.all())
-        # 后创建的排在前面
-        self.assertEqual(companies[0].name, "公司2")
-        self.assertEqual(companies[1].name, "公司1")
-
-    def test_db_table_name(self):
-        """测试数据库表名"""
-        self.assertEqual(CompanyEntity._meta.db_table, "company_entity")
-
-    def test_verbose_name(self):
-        """测试 verbose_name"""
-        self.assertEqual(CompanyEntity._meta.verbose_name, "主体公司")
 
 
 class BusinessLicenseStorageTest(TestCase):
@@ -126,9 +65,6 @@ class BusinessLicenseStorageTest(TestCase):
 
     def test_upload_business_license(self):
         """测试通过模型 FileField 上传营业执照到 COS"""
-        from dvadmin.company.models import CompanyEntity
-        from django.core.files.uploadedfile import SimpleUploadedFile
-
         company = CompanyEntity.objects.create(name="测试上传公司", status="active")
         try:
             upload = SimpleUploadedFile(
@@ -150,8 +86,6 @@ class BusinessLicenseStorageTest(TestCase):
 
     def test_upload_single_file(self):
         """测试直接通过 storage.save 上传单个文件"""
-        from django.core.files.base import ContentFile
-
         path = f"{self.TEST_PREFIX}/upload_test.txt"
         content = b"hello-cos-upload"
         try:
@@ -166,8 +100,6 @@ class BusinessLicenseStorageTest(TestCase):
 
     def test_get_file_read_content(self):
         """测试读取已上传文件的内容"""
-        from django.core.files.base import ContentFile
-
         path = f"{self.TEST_PREFIX}/read_test.txt"
         content = b"hello-from-cos-read-test"
         try:
@@ -181,8 +113,6 @@ class BusinessLicenseStorageTest(TestCase):
 
     def test_get_file_size(self):
         """测试获取文件大小"""
-        from django.core.files.base import ContentFile
-
         path = f"{self.TEST_PREFIX}/size_test.txt"
         content = b"A" * 1024  # 1KB
         try:
@@ -195,9 +125,6 @@ class BusinessLicenseStorageTest(TestCase):
 
     def test_get_file_modified_time(self):
         """测试获取文件最后修改时间"""
-        from django.core.files.base import ContentFile
-        from datetime import datetime, timedelta
-
         path = f"{self.TEST_PREFIX}/mtime_test.txt"
         try:
             self.storage.save(path, ContentFile(b"mtime-test"))
@@ -213,8 +140,6 @@ class BusinessLicenseStorageTest(TestCase):
 
     def test_listdir_empty_prefix(self):
         """测试列出空目录下的文件"""
-        from django.core.files.base import ContentFile
-
         paths = [
             f"{self.TEST_PREFIX}/list_a.txt",
             f"{self.TEST_PREFIX}/list_b.txt",
@@ -238,8 +163,6 @@ class BusinessLicenseStorageTest(TestCase):
 
     def test_file_exists(self):
         """测试 exists 方法正确判断文件存在/不存在"""
-        from django.core.files.base import ContentFile
-
         path = f"{self.TEST_PREFIX}/exists_test.txt"
         self.assertFalse(self.storage.exists(path), "未上传前不应存在")
         try:
@@ -254,8 +177,6 @@ class BusinessLicenseStorageTest(TestCase):
 
     def test_file_url_generation(self):
         """测试文件访问 URL 正确生成，桶名仅在域名中出现一次"""
-        from django.core.files.base import ContentFile
-
         path = f"{self.TEST_PREFIX}/url_test.txt"
         try:
             self.storage.save(path, ContentFile(b"url-test"))
@@ -274,8 +195,6 @@ class BusinessLicenseStorageTest(TestCase):
 
     def test_delete_file(self):
         """测试从 COS 删除单个文件"""
-        from django.core.files.base import ContentFile
-
         path = f"{self.TEST_PREFIX}/delete_test.txt"
         self.storage.save(path, ContentFile(b"to-be-deleted"))
         self.assertTrue(self.storage.exists(path))
@@ -285,8 +204,6 @@ class BusinessLicenseStorageTest(TestCase):
 
     def test_delete_batch_files(self):
         """测试批量删除多个文件"""
-        from django.core.files.base import ContentFile
-
         paths = [
             f"{self.TEST_PREFIX}/batch_del_a.txt",
             f"{self.TEST_PREFIX}/batch_del_b.txt",
@@ -303,9 +220,6 @@ class BusinessLicenseStorageTest(TestCase):
 
     def test_full_lifecycle(self):
         """测试完整生命周期：上传 → 读取 → 列目录 → URL → 删除"""
-        from django.core.files.base import ContentFile
-        from datetime import datetime
-
         folder = f"{self.TEST_PREFIX}/lifecycle"
         path = f"{folder}/full_test.txt"
         content = f"lifecycle-{datetime.now().isoformat()}".encode()

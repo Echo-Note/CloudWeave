@@ -1,0 +1,59 @@
+[
+    {
+        "name": "主体公司管理",
+        "icon": "iconfont icon-gongsi",
+        "sort": 100,
+        "is_link": false,
+        "is_catalog": false,
+        "web_path": "/company",
+        "component": "company/index",
+        "component_name": "company",
+        "status": true,
+        "cache": false,
+        "visible": true,
+        "children": [],
+        "menu_button": [
+            {
+                "name": "查询",
+                "value": "company:Query",
+                "api": "/api/company/entity/",
+                "method": 0,
+                "name_en": "Query",
+                "name_zh_tw": "查詢"
+            },
+            {
+                "name": "新增",
+                "value": "company:Create",
+                "api": "/api/company/entity/",
+                "method": 1,
+                "name_en": "Create",
+                "name_zh_tw": "新增"
+            },
+            {
+                "name": "编辑",
+                "value": "company:Update",
+                "api": "/api/company/entity/{id}/",
+                "method": 2,
+                "name_en": "Update",
+                "name_zh_tw": "編輯"
+            },
+            {
+                "name": "删除",
+                "value": "company:Delete",
+                "api": "/api/company/entity/{id}/",
+                "method": 3,
+                "name_en": "Delete",
+                "name_zh_tw": "刪除"
+            },
+            {
+                "name": "导入",
+                "value": "company:Import",
+                "api": "/api/company/entity/import_data/",
+                "method": 1,
+                "name_en": "Import",
+                "name_zh_tw": "匯入"
+            }
+        ],
+        "menu_field": []
+    }
+]

@@ -1,0 +1,74 @@
+// 定义内容
+export default {
+	message: {
+		pages: {
+			company: {
+				table: {
+					columns: {
+						index: '序号',
+						name: '公司全称',
+						shortName: '简称',
+						creditCode: '统一社会信用代码',
+						legalPerson: '法定代表人',
+						registeredCapital: '注册资本(万元)',
+						establishedDate: '成立日期',
+						businessLicense: '营业执照',
+						businessScope: '经营范围',
+						address: '注册地址',
+						contactPerson: '日常联系人',
+						contactPhone: '联系电话',
+						contactEmail: '联系邮箱',
+						parent: '上级主体',
+						status: '状态',
+						remark: '备注',
+					},
+				},
+				form: {
+					namePlaceholder: '请输入公司全称',
+					shortNamePlaceholder: '请输入简称',
+					creditCodePlaceholder: '请输入18位统一社会信用代码',
+					legalPersonPlaceholder: '请输入法定代表人姓名',
+					registeredCapitalPlaceholder: '请输入注册资本',
+					establishedDatePlaceholder: '请选择成立日期',
+					businessLicenseHelper: '上传营业执照扫描件（支持图片或PDF）',
+					businessScopePlaceholder: '请输入经营范围',
+					addressPlaceholder: '请输入注册地址',
+					contactPersonPlaceholder: '请输入日常联系人姓名',
+					contactPhonePlaceholder: '请输入联系电话',
+					contactEmailPlaceholder: '请输入联系邮箱',
+					parentPlaceholder: '请选择上级主体（可选）',
+					parentHelper: '用于构建集团→子公司→孙公司层级关系',
+					remarkPlaceholder: '请输入备注',
+				},
+				validation: {
+					nameRequired: '请输入公司全称',
+					nameMaxLength: '公司全称不能超过200个字符',
+					creditCodeFormat: '请输入18位统一社会信用代码（数字+大写字母）',
+					statusRequired: '请选择状态',
+				},
+				dialog: {
+					addTitle: '新增主体公司',
+					editTitle: '编辑主体公司',
+					deleteConfirm: '确定删除该公司吗？删除后不可恢复。',
+				},
+				messages: {
+					addSuccess: '新增成功',
+					updateSuccess: '更新成功',
+					deleteSuccess: '删除成功',
+					toggleSuccess: '状态更新成功',
+				},
+				buttons: {
+					add: '新增',
+					edit: '编辑',
+					delete: '删除',
+					toggleStatus: '启用/停用',
+					import: '导入',
+				},
+				status: {
+					active: '启用',
+					inactive: '停用',
+				},
+			},
+		},
+	},
+};

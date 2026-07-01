@@ -1,0 +1,74 @@
+// 繁體中文翻譯
+export default {
+	message: {
+		pages: {
+			company: {
+				table: {
+					columns: {
+						index: '序號',
+						name: '公司全稱',
+						shortName: '簡稱',
+						creditCode: '統一社會信用代碼',
+						legalPerson: '法定代表人',
+						registeredCapital: '註冊資本(萬元)',
+						establishedDate: '成立日期',
+						businessLicense: '營業執照',
+						businessScope: '經營範圍',
+						address: '註冊地址',
+						contactPerson: '日常聯繫人',
+						contactPhone: '聯繫電話',
+						contactEmail: '聯繫信箱',
+						parent: '上級主體',
+						status: '狀態',
+						remark: '備註',
+					},
+				},
+				form: {
+					namePlaceholder: '請輸入公司全稱',
+					shortNamePlaceholder: '請輸入簡稱',
+					creditCodePlaceholder: '請輸入18位統一社會信用代碼',
+					legalPersonPlaceholder: '請輸入法定代表人姓名',
+					registeredCapitalPlaceholder: '請輸入註冊資本',
+					establishedDatePlaceholder: '請選擇成立日期',
+					businessLicenseHelper: '上傳營業執照掃描件（支援圖片或PDF）',
+					businessScopePlaceholder: '請輸入經營範圍',
+					addressPlaceholder: '請輸入註冊地址',
+					contactPersonPlaceholder: '請輸入日常聯繫人姓名',
+					contactPhonePlaceholder: '請輸入聯繫電話',
+					contactEmailPlaceholder: '請輸入聯繫信箱',
+					parentPlaceholder: '請選擇上級主體（可選）',
+					parentHelper: '用於構建集團→子公司→孫公司層級關係',
+					remarkPlaceholder: '請輸入備註',
+				},
+				validation: {
+					nameRequired: '請輸入公司全稱',
+					nameMaxLength: '公司全稱不能超過200個字元',
+					creditCodeFormat: '請輸入18位統一社會信用代碼（數字+大寫字母）',
+					statusRequired: '請選擇狀態',
+				},
+				dialog: {
+					addTitle: '新增主體公司',
+					editTitle: '編輯主體公司',
+					deleteConfirm: '確定刪除該公司嗎？刪除後不可恢復。',
+				},
+				messages: {
+					addSuccess: '新增成功',
+					updateSuccess: '更新成功',
+					deleteSuccess: '刪除成功',
+					toggleSuccess: '狀態更新成功',
+				},
+				buttons: {
+					add: '新增',
+					edit: '編輯',
+					delete: '刪除',
+					toggleStatus: '啟用/停用',
+					import: '匯入',
+				},
+				status: {
+					active: '啟用',
+					inactive: '停用',
+				},
+			},
+		},
+	},
+};

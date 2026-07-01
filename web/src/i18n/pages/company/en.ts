@@ -1,0 +1,74 @@
+// English translations
+export default {
+	message: {
+		pages: {
+			company: {
+				table: {
+					columns: {
+						index: '#',
+						name: 'Company Name',
+						shortName: 'Short Name',
+						creditCode: 'Unified Social Credit Code',
+						legalPerson: 'Legal Representative',
+						registeredCapital: 'Registered Capital',
+						establishedDate: 'Established Date',
+						businessLicense: 'Business License',
+						businessScope: 'Business Scope',
+						address: 'Registered Address',
+						contactPerson: 'Contact Person',
+						contactPhone: 'Contact Phone',
+						contactEmail: 'Contact Email',
+						parent: 'Parent Company',
+						status: 'Status',
+						remark: 'Remark',
+					},
+				},
+				form: {
+					namePlaceholder: 'Enter company name',
+					shortNamePlaceholder: 'Enter short name',
+					creditCodePlaceholder: 'Enter 18-digit Unified Social Credit Code',
+					legalPersonPlaceholder: 'Enter legal representative name',
+					registeredCapitalPlaceholder: 'Enter registered capital',
+					establishedDatePlaceholder: 'Select established date',
+					businessLicenseHelper: 'Upload business license scan (image or PDF)',
+					businessScopePlaceholder: 'Enter business scope',
+					addressPlaceholder: 'Enter registered address',
+					contactPersonPlaceholder: 'Enter contact person name',
+					contactPhonePlaceholder: 'Enter contact phone',
+					contactEmailPlaceholder: 'Enter contact email',
+					parentPlaceholder: 'Select parent company (optional)',
+					parentHelper: 'Used to build group → subsidiary → sub-subsidiary hierarchy',
+					remarkPlaceholder: 'Enter remark',
+				},
+				validation: {
+					nameRequired: 'Please enter company name',
+					nameMaxLength: 'Company name cannot exceed 200 characters',
+					creditCodeFormat: 'Please enter a valid 18-digit code (digits + uppercase letters)',
+					statusRequired: 'Please select status',
+				},
+				dialog: {
+					addTitle: 'Add Company',
+					editTitle: 'Edit Company',
+					deleteConfirm: 'Are you sure you want to delete this company? This action cannot be undone.',
+				},
+				messages: {
+					addSuccess: 'Added successfully',
+					updateSuccess: 'Updated successfully',
+					deleteSuccess: 'Deleted successfully',
+					toggleSuccess: 'Status updated successfully',
+				},
+				buttons: {
+					add: 'Add',
+					edit: 'Edit',
+					delete: 'Delete',
+					toggleStatus: 'Toggle Status',
+					import: 'Import',
+				},
+				status: {
+					active: 'Active',
+					inactive: 'Inactive',
+				},
+			},
+		},
+	},
+};
