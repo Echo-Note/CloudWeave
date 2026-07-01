@@ -6,7 +6,9 @@
 """
 from django.db import models
 
-from dvadmin.utils.models import CoreModel, table_prefix
+from dvadmin.utils.models import CoreModel
+
+table_prefix = "cloud_"  # 数据库表前缀（App 级别）
 
 
 class CloudPlatform(CoreModel):
@@ -92,7 +94,7 @@ class CloudPlatform(CoreModel):
     )
 
     class Meta:
-        db_table = f"{table_prefix}cloud_platform"
+        db_table = f"{table_prefix}platform"
         verbose_name = "云平台账号"
         verbose_name_plural = verbose_name
         ordering = ['-create_datetime']

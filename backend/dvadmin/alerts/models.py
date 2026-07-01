@@ -7,7 +7,9 @@
 from django.conf import settings
 from django.db import models
 
-from dvadmin.utils.models import CoreModel, table_prefix
+from dvadmin.utils.models import CoreModel
+
+table_prefix = "alerts_"  # 数据库表前缀（App 级别）
 
 
 class AlertRule(CoreModel):

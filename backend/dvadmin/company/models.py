@@ -6,7 +6,9 @@ CompanyEntity 是全系统通用的组织架构实体，统一承载域名归属
 """
 from django.db import models
 
-from dvadmin.utils.models import CoreModel, table_prefix
+from dvadmin.utils.models import CoreModel
+
+table_prefix = "company_"  # 数据库表前缀（App 级别）
 
 
 class CompanyEntity(CoreModel):
@@ -90,7 +92,7 @@ class CompanyEntity(CoreModel):
     )
 
     class Meta:
-        db_table = f"{table_prefix}company_entity"
+        db_table = f"{table_prefix}entity"
         verbose_name = "主体公司"
         verbose_name_plural = verbose_name
         ordering = ['-create_datetime']

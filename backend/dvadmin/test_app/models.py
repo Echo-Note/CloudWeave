@@ -1,6 +1,6 @@
 from django.db import models
 
-from dvadmin.utils.models import table_name
+table_prefix = "test_app_"  # 数据库表前缀（App 级别）
 
 
 class Blog(models.Model):
@@ -10,7 +10,7 @@ class Blog(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
     class Meta:
-        db_table = table_name("test_app", "blog")
+        db_table = f"{table_prefix}blog"
         verbose_name = "博客"
         verbose_name_plural = verbose_name
 
@@ -23,6 +23,6 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
 
     class Meta:
-        db_table = table_name("test_app", "product")
+        db_table = f"{table_prefix}product"
         verbose_name = "产品"
         verbose_name_plural = verbose_name

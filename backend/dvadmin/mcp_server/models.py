@@ -6,7 +6,9 @@ MCP 智能集成 — 数据模型
 from django.conf import settings
 from django.db import models
 
-from dvadmin.utils.models import CoreModel, table_prefix
+from dvadmin.utils.models import CoreModel
+
+table_prefix = "mcp_"  # 数据库表前缀（App 级别）
 
 
 class McpApiKey(CoreModel):
@@ -64,7 +66,7 @@ class McpApiKey(CoreModel):
     )
 
     class Meta:
-        db_table = f"{table_prefix}mcp_api_key"
+        db_table = f"{table_prefix}api_key"
         verbose_name = "MCP API Key"
         verbose_name_plural = verbose_name
         ordering = ['-create_datetime']
@@ -127,7 +129,7 @@ class McpAuditLog(CoreModel):
     )
 
     class Meta:
-        db_table = f"{table_prefix}mcp_audit_log"
+        db_table = f"{table_prefix}audit_log"
         verbose_name = "MCP调用审计"
         verbose_name_plural = verbose_name
         ordering = ['-create_datetime']

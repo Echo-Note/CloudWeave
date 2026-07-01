@@ -7,7 +7,9 @@ Domain（域名）、Port（端口），以及它们之间的多对多关联中�
 from django.conf import settings
 from django.db import models
 
-from dvadmin.utils.models import CoreModel, table_name
+from dvadmin.utils.models import CoreModel
+
+table_prefix = "assets_"  # 数据库表前缀（App 级别）
 
 
 # ============================================================
@@ -71,7 +73,7 @@ class Project(CoreModel):
     )
 
     class Meta:
-        db_table = table_name("assets", "project")
+        db_table = f"{table_prefix}project"
         verbose_name = "项目"
         verbose_name_plural = verbose_name
         ordering = ['-create_datetime']
@@ -164,7 +166,7 @@ class Server(CoreModel):
     )
 
     class Meta:
-        db_table = table_name("assets", "server")
+        db_table = f"{table_prefix}server"
         verbose_name = "服务器"
         verbose_name_plural = verbose_name
         ordering = ['-create_datetime']
@@ -214,7 +216,7 @@ class IPAddress(CoreModel):
     )
 
     class Meta:
-        db_table = table_name("assets", "ip_address")
+        db_table = f"{table_prefix}ip_address"
         verbose_name = "IP地址"
         verbose_name_plural = verbose_name
         ordering = ['-create_datetime']
@@ -287,7 +289,7 @@ class Domain(CoreModel):
     )
 
     class Meta:
-        db_table = table_name("assets", "domain")
+        db_table = f"{table_prefix}domain"
         verbose_name = "域名"
         verbose_name_plural = verbose_name
         ordering = ['-create_datetime']
@@ -342,7 +344,7 @@ class Port(CoreModel):
     )
 
     class Meta:
-        db_table = table_name("assets", "port")
+        db_table = f"{table_prefix}port"
         verbose_name = "端口"
         verbose_name_plural = verbose_name
         ordering = ['server', 'number']
@@ -406,7 +408,7 @@ class ProjectServer(CoreModel):
     )
 
     class Meta:
-        db_table = table_name("assets", "project_server")
+        db_table = f"{table_prefix}project_server"
         verbose_name = "项目-服务器关联"
         verbose_name_plural = verbose_name
         constraints = [
@@ -461,7 +463,7 @@ class DomainIP(CoreModel):
     )
 
     class Meta:
-        db_table = table_name("assets", "domain_ip")
+        db_table = f"{table_prefix}domain_ip"
         verbose_name = "域名-IP关联"
         verbose_name_plural = verbose_name
         constraints = [
@@ -495,7 +497,7 @@ class ProjectDomain(CoreModel):
     )
 
     class Meta:
-        db_table = table_name("assets", "project_domain")
+        db_table = f"{table_prefix}project_domain"
         verbose_name = "域名-项目关联"
         verbose_name_plural = verbose_name
         constraints = [
@@ -529,7 +531,7 @@ class ProjectPort(CoreModel):
     )
 
     class Meta:
-        db_table = table_name("assets", "project_port")
+        db_table = f"{table_prefix}project_port"
         verbose_name = "端口-项目关联"
         verbose_name_plural = verbose_name
         constraints = [
@@ -583,7 +585,7 @@ class ServerVip(CoreModel):
     )
 
     class Meta:
-        db_table = table_name("assets", "server_vip")
+        db_table = f"{table_prefix}server_vip"
         verbose_name = "服务器-VIP关联"
         verbose_name_plural = verbose_name
         constraints = [
@@ -661,7 +663,7 @@ class ServerProxyMapping(CoreModel):
     )
 
     class Meta:
-        db_table = table_name("assets", "server_proxy_mapping")
+        db_table = f"{table_prefix}server_proxy_mapping"
         verbose_name = "服务器代理映射"
         verbose_name_plural = verbose_name
         constraints = [
@@ -732,7 +734,7 @@ class ServiceDependency(CoreModel):
     )
 
     class Meta:
-        db_table = table_name("assets", "service_dependency")
+        db_table = f"{table_prefix}service_dependency"
         verbose_name = "服务依赖"
         verbose_name_plural = verbose_name
         constraints = [

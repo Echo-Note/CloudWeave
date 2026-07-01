@@ -6,7 +6,9 @@ ICP 备案管理 — 数据模型
 from django.conf import settings
 from django.db import models
 
-from dvadmin.utils.models import CoreModel, table_prefix
+from dvadmin.utils.models import CoreModel
+
+table_prefix = "icp_"  # 数据库表前缀（App 级别）
 
 
 class IcpRecord(CoreModel):
@@ -76,7 +78,7 @@ class IcpRecord(CoreModel):
     )
 
     class Meta:
-        db_table = f"{table_prefix}icp_record"
+        db_table = f"{table_prefix}record"
         verbose_name = "ICP备案记录"
         verbose_name_plural = verbose_name
         ordering = ['-create_datetime']
@@ -148,7 +150,7 @@ class IcpChangeLog(CoreModel):
     )
 
     class Meta:
-        db_table = f"{table_prefix}icp_change_log"
+        db_table = f"{table_prefix}change_log"
         verbose_name = "备案变更历史"
         verbose_name_plural = verbose_name
         ordering = ['-create_datetime']

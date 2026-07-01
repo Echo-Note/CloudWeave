@@ -15,27 +15,7 @@ from django.conf import settings
 from django.db import models
 from rest_framework.request import Request
 
-table_prefix = settings.TABLE_PREFIX  # 数据库表名前缀
-
-
-def table_name(app_label: str, model_name: str) -> str:
-    """
-    按统一规范生成数据库表名：{表前缀}_{app名称}_{模型名}
-
-    用法示例（在模型的 Meta 中）：
-        class MyModel(CoreModel):
-            class Meta:
-                db_table = table_name("my_app", "my_model")
-                verbose_name = "我的模型"
-
-    参数：
-        app_label: Django App 名称（如 "assets", "office", "cloud"）
-        model_name: 模型蛇形命名（如 "server", "asset_category"）
-
-    返回：
-        完整表名，如 "dvadmin_assets_server"
-    """
-    return f"{table_prefix}{app_label}_{model_name}"
+table_prefix = settings.TABLE_PREFIX  # 数据库表名前缀（保留以兼容已有代码）
 
 
 class SoftDeleteQuerySet(models.QuerySet):
