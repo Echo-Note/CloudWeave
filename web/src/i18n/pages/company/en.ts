@@ -59,9 +59,12 @@ export default {
 				},
 				buttons: {
 					add: 'Add',
+					view: 'View Details',
 					edit: 'Edit',
 					delete: 'Delete',
 					toggleStatus: 'Toggle Status',
+					activate: 'Activate',
+					deactivate: 'Deactivate',
 					import: 'Import',
 				},
 				status: {

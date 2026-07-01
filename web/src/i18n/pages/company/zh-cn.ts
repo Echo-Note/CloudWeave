@@ -59,9 +59,12 @@ export default {
 				},
 				buttons: {
 					add: '新增',
+					view: '查看详情',
 					edit: '编辑',
 					delete: '删除',
 					toggleStatus: '启用/停用',
+					activate: '启用',
+					deactivate: '停用',
 					import: '导入',
 				},
 				status: {

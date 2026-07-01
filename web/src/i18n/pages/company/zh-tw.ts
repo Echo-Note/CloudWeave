@@ -59,9 +59,12 @@ export default {
 				},
 				buttons: {
 					add: '新增',
+					view: '檢視詳情',
 					edit: '編輯',
 					delete: '刪除',
 					toggleStatus: '啟用/停用',
+					activate: '啟用',
+					deactivate: '停用',
 					import: '匯入',
 				},
 				status: {

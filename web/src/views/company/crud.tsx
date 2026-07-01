@@ -45,7 +45,12 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
         fixed: 'right',
         width: 280,
         buttons: {
-          view: { show: false },
+          view: {
+            show: true,
+            text: t('message.pages.company.buttons.view'),
+            iconRight: 'View',
+            type: 'text',
+          },
           edit: {
             text: t('message.pages.company.buttons.edit'),
             iconRight: 'Edit',
@@ -59,7 +64,12 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
             show: auth('company:Delete'),
           },
           customToggleStatus: {
-            text: t('message.pages.company.buttons.toggleStatus'),
+            text: compute((ctx: any) => {
+              const { row } = ctx;
+              return row.status === 'active'
+                ? t('message.pages.company.buttons.deactivate')
+                : t('message.pages.company.buttons.activate');
+            }),
             type: 'text',
             show: auth('company:Update'),
             click: (ctx: any) => {
@@ -192,6 +202,16 @@ export const createCrudOptions = function ({ crudExpose, context }: CreateCrudOp
           form: {
             col: { span: 24 },
             helper: t('message.pages.company.form.businessLicenseHelper'),
+          },
+          viewForm: {
+            col: { span: 24 },
+            component: {
+              name: 'fs-images-format',
+              buildUrl: async (value: any) => {
+                if (!value) return '';
+                return getBaseURL(value);
+              },
+            },
           },
         },
         legal_person: {
