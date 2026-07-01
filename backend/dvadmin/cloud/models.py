@@ -6,6 +6,7 @@
 """
 from django.db import models
 
+from dvadmin.utils.fields import EncryptedCharField
 from dvadmin.utils.models import CoreModel
 
 table_prefix = "cloud_"  # 数据库表前缀（App 级别）
@@ -44,13 +45,13 @@ class CloudPlatform(CoreModel):
         verbose_name="联系人", help_text="联系人姓名",
         db_comment="联系人"
     )
-    # API 凭证（AES-256 加密存储）
-    secret_id = models.CharField(
+    # API 凭证（AES-256-GCM 加密存储，见 EncryptedCharField）
+    secret_id = EncryptedCharField(
         max_length=500, null=True, blank=True,
         verbose_name="SecretId", help_text="API SecretId / AccessKeyId（加密存储）",
         db_comment="SecretId"
     )
-    secret_key = models.CharField(
+    secret_key = EncryptedCharField(
         max_length=1000, null=True, blank=True,
         verbose_name="SecretKey", help_text="API SecretKey / AccessKeySecret（加密存储）",
         db_comment="SecretKey"
