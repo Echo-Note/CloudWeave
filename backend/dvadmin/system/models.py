@@ -7,9 +7,7 @@ from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from application import dispatch
-from dvadmin.utils.models import CoreModel, get_custom_app_models
-
-table_prefix = "system_"  # 数据库表前缀（App 级别）
+from dvadmin.utils.models import CoreModel, table_prefix, get_custom_app_models
 
 
 class Role(CoreModel):
@@ -19,7 +17,7 @@ class Role(CoreModel):
     status = models.BooleanField(default=True, verbose_name="角色状态", help_text="角色状态")
 
     class Meta:
-        db_table = f"{table_prefix}role"
+        db_table = table_prefix + "system_role"
         verbose_name = "角色表"
         verbose_name_plural = verbose_name
         ordering = ("sort",)
@@ -106,7 +104,7 @@ class Users(CoreModel, AbstractUser):
         super().save(*args, **kwargs)
 
     class Meta:
-        db_table = f"{table_prefix}users"
+        db_table = table_prefix + "system_users"
         verbose_name = "用户表"
         verbose_name_plural = verbose_name
         ordering = ("-create_datetime",)
@@ -123,7 +121,7 @@ class Post(CoreModel):
     status = models.IntegerField(choices=STATUS_CHOICES, default=1, verbose_name="岗位状态", help_text="岗位状态")
 
     class Meta:
-        db_table = f"{table_prefix}post"
+        db_table = table_prefix + "system_post"
         verbose_name = "岗位表"
         verbose_name_plural = verbose_name
         ordering = ("sort",)
@@ -206,7 +204,7 @@ class Dept(CoreModel):
         return list(set(dept_list))
 
     class Meta:
-        db_table = f"{table_prefix}dept"
+        db_table = table_prefix + "system_dept"
         verbose_name = "部门表"
         verbose_name_plural = verbose_name
         ordering = ("sort",)
@@ -266,7 +264,7 @@ class Menu(CoreModel):
                 nodes.append(ele)
         return nodes
     class Meta:
-        db_table = f"{table_prefix}menu"
+        db_table = table_prefix + "system_menu"
         verbose_name = "菜单表"
         verbose_name_plural = verbose_name
         ordering = ("sort",)
@@ -277,7 +275,7 @@ class MenuField(CoreModel):
     field_name = models.CharField(max_length=64, verbose_name='模型表字段名')
     title = models.CharField(max_length=64, verbose_name='字段显示名')
     class Meta:
-        db_table = f"{table_prefix}menu_field"
+        db_table = table_prefix + "system_menu_field"
         verbose_name = "菜单字段表"
         verbose_name_plural = verbose_name
         ordering = ("id",)
@@ -290,7 +288,7 @@ class FieldPermission(CoreModel):
     is_update = models.BooleanField(default=1, verbose_name='是否可更新')
 
     class Meta:
-        db_table = f"{table_prefix}field_permission"
+        db_table = table_prefix + "system_field_permission"
         verbose_name = "字段权限表"
         verbose_name_plural = verbose_name
         ordering = ("id",)
@@ -320,7 +318,7 @@ class MenuButton(CoreModel):
                                  help_text="接口请求方法")
 
     class Meta:
-        db_table = f"{table_prefix}menu_button"
+        db_table = table_prefix + "system_menu_button"
         verbose_name = "菜单权限表"
         verbose_name_plural = verbose_name
         ordering = ("-name",)
@@ -345,7 +343,7 @@ class RoleMenuPermission(CoreModel):
     )
 
     class Meta:
-        db_table = f"{table_prefix}role_menu_permission"
+        db_table = table_prefix + "role_menu_permission"
         verbose_name = "角色菜单权限表"
         verbose_name_plural = verbose_name
         # ordering = ("-create_datetime",)
@@ -383,7 +381,7 @@ class RoleMenuButtonPermission(CoreModel):
                                   help_text="数据权限-关联部门")
 
     class Meta:
-        db_table = f"{table_prefix}role_menu_button_permission"
+        db_table = table_prefix + "role_menu_button_permission"
         verbose_name = "角色按钮权限表"
         verbose_name_plural = verbose_name
         ordering = ("-create_datetime",)
@@ -421,7 +419,7 @@ class Dictionary(CoreModel):
     remark = models.CharField(max_length=2000, blank=True, null=True, verbose_name="备注", help_text="备注")
 
     class Meta:
-        db_table = f"{table_prefix}dictionary"
+        db_table = table_prefix + "system_dictionary"
         verbose_name = "字典表"
         verbose_name_plural = verbose_name
         ordering = ("sort",)
@@ -456,7 +454,7 @@ class OperationLog(CoreModel):
     status = models.BooleanField(default=False, verbose_name="响应状态", help_text="响应状态")
 
     class Meta:
-        db_table = f"{table_prefix}operation_log"
+        db_table = table_prefix + "system_operation_log"
         verbose_name = "操作日志"
         verbose_name_plural = verbose_name
         ordering = ("-create_datetime",)
@@ -511,7 +509,7 @@ class FileList(CoreModel):
         super(FileList, self).save(*args, **kwargs)
 
     class Meta:
-        db_table = f"{table_prefix}file_list"
+        db_table = table_prefix + "system_file_list"
         verbose_name = "文件管理"
         verbose_name_plural = verbose_name
         ordering = ("-create_datetime",)
@@ -537,7 +535,7 @@ class Area(CoreModel):
     )
 
     class Meta:
-        db_table = f"{table_prefix}area"
+        db_table = table_prefix + "system_area"
         verbose_name = "地区表"
         verbose_name_plural = verbose_name
         ordering = ("code",)
@@ -560,7 +558,7 @@ class ApiWhiteList(CoreModel):
                                             blank=True)
 
     class Meta:
-        db_table = f"{table_prefix}api_white_list"
+        db_table = table_prefix + "api_white_list"
         verbose_name = "接口白名单"
         verbose_name_plural = verbose_name
         ordering = ("-create_datetime",)
@@ -610,7 +608,7 @@ class SystemConfig(CoreModel):
     setting = models.JSONField(null=True, blank=True, verbose_name="配置", help_text="配置")
 
     class Meta:
-        db_table = f"{table_prefix}config"
+        db_table = table_prefix + "system_config"
         verbose_name = "系统配置表"
         verbose_name_plural = verbose_name
         ordering = ("sort",)
@@ -652,7 +650,7 @@ class LoginLog(CoreModel):
                                      help_text="登录类型")
 
     class Meta:
-        db_table = f"{table_prefix}login_log"
+        db_table = table_prefix + "system_login_log"
         verbose_name = "登录日志"
         verbose_name_plural = verbose_name
         ordering = ("-create_datetime",)
@@ -671,7 +669,7 @@ class MessageCenter(CoreModel):
                                          verbose_name="目标角色", help_text="目标角色")
 
     class Meta:
-        db_table = f"{table_prefix}message_center"
+        db_table = table_prefix + "message_center"
         verbose_name = "消息中心"
         verbose_name_plural = verbose_name
         ordering = ("-create_datetime",)
@@ -685,7 +683,7 @@ class MessageCenterTargetUser(CoreModel):
     is_read = models.BooleanField(default=False, blank=True, null=True, verbose_name="是否已读", help_text="是否已读")
 
     class Meta:
-        db_table = f"{table_prefix}message_center_target_user"
+        db_table = table_prefix + "message_center_target_user"
         verbose_name = "消息中心目标用户表"
         verbose_name_plural = verbose_name
 
@@ -722,7 +720,7 @@ class DownloadCenter(CoreModel):
         super(DownloadCenter, self).save(*args, **kwargs)
 
     class Meta:
-        db_table = f"{table_prefix}download_center"
+        db_table = table_prefix + "download_center"
         verbose_name = "下载中心"
         verbose_name_plural = verbose_name
         ordering = ("-create_datetime",)
