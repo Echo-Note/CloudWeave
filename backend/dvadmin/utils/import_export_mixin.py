@@ -33,14 +33,14 @@ class ImportSerializerMixin:
 
     def is_number(self,num):
         try:
-            float(num)
+            float(str(num))
             return True
-        except ValueError:
+        except (ValueError, TypeError):
             pass
 
         try:
             import unicodedata
-            unicodedata.numeric(num)
+            unicodedata.numeric(str(num))
             return True
         except (TypeError, ValueError):
             pass
@@ -57,7 +57,7 @@ class ImportSerializerMixin:
             return length
         if self.is_number(string):
             return length
-        for char in string:
+        for char in str(string):
             length += 2.1 if ord(char) > 256 else 1
         return round(length, 1) if length <= self.export_column_width else self.export_column_width
 
@@ -91,7 +91,7 @@ class ImportSerializerMixin:
             row = get_column_letter(len(self.import_field_dict) + 1)
             column = 10
             header_data = [
-                _("No."),
+                str(_("No.")),
             ]
             validation_data_dict = {}
             for index, ele in enumerate(self.import_field_dict.values()):
@@ -176,7 +176,7 @@ class ImportSerializerMixin:
         ws1.sheet_state = "hidden"
         ws = wb.active
         import_field_dict = {}
-        header_data = [_("No."), _("Update primary key (do not modify)")]
+        header_data = [str(_("No.")), str(_("Update primary key (do not modify)"))]
         hidden_header = ["#","id"]
         #----设置选项----
         validation_data_dict = {}
@@ -267,14 +267,14 @@ class ExportSerializerMixin:
 
     def is_number(self,num):
         try:
-            float(num)
+            float(str(num))
             return True
-        except ValueError:
+        except (ValueError, TypeError):
             pass
 
         try:
             import unicodedata
-            unicodedata.numeric(num)
+            unicodedata.numeric(str(num))
             return True
         except (TypeError, ValueError):
             pass
@@ -291,7 +291,7 @@ class ExportSerializerMixin:
             return length
         if self.is_number(string):
             return length
-        for char in string:
+        for char in str(string):
             length += 2.1 if ord(char) > 256 else 1
         return round(length, 1) if length <= self.export_column_width else self.export_column_width
 
@@ -327,7 +327,7 @@ class ExportSerializerMixin:
         response["content-disposition"] = f'attachment;filename={quote(str(f"{_export_label}{get_verbose_name(queryset)}.xlsx"))}'
         wb = Workbook()
         ws = wb.active
-        header_data = [_("No."), *self.export_field_label.values()]
+        header_data = [str(_("No.")), *self.export_field_label.values()]
         hidden_header = ["#", *self.export_field_label.keys()]
         df_len_max = [self.get_string_len(ele) for ele in header_data]
         row = get_column_letter(len(self.export_field_label) + 1)
